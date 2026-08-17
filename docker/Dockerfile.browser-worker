@@ -1,7 +1,7 @@
 # ==============================================================================
 # Dockerfile.browser-worker — Production Browser Automation Sandbox Container
 # ==============================================================================
-FROM mcr.microsoft.com/playwright:v1.45.0-jammy AS runner
+FROM mcr.microsoft.com/playwright:v1.62.1-jammy AS runner
 
 WORKDIR /app
 
