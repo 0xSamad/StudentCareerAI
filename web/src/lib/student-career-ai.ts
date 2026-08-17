@@ -14,9 +14,6 @@ export function studentCareerRoot(): string {
   return path.resolve(process.cwd(), "..");
 }
 
-/** @deprecated Use studentCareerRoot — kept for internal back-compat during migration. */
-export const studentCareerRoot = studentCareerRoot;
-
 /**
  * Absolute path to a core root script (e.g. doctor, verify-portals). The `.mjs`
  * is assembled here from the bare name so the literal never appears as a direct
