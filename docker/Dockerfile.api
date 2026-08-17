@@ -10,13 +10,8 @@ RUN apk add --no-cache wget
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev --ignore-scripts
 
-COPY lib ./lib
-COPY bin ./bin
-COPY config ./config
-COPY templates ./templates
-COPY providers ./providers
-COPY modes ./modes
-COPY *.mjs ./
+# Full repo: lib/application-agent.mjs imports /app/liveness-browser.mjs etc.
+COPY . .
 
 ENV NODE_ENV=production
 ENV PORT=4000
