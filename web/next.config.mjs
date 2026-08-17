@@ -1,3 +1,8 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
+
 /** @type {import('next').NextConfig} */
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
@@ -27,6 +32,7 @@ const securityHeaders = [
 
 const nextConfig = {
   turbopack: { root: import.meta.dirname },
+  outputFileTracingRoot: repoRoot,
   ...(process.env.BUILD_DIST ? { distDir: process.env.BUILD_DIST } : {}),
   serverExternalPackages: [
     "pg",
@@ -35,7 +41,16 @@ const nextConfig = {
     "embedded-postgres",
     "playwright",
     "playwright-core",
+    "js-yaml",
   ],
+  webpack: (config) => {
+    config.resolve.modules = [
+      path.join(path.dirname(fileURLToPath(import.meta.url)), "node_modules"),
+      path.join(repoRoot, "node_modules"),
+      "node_modules",
+    ];
+    return config;
+  },
   async headers() {
     return [
       {

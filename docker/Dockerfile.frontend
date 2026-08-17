@@ -1,57 +1,43 @@
 # ==============================================================================
-# Dockerfile.frontend — Multi-Stage Next.js Production Build
-# Repo layout must be preserved: web/ imports ../../../../lib/saas/* from root.
+# Dockerfile.frontend — Next.js production build
+# The web app imports repo-root lib/ and *.mjs files, so the image keeps
+# the monorepo layout: /repo/web + /repo/lib + /repo/node_modules.
 # ==============================================================================
 
 FROM node:22-alpine AS base
 WORKDIR /repo
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV STUDENT_CAREER_AI_ROOT=/repo
+ENV NODE_PATH=/repo/node_modules:/repo/web/node_modules
 
-# 1. Dependencies (Linux-native optional binaries)
 FROM base AS deps
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev --ignore-scripts
 WORKDIR /repo/web
 COPY web/package.json web/package-lock.json* ./
-RUN npm install --ignore-scripts && npm install pg --ignore-scripts
+RUN npm install --ignore-scripts
 
-# 2. Builder — web/ plus sibling lib/ so relative imports resolve
 FROM base AS builder
-COPY lib /repo/lib
-COPY providers /repo/providers
-COPY config /repo/config
-COPY templates /repo/templates
-COPY modes /repo/modes
-COPY package.json /repo/package.json
+COPY --from=deps /repo/node_modules /repo/node_modules
+COPY --from=deps /repo/web/node_modules /repo/web/node_modules
+COPY . /repo
 WORKDIR /repo/web
-COPY --from=deps /repo/web/node_modules ./node_modules
-COPY web ./
 RUN npm run build
 
-# 3. Production runner
 FROM base AS runner
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 ENV STUDENT_CAREER_AI_ROOT=/repo
+ENV NODE_PATH=/repo/node_modules:/repo/web/node_modules
 
 RUN apk add --no-cache wget && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /repo/lib /repo/lib
-COPY --from=builder --chown=nextjs:nodejs /repo/providers /repo/providers
-COPY --from=builder --chown=nextjs:nodejs /repo/config /repo/config
-COPY --from=builder --chown=nextjs:nodejs /repo/templates /repo/templates
-COPY --from=builder --chown=nextjs:nodejs /repo/modes /repo/modes
-COPY --from=builder --chown=nextjs:nodejs /repo/package.json /repo/package.json
+COPY --from=builder --chown=nextjs:nodejs /repo /repo
 
 WORKDIR /repo/web
-COPY --from=builder /repo/web/public ./public
-COPY --from=builder --chown=nextjs:nodejs /repo/web/.next ./.next
-COPY --from=builder /repo/web/node_modules ./node_modules
-COPY --from=builder /repo/web/package.json ./package.json
-COPY --from=builder /repo/web/next.config.mjs ./next.config.mjs
-
 USER nextjs
 EXPOSE 3000
 
