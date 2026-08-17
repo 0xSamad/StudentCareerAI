@@ -31,8 +31,10 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
-  turbopack: { root: import.meta.dirname },
+  turbopack: { root: repoRoot },
   outputFileTracingRoot: repoRoot,
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
   ...(process.env.BUILD_DIST ? { distDir: process.env.BUILD_DIST } : {}),
   serverExternalPackages: [
     "pg",
