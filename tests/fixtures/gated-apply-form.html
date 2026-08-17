@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Gated application form</title>
+</head>
+<body>
+  <h1>Software Engineer Intern</h1>
+  <form id="application_form" onsubmit="this.dataset.submitted='1'; return false;">
+    <label for="full_name">Full name</label>
+    <input id="full_name" name="full_name" type="text" required />
+
+    <fieldset>
+      <legend>Are you legally authorized to work in the United States?</legend>
+      <label><input type="radio" name="work_auth" value="yes" required /> Yes</label>
+      <label><input type="radio" name="work_auth" value="no" /> No</label>
+    </fieldset>
+
+    <button type="submit">Submit application</button>
+  </form>
+</body>
+</html>

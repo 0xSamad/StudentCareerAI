@@ -1,0 +1,275 @@
+# Pakistan & International Portals Configuration
+# Used by CareerOS discovery system to scan for internships and jobs.
+#
+# HONESTY POLICY:
+#   ✅ Only companies with VERIFIED working ATS providers are listed as tracked_companies
+#   ✅ Companies without public APIs use web search queries (honest, no fake claims)
+#   ❌ We do NOT claim API support for Rozee.pk, Mustakbil, Tesla, Apple, or any
+#      company that uses proprietary/closed career portals
+#
+# HOW TO USE:
+#   1. Copy this file to portals.yml or merge with your existing portals.yml
+#   2. Update title_filter.positive with YOUR target role keywords
+#   3. Set enabled: true/false on companies relevant to you
+
+# ── Title Filter (Pakistan + International) ────────────────────────────────────
+
+title_filter:
+  positive:
+    # -- Internship keywords (primary focus) --
+    - "Intern"
+    - "Internship"
+    - "Co-op"
+    - "Trainee"
+    - "Apprentice"
+    - "Working Student"
+    - "Graduate Program"
+    # -- Engineering roles --
+    - "Software Engineer"
+    - "Software Developer"
+    - "Backend"
+    - "Frontend"
+    - "Full Stack"
+    - "DevOps"
+    - "SRE"
+    # -- AI/ML roles --
+    - "AI"
+    - "ML"
+    - "Machine Learning"
+    - "Data Scientist"
+    - "Data Analyst"
+    - "NLP"
+    - "Computer Vision"
+    # -- Other tech roles --
+    - "Cloud Engineer"
+    - "Platform Engineer"
+    - "QA"
+    - "Security"
+    - "Mobile Developer"
+    - "Android"
+    - "iOS"
+  negative:
+    # -- Roles typically not relevant for CS students --
+    - "Salesforce Admin"
+    - "SAP "
+    - "Oracle EBS"
+    - "Mainframe"
+    - "COBOL"
+
+# ── Location Filter (Pakistan + Remote) ────────────────────────────────────────
+
+location_filter:
+  always_allow:
+    - "Pakistan"
+    - "Karachi"
+    - "Lahore"
+    - "Islamabad"
+    - "Remote"
+  allow:
+    - "Remote"
+    - "Pakistan"
+    - "Karachi"
+    - "Lahore"
+    - "Islamabad"
+    - "Rawalpindi"
+    - "Faisalabad"
+    - "Peshawar"
+    - "Multan"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TRACKED COMPANIES — Verified working ATS providers ONLY
+# ══════════════════════════════════════════════════════════════════════════════
+
+tracked_companies:
+
+  # ── Pakistan Companies (Verified ATS) ──────────────────────────────────────
+
+  - name: Careem
+    provider: greenhouse
+    api: https://boards-api.greenhouse.io/v1/boards/careem/jobs
+    careers_url: https://boards.greenhouse.io/careem
+    enabled: true
+
+  - name: 10Pearls
+    careers_url: https://apply.workable.com/10pearls
+    # Verified: 10Pearls uses Workable (auto-detected)
+    enabled: true
+
+  - name: IBM
+    provider: ibm
+    ibm:
+      categories: ["Software Engineering", "Data & Analytics"]
+    enabled: true
+
+  - name: Amazon / AWS
+    provider: amazon
+    amazon:
+      base_query: intern software
+      normalized_country_code: [PAK, USA]
+    enabled: true
+
+  # ── International — Greenhouse (auto-detected) ────────────────────────────
+
+  - name: OpenAI
+    careers_url: https://job-boards.greenhouse.io/openai
+    enabled: false
+
+  - name: Stripe
+    careers_url: https://job-boards.greenhouse.io/stripe
+    enabled: true
+
+  # ── International — Ashby (auto-detected) ──────────────────────────────────
+
+  - name: Anthropic
+    careers_url: https://jobs.ashbyhq.com/anthropic
+    enabled: false
+
+  # ── International — Lever (auto-detected) ──────────────────────────────────
+
+  # (Add Lever companies here as discovered)
+
+  # ── International — Workday (auto-detected) ────────────────────────────────
+
+  - name: NVIDIA
+    careers_url: https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite
+    enabled: false
+
+  # ── International — Google (Greenhouse) ─────────────────────────────────────
+  # Google uses a custom careers site, NOT Greenhouse for most roles.
+  # However, some teams/subsidiaries use Greenhouse. Use web search instead.
+
+  # ── International — Meta ────────────────────────────────────────────────────
+  # Meta uses a custom careers site (metacareers.com). No public API.
+  # Use web search queries below.
+
+  # ── International — Microsoft ───────────────────────────────────────────────
+  # Microsoft uses a custom careers site (careers.microsoft.com). No public API.
+  # Use web search queries below.
+
+  # ── International — Tesla ───────────────────────────────────────────────────
+  # Tesla uses a proprietary ATS with NO public API. Cannot build an adapter.
+  # Use web search queries below.
+
+  # ── International — Apple ───────────────────────────────────────────────────
+  # Apple uses a custom careers site (jobs.apple.com). No public API.
+  # Use web search queries below.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SEARCH QUERIES — For portals without public APIs
+# ══════════════════════════════════════════════════════════════════════════════
+
+search_queries:
+
+  # ── Pakistan Job Boards (Web Search) ────────────────────────────────────────
+  # Rozee.pk and Mustakbil have NO public APIs. Web search is the only
+  # permitted method for discovering their listings.
+
+  - name: Rozee.pk — Software Internships
+    query: 'site:rozee.pk "intern" OR "internship" "software" OR "developer" OR "engineering"'
+    enabled: true
+
+  - name: Rozee.pk — AI/ML Internships
+    query: 'site:rozee.pk "intern" OR "internship" "AI" OR "machine learning" OR "data science"'
+    enabled: true
+
+  - name: Rozee.pk — Software Jobs
+    query: 'site:rozee.pk "software engineer" OR "software developer" OR "backend" OR "frontend" Pakistan'
+    enabled: true
+
+  - name: Mustakbil — Software Internships
+    query: 'site:mustakbil.com "intern" OR "internship" "software" OR "developer" OR "IT"'
+    enabled: true
+
+  - name: Mustakbil — Engineering Jobs
+    query: 'site:mustakbil.com "software engineer" OR "developer" OR "AI" OR "data" Pakistan'
+    enabled: true
+
+  # ── Pakistan Companies (No Public API — Web Search) ─────────────────────────
+
+  - name: Jazz — Internships & Jobs
+    query: 'site:jazz.com.pk OR site:jobs.jazz.com.pk "intern" OR "software" OR "developer" OR "engineer"'
+    enabled: true
+
+  - name: Zong — Careers
+    query: 'site:zong.com.pk "careers" OR "jobs" "intern" OR "software" OR "engineer"'
+    enabled: true
+
+  - name: Nayatel — Careers
+    query: 'site:nayatel.com "careers" OR "jobs" "intern" OR "software" OR "network"'
+    enabled: true
+
+  - name: Huawei Pakistan — Careers
+    query: '"Huawei" "Pakistan" "intern" OR "internship" OR "software engineer" OR "developer" site:huawei.com OR site:career.huawei.com'
+    enabled: true
+
+  - name: Systems Limited — Careers
+    query: 'site:systemsltd.com "careers" OR "jobs" "intern" OR "software" OR "developer" OR "engineer"'
+    enabled: true
+
+  - name: NETSOL — Careers
+    query: 'site:netsoltech.com "careers" OR "jobs" "intern" OR "software" OR "developer"'
+    enabled: true
+
+  - name: Daraz — Tech Roles
+    query: '"Daraz" "Pakistan" "intern" OR "software" OR "developer" OR "data" OR "engineer"'
+    enabled: true
+
+  # ── LinkedIn — Pakistan Targeting ───────────────────────────────────────────
+
+  - name: LinkedIn — Pakistan Software Internships
+    query: 'site:linkedin.com/jobs "internship" "software" OR "developer" OR "engineering" "Pakistan" OR "Karachi" OR "Lahore" OR "Islamabad"'
+    enabled: true
+
+  - name: LinkedIn — Pakistan AI/ML Jobs
+    query: 'site:linkedin.com/jobs "AI" OR "machine learning" OR "data science" "Pakistan" OR "Karachi" OR "Lahore" OR "Islamabad"'
+    enabled: true
+
+  # ── Indeed — Pakistan Targeting ─────────────────────────────────────────────
+
+  - name: Indeed — Pakistan Software Internships
+    query: 'site:pk.indeed.com "intern" OR "internship" "software" OR "developer"'
+    enabled: true
+
+  - name: Indeed — Pakistan Tech Jobs
+    query: 'site:pk.indeed.com "software engineer" OR "developer" OR "AI" OR "data"'
+    enabled: true
+
+  # ── International Companies (No Public API — Web Search) ────────────────────
+
+  - name: Google — Global Internships
+    query: 'site:careers.google.com "intern" OR "internship" "software" OR "engineering" OR "STEP"'
+    enabled: true
+
+  - name: Microsoft — Global Internships
+    query: 'site:careers.microsoft.com "intern" OR "internship" "software" OR "engineering" OR "Explore"'
+    enabled: true
+
+  - name: Tesla — Global Internships
+    query: 'site:tesla.com/careers "intern" OR "internship" "software" OR "engineering" OR "AI"'
+    enabled: true
+
+  - name: Meta — Global Internships
+    query: 'site:metacareers.com "intern" OR "internship" "software" OR "engineering" OR "University"'
+    enabled: true
+
+  - name: Apple — Global Internships
+    query: 'site:jobs.apple.com "intern" OR "internship" "software" OR "engineering" OR "ML"'
+    enabled: true
+
+  - name: Huawei — Global Internships
+    query: 'site:career.huawei.com "intern" OR "internship" "software" OR "engineering" OR "research"'
+    enabled: true
+
+  # ── Pakistan University Career Portals ──────────────────────────────────────
+
+  - name: LUMS — Career Services
+    query: 'site:lums.edu.pk "career" OR "internship" OR "placement" "software" OR "tech" OR "engineering"'
+    enabled: true
+
+  - name: NUST — Career Services
+    query: 'site:nust.edu.pk "career" OR "internship" OR "placement" "software" OR "engineering"'
+    enabled: true
+
+  - name: FAST-NUCES — Career Services
+    query: 'site:nu.edu.pk "career" OR "internship" OR "placement" "software" OR "engineering"'
+    enabled: true

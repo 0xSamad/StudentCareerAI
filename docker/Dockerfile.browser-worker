@@ -1,0 +1,20 @@
+# ==============================================================================
+# Dockerfile.browser-worker — Production Browser Automation Sandbox Container
+# ==============================================================================
+FROM mcr.microsoft.com/playwright:v1.45.0-jammy AS runner
+
+WORKDIR /app
+
+# Install production dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev --ignore-scripts
+
+# Copy application source
+COPY lib ./lib
+COPY bin ./bin
+COPY config ./config
+COPY templates ./templates
+
+ENV NODE_ENV=production
+
+CMD ["node", "bin/browser-worker-process.mjs"]

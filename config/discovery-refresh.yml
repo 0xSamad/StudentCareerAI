@@ -1,0 +1,30 @@
+# Configurable discovery refresh policy.
+# These are defaults — override with DISCOVERY_INTERVAL_*_MS env vars.
+# The backend scheduler is the authority; opening the app never scans.
+
+priorities:
+  high:
+    intervalMs: 1800000          # 30 minutes
+    minRefreshIntervalMs: 600000 # 10 minutes, even on manual refresh
+  normal:
+    intervalMs: 7200000          # 2 hours
+    minRefreshIntervalMs: 1800000 # 30 minutes
+  low:
+    intervalMs: 21600000         # 6 hours
+    minRefreshIntervalMs: 7200000 # 2 hours
+
+sources:
+  ats-round-robin: high
+  adzuna: normal
+  pakistan-top100: high
+  international-top100: low
+
+scheduler:
+  tickMs: 300000                 # check which sources are due every 5 minutes
+  enabled: true
+  # Do not run a tick the instant the process boots — wait one interval.
+  runImmediately: false
+
+search:
+  serveFromCache: true
+  neverFetchOnSearch: true

@@ -1,0 +1,20 @@
+# ==============================================================================
+# Dockerfile.scheduler — Production Cron Scheduler Container
+# ==============================================================================
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+# Install production dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev --ignore-scripts
+
+# Copy application source
+COPY lib ./lib
+COPY bin ./bin
+COPY config ./config
+COPY templates ./templates
+
+ENV NODE_ENV=production
+
+CMD ["node", "bin/scheduler-process.mjs"]

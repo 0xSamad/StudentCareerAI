@@ -1,0 +1,26 @@
+# Local SaaS development — PostgreSQL in Docker; run web/API on host with npm
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: studentcareer-postgres-dev
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-career_prod_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-career_ops_prod}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - career_ops_postgres_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-career_prod_user} -d ${POSTGRES_DB:-career_ops_prod}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  career_ops_postgres_dev:
+    driver: local

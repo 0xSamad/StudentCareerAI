@@ -1,0 +1,44 @@
+-- 004_saas_web.sql — SaaS web persistence: profile JSON, application metadata, opportunity provenance
+
+ALTER TABLE profiles
+  ADD COLUMN IF NOT EXISTS profile_data JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+ALTER TABLE applications
+  ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+ALTER TABLE applications
+  DROP CONSTRAINT IF EXISTS chk_app_state;
+
+ALTER TABLE applications
+  ADD CONSTRAINT chk_app_state CHECK (state IN (
+    'DISCOVERED', 'ELIGIBILITY_CHECK', 'NOT_ELIGIBLE', 'REQUIRES_REVIEW', 'ELIGIBLE',
+    'MATCHED', 'SELECTED', 'CV_GENERATED', 'APPLICATION_READY', 'APPLYING', 'SUBMITTED',
+    'FAILED', 'BLOCKED', 'DRY_RUN', 'PREPARED', 'REQUIRES_USER_INPUT',
+    'DRY_RUN_COMPLETED', 'APPLIED', 'INTERVIEWING', 'OFFER', 'REJECTED', 'PAUSED', 'ERROR'
+  ));
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS user_id VARCHAR(64) NULL REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS source_type VARCHAR(50) NOT NULL DEFAULT 'DISCOVERY';
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS source_name VARCHAR(255) NULL;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS source_id VARCHAR(255) NULL;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS discovered_at TIMESTAMP WITH TIME ZONE NULL;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS is_demo BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS is_verified BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE opportunities
+  ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+CREATE INDEX IF NOT EXISTS idx_opps_tenant_user ON opportunities(tenant_id, user_id) WHERE deleted_at IS NULL;

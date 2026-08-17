@@ -1,0 +1,26 @@
+-- 005_application_queue.sql — User-facing application queue states
+-- SELECTED → ANALYZING → CV_PREPARATION → APPLICATION_PREPARATION → READY
+-- → APPLYING → SUBMITTED | FAILED | REQUIRES_USER_INPUT
+-- PAUSED is a user-initiated hold. SUBMITTED requires a real submitted_at.
+
+ALTER TABLE applications
+  DROP CONSTRAINT IF EXISTS chk_app_state;
+
+ALTER TABLE applications
+  ADD CONSTRAINT chk_app_state CHECK (state IN (
+    'DISCOVERED', 'ELIGIBILITY_CHECK', 'NOT_ELIGIBLE', 'REQUIRES_REVIEW', 'ELIGIBLE',
+    'MATCHED', 'SELECTED', 'ANALYZING', 'CV_PREPARATION', 'APPLICATION_PREPARATION',
+    'CV_GENERATED', 'APPLICATION_READY', 'READY', 'APPLYING', 'SUBMITTED',
+    'FAILED', 'BLOCKED', 'DRY_RUN', 'PREPARED', 'REQUIRES_USER_INPUT',
+    'DRY_RUN_COMPLETED', 'APPLIED', 'INTERVIEWING', 'OFFER', 'REJECTED', 'PAUSED', 'ERROR'
+  ));
+
+ALTER TABLE applications
+  ADD COLUMN IF NOT EXISTS paused_at TIMESTAMP WITH TIME ZONE NULL;
+
+ALTER TABLE applications
+  ADD COLUMN IF NOT EXISTS pause_reason TEXT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_applications_user_state
+  ON applications(tenant_id, user_id, state)
+  WHERE deleted_at IS NULL;
