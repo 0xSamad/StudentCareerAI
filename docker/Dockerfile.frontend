@@ -10,7 +10,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # 2. Dependencies
 FROM base AS deps
 COPY web/package.json web/package-lock.json* ./
-RUN npm ci --ignore-scripts
+# npm install (not ci) so optional native binaries match Linux, not Windows.
+# Keep devDependencies — next build needs typescript, tailwind, postcss.
+RUN npm install --ignore-scripts
 
 # 3. Builder
 FROM base AS builder
