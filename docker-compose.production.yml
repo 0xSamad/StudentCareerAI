@@ -1,0 +1,191 @@
+# ==============================================================================
+# StudentCareer AI — Production Multi-Container Docker Compose Stack
+# ==============================================================================
+services:
+  # ----------------------------------------------------------------------------
+  # 1. PostgreSQL Relational Database
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: studentcareer-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-career_prod_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeThisStrongSecretInProd}
+      POSTGRES_DB: ${POSTGRES_DB:-career_ops_prod}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./lib/saas/database/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-career_prod_user} -d ${POSTGRES_DB:-career_ops_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+    networks:
+      - internal_network
+
+  # ----------------------------------------------------------------------------
+  # 2. Standalone API Gateway
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: studentcareer-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:4000:4000"
+    volumes:
+      - storage_data:/app/data/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4000/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+    networks:
+      - internal_network
+
+  # ----------------------------------------------------------------------------
+  # 3. Next.js Frontend Dashboard
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: studentcareer-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: http://api:4000
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1024M
+    networks:
+      - internal_network
+
+  # ----------------------------------------------------------------------------
+  # 4. Background Job Queue Worker
+  # ----------------------------------------------------------------------------
+  worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker
+    container_name: studentcareer-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    volumes:
+      - storage_data:/app/data/storage
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1536M
+    networks:
+      - internal_network
+
+  # ----------------------------------------------------------------------------
+  # 5. Cron Sweep Scheduler
+  # ----------------------------------------------------------------------------
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.scheduler
+    container_name: studentcareer-scheduler
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    depends_on:
+      api:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    networks:
+      - internal_network
+
+  # ----------------------------------------------------------------------------
+  # 6. Ephemeral Browser Automation Worker
+  # ----------------------------------------------------------------------------
+  browser-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.browser-worker
+    container_name: studentcareer-browser-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    depends_on:
+      api:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+    networks:
+      - internal_network
+
+# ------------------------------------------------------------------------------
+# Persistent Storage Volumes & Network Isolation
+# ------------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
+  storage_data:
+    driver: local
+
+networks:
+  internal_network:
+    driver: bridge

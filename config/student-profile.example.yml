@@ -1,0 +1,281 @@
+# CareerOS — Student Profile Configuration
+# Copy this file to config/student-profile.yml and fill in your details.
+# This file is gitignored — your personal data never leaves your machine.
+#
+# REQUIRED fields are marked [REQUIRED].
+# OPTIONAL fields are marked [OPTIONAL] — leave null or omit entirely.
+# Do not invent or estimate values you don't know. Leave them null.
+
+# ── Identity ────────────────────────────────────────────────────────────────
+
+identity:
+  name: "Jane Smith"                      # [REQUIRED] Full legal name
+  email: "jane@example.com"              # [REQUIRED] Primary email address
+  phone: "+1-555-0123"                   # [OPTIONAL] Include country code
+  country: "United States"               # [REQUIRED] Country of residence
+  city: "San Francisco"                  # [REQUIRED] City of residence
+  linkedin: "linkedin.com/in/janesmith"  # [OPTIONAL] LinkedIn profile URL or handle
+  github: "github.com/janesmith"         # [OPTIONAL] GitHub profile URL or handle
+  portfolio: "https://janesmith.dev"     # [OPTIONAL] Personal website / portfolio URL
+
+# ── Education ────────────────────────────────────────────────────────────────
+# List all degrees. Most recent first.
+# At least one entry is REQUIRED.
+
+education:
+  - university: "Massachusetts Institute of Technology"   # [REQUIRED]
+    degree: "Bachelor of Science"                         # [REQUIRED] Full degree name
+    major: "Computer Science"                             # [REQUIRED]
+    minor: "Mathematics"                                  # [OPTIONAL]
+    year: 3                                               # [OPTIONAL] Current year of study (1-6)
+    semester: "Fall 2026"                                 # [OPTIONAL] Current semester label
+    graduation_date: "2027-05"                            # [REQUIRED] YYYY-MM expected graduation
+    gpa: 3.85                                             # [OPTIONAL] Leave null if not disclosing
+    gpa_scale: 4.0                                        # [OPTIONAL] Scale your GPA is on (default 4.0)
+    coursework:                                           # [OPTIONAL] Relevant courses (for matching)
+      - "Machine Learning"
+      - "Algorithms and Data Structures"
+      - "Linear Algebra"
+      - "Probability and Statistics"
+      - "Computer Vision"
+      - "Natural Language Processing"
+
+  # Uncomment to add a second degree / minor program
+  # - university: "MIT"
+  #   degree: "Minor"
+  #   major: "Economics"
+  #   graduation_date: "2027-05"
+
+# ── Skills ───────────────────────────────────────────────────────────────────
+# List skills as simple strings. Keep only what you can discuss in an interview.
+# All categories are OPTIONAL — omit any you have nothing to list.
+
+skills:
+  programming_languages:
+    - Python
+    - JavaScript
+    - TypeScript
+    - Java
+    - C++
+
+  frameworks:
+    - React
+    - FastAPI
+    - Node.js
+    - Next.js
+
+  ai_ml:
+    - PyTorch
+    - TensorFlow
+    - HuggingFace Transformers
+    - scikit-learn
+    - LangChain
+    - OpenAI API
+
+  databases:
+    - PostgreSQL
+    - MongoDB
+    - Redis
+    - SQLite
+
+  cloud:
+    - AWS (EC2, S3, Lambda)
+    - Google Cloud Platform
+    - Docker
+    - Kubernetes
+
+  tools:
+    - Git
+    - GitHub Actions
+    - Linux
+    - Jupyter Notebooks
+    - Postman
+
+  soft_skills:
+    - Technical communication
+    - Cross-functional collaboration
+    - Problem decomposition
+    - Self-directed learning
+
+# ── Experience ───────────────────────────────────────────────────────────────
+# List past internships, jobs, and volunteer work.
+# Dates must be YYYY-MM or the literal string "Present".
+# All sections are OPTIONAL — omit any empty category entirely.
+
+experience:
+  internships:
+    - company: "Acme AI"                              # [REQUIRED if entry present]
+      role: "Machine Learning Intern"                 # [REQUIRED if entry present]
+      start_date: "2025-06"                           # [REQUIRED if entry present] YYYY-MM
+      end_date: "2025-08"                             # [REQUIRED if entry present] YYYY-MM or "Present"
+      location: "Remote"                              # [OPTIONAL]
+      description: >
+        Built a document classification pipeline using BERT fine-tuning,
+        reducing manual review time by 40%.
+      achievements:                                   # [OPTIONAL] Quantified outcomes
+        - "Reduced document review time by 40%"
+        - "Deployed model serving 10K+ documents/day"
+
+  jobs:
+    - company: "University Library"
+      role: "Student Research Assistant"
+      start_date: "2024-09"
+      end_date: "Present"
+      location: "Cambridge, MA"
+      description: >
+        Support faculty research in computational linguistics.
+        Maintain Python data-processing scripts.
+      achievements:
+        - "Processed 50K+ academic paper abstracts"
+
+  volunteer:
+    - organization: "Code for Good"
+      role: "Web Developer"
+      start_date: "2024-01"
+      end_date: "2024-06"
+      location: "Remote"
+      description: >
+        Built a volunteer scheduling portal for a local nonprofit.
+      achievements: []
+
+# ── Projects ─────────────────────────────────────────────────────────────────
+# Personal, academic, and open-source projects.
+# Each entry should demonstrate concrete skills and outcomes.
+# All OPTIONAL, but highly recommended.
+
+projects:
+  - name: "SentimentLens"                            # [REQUIRED if entry present]
+    description: >
+      Real-time Twitter sentiment analysis dashboard using a fine-tuned
+      DistilBERT model, deployed on GCP with a React frontend.
+    technologies:                                     # [OPTIONAL]
+      - Python
+      - PyTorch
+      - HuggingFace
+      - React
+      - GCP
+    url: "https://sentimentlens.janesmith.dev"       # [OPTIONAL] Live demo
+    repo: "https://github.com/janesmith/sentimentlens" # [OPTIONAL] Source code
+    achievements:                                     # [OPTIONAL] Impact / metrics
+      - "95.2% accuracy on SST-2 benchmark"
+      - "Processes 1,000 tweets per minute"
+      - "Featured in MIT CSAIL demo day 2025"
+
+  - name: "StudySync"
+    description: >
+      AI-powered study group matching app for university students,
+      using collaborative filtering on course schedules and learning styles.
+    technologies:
+      - Python
+      - FastAPI
+      - PostgreSQL
+      - React
+    repo: "https://github.com/janesmith/studysync"
+    achievements:
+      - "500+ active users across 3 universities"
+
+# ── Preferences ──────────────────────────────────────────────────────────────
+
+preferences:
+
+  # Primary mode of search: internships | jobs | both
+  search_mode: "internships"             # [REQUIRED]
+
+  # Target roles — what you're applying for
+  target_roles:                          # [REQUIRED] At least one
+    - "Software Engineering Intern"
+    - "Machine Learning Intern"
+    - "AI Research Intern"
+    - "Data Science Intern"
+
+  # Target industries — helps with scoring and filtering
+  target_industries:                     # [OPTIONAL]
+    - "Technology"
+    - "Artificial Intelligence"
+    - "Healthcare Tech"
+    - "Fintech"
+
+  # Location preferences
+  locations:
+    preferred:                           # [OPTIONAL] City/region preferences
+      - "San Francisco, CA"
+      - "New York, NY"
+      - "Boston, MA"
+      - "Seattle, WA"
+    remote: true                         # [REQUIRED] Accept fully remote?
+    hybrid: true                         # [REQUIRED] Accept hybrid?
+    on_site: false                       # [REQUIRED] Accept fully on-site?
+    relocation: true                     # [OPTIONAL] Willing to relocate?
+
+  # Work authorization
+  sponsorship:
+    needs_sponsorship: false             # [REQUIRED] Do you need visa sponsorship?
+    authorized_in:                       # [OPTIONAL] Countries where authorized without sponsorship
+      - "United States"
+    visa_status: "US Citizen"            # [OPTIONAL] Free-text description
+    cpt_eligible: false                  # [OPTIONAL] F-1 CPT eligible?
+    opt_eligible: false                  # [OPTIONAL] F-1 OPT eligible?
+
+  # Compensation thresholds — CareerOS will not apply below these
+  compensation:
+    # For internship mode
+    internship_stipend_min: 20           # [OPTIONAL] Minimum acceptable, null = no floor
+    stipend_unit: "hourly"              # [OPTIONAL] hourly | monthly | annual
+    stipend_currency: "USD"             # [OPTIONAL]
+    # For jobs mode
+    salary_min: 80000                   # [OPTIONAL] Annual minimum, null = no floor
+    salary_currency: "USD"              # [OPTIONAL]
+
+  # Timing preferences
+  timing:
+    preferred_start: "Summer 2026"      # [OPTIONAL] Free text e.g. "Summer 2026", "ASAP"
+    duration_months_min: 2              # [OPTIONAL] Minimum internship duration
+    duration_months_max: 12            # [OPTIONAL] Maximum internship duration
+    credit_bearing_ok: true            # [OPTIONAL] Accept academic-credit internships?
+    paid_only: false                    # [OPTIONAL] Filter to paid positions only?
+
+  # Automation limits — CareerOS will never exceed these
+  automation:
+    min_match_score: 3.5               # [REQUIRED] 1.0–5.0. Don't apply below this score.
+    max_applications_per_day: 5        # [REQUIRED] Hard daily cap (1–50).
+    auto_submit: false                 # [REQUIRED] Must be explicitly true to enable auto-submit.
+    # auto_submit_confirm: false       # Second confirmation required when auto_submit is true.
+    # blackout_days: []                # ISO dates (YYYY-MM-DD) when auto-submit is paused.
+
+# ── AI Matching Configuration ─────────────────────────────────────────────────
+# Controls the AI provider used by the opportunity matching engine.
+# All fields are OPTIONAL — omit the entire block to auto-detect from env vars.
+#
+# Auto-detection fallback order (when block is absent or ai_provider is unset):
+#   1. OPENAI_API_KEY / OPENROUTER_API_KEY is set → uses openai
+#   2. GEMINI_API_KEY is set → uses gemini
+#   3. → Error (must configure manually)
+
+matching:
+  # AI provider to use for match scoring.
+  # Valid values: openai | gemini | ollama
+  ai_provider: openai                  # [OPTIONAL] auto-detected from env if absent
+
+  # Model name for the chosen provider.
+  # openai:  gpt-5.6-luna (default)
+  # gemini:  gemini-2.5-flash (fallback)
+  # ollama:  REQUIRED — e.g. llama3.2, mistral, codellama
+  model: gpt-5.6-luna                  # [OPTIONAL]
+
+  # Temperature (0.0–2.0). Lower = more deterministic scoring.
+  temperature: 0.2                     # [OPTIONAL] default 0.2
+
+  # For ollama only: base URL of your local Ollama instance.
+  # ollama_url: http://localhost:11434  # [OPTIONAL]
+
+  # Match score thresholds (0–100). Must be in descending order.
+  # EXCELLENT: score >= excellent (default 90)
+  # STRONG:    score >= strong   (default 80)
+  # GOOD:      score >= good     (default 70)
+  # WEAK:      score >= weak     (default 60)
+  # SKIP:      score <  weak
+  thresholds:
+    excellent: 90                      # [OPTIONAL]
+    strong: 80                         # [OPTIONAL]
+    good: 70                           # [OPTIONAL]
+    weak: 60                           # [OPTIONAL]

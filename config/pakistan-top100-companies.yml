@@ -1,0 +1,124 @@
+# Pakistan Top 100 — national job discovery (user list)
+# Scan extracts direct job/apply URLs from these portals. Career hubs are not listed.
+
+pakistan_companies:
+
+  # Technology & IT
+  - { id: 1, name: Systems Limited, sector: IT, careers_url: "https://www.systemslimited.com/careers/", needs_browser: true, enabled: true }
+  - { id: 2, name: NETSOL Technologies, sector: IT, careers_url: "https://www.netsoltech.com/careers/", needs_browser: true, enabled: true }
+  - { id: 3, name: 10Pearls, sector: IT, careers_url: "https://apply.workable.com/10pearls", provider: workable, enabled: true }
+  - { id: 4, name: Arbisoft, sector: IT, careers_url: "https://careers.arbisoft.com/", needs_browser: true, enabled: true }
+  - { id: 5, name: TRG Pakistan, sector: "Technology / Investment", careers_url: "https://www.trgworld.com/careers/", enabled: true }
+  - { id: 6, name: Contour Software, sector: IT, careers_url: "https://www.contoursoftware.com/careers/", needs_browser: true, enabled: true }
+  - { id: 7, name: Nisum, sector: IT, careers_url: "https://nisum.com/careers/", needs_browser: true, enabled: true }
+  - { id: 8, name: Tkxel, sector: IT, careers_url: "https://www.tkxel.com/careers/", needs_browser: true, enabled: true }
+  - { id: 9, name: VentureDive, sector: Technology, careers_url: "https://venturedive.com/careers/", needs_browser: true, enabled: true }
+  - { id: 10, name: Afiniti, sector: "AI / Technology", careers_url: "https://www.afiniti.com/careers/", needs_browser: true, enabled: true }
+  - { id: 11, name: Careem, sector: "Technology / Mobility", careers_url: "https://boards.greenhouse.io/careem", provider: greenhouse, enabled: true }
+  - { id: 12, name: S&P Global Pakistan, sector: Technology, careers_url: "https://careers.spglobal.com/jobs/search", needs_browser: true, enabled: true }
+  - { id: 13, name: Avanza Solutions, sector: Fintech, careers_url: "https://www.avanzasolutions.com/careers/", needs_browser: true, enabled: true }
+  - { id: 14, name: Folio3, sector: IT, careers_url: "https://www.folio3.com/careers/", needs_browser: true, enabled: true }
+  - { id: 15, name: Confiz, sector: IT, careers_url: "https://www.confiz.com/careers/", needs_browser: true, enabled: true }
+
+  # Telecommunications & Digital
+  - { id: 16, name: PTCL, sector: Telecom, careers_url: "https://www.ptcl.com.pk/careers/", needs_browser: true, enabled: true }
+  - { id: 17, name: Ufone, sector: Telecom, careers_url: "https://www.ufone.com/careers/", enabled: true }
+  - { id: 18, name: Jazz, sector: Telecom, careers_url: "https://www.jazz.com.pk/careers/", jobs_url: "https://jobs.jazz.com.pk/", needs_browser: true, enabled: true }
+  - { id: 19, name: Zong, sector: Telecom, careers_url: "https://www.zong.com.pk/careers/", enabled: true }
+  - { id: 20, name: Telenor Pakistan, sector: Telecom, careers_url: "https://www.telenor.com.pk/careers/", needs_browser: true, enabled: true }
+  - { id: 21, name: Nayatel, sector: "Telecom / Internet", careers_url: "https://nayatel.com/careers/", jobs_url: "https://careers.nayatel.com/", needs_browser: true, enabled: true }
+  - { id: 22, name: StormFiber, sector: "Telecom / Internet", careers_url: "https://stormfiber.com/careers/", needs_browser: true, enabled: true }
+
+  # Banking & Financial Services
+  - { id: 23, name: Meezan Bank, sector: Banking, careers_url: "https://www.meezanbank.com/careers/", needs_browser: true, enabled: true }
+  - { id: 24, name: United Bank Limited, sector: Banking, careers_url: "https://www.ubldigital.com/careers/", enabled: true }
+  - { id: 25, name: Habib Bank Limited, sector: Banking, careers_url: "https://www.hbl.com/careers/", enabled: true }
+  - { id: 26, name: MCB Bank, sector: Banking, careers_url: "https://www.mcb.com.pk/careers/", enabled: true }
+  - { id: 27, name: Allied Bank, sector: Banking, careers_url: "https://www.abl.com/careers/", enabled: true }
+  - { id: 28, name: Bank Alfalah, sector: Banking, careers_url: "https://www.bankalfalah.com/careers/", enabled: true }
+  - { id: 29, name: Faysal Bank, sector: Banking, careers_url: "https://www.faysalbank.com/careers/", enabled: true }
+  - { id: 30, name: Bank of Punjab, sector: Banking, careers_url: "https://www.bop.com.pk/careers/", enabled: true }
+  - { id: 31, name: Askari Bank, sector: Banking, careers_url: "https://www.askari.com.pk/careers/", enabled: true }
+  - { id: 32, name: Standard Chartered Pakistan, sector: Banking, careers_url: "https://www.sc.com/pk/careers/", enabled: true }
+  - { id: 33, name: National Bank of Pakistan, sector: Banking, careers_url: "https://www.nbp.com.pk/Careers/", enabled: true }
+  - { id: 34, name: JS Bank, sector: Banking, careers_url: "https://www.jsbl.com/careers/", enabled: true }
+  - { id: 35, name: Soneri Bank, sector: Banking, careers_url: "https://www.soneribank.com/careers/", enabled: true }
+
+  # Energy, Oil & Gas
+  - { id: 36, name: Oil & Gas Development Company, sector: "Oil & Gas", careers_url: "https://www.ogdcl.com/career-opportunities/", enabled: true }
+  - { id: 37, name: Pakistan Petroleum Limited, sector: "Oil & Gas", careers_url: "https://www.ppl.com.pk/careers/", enabled: true }
+  - { id: 38, name: Mari Petroleum, sector: "Oil & Gas", careers_url: "https://www.marienergies.com.pk/careers/", enabled: true }
+  - { id: 39, name: Pakistan State Oil, sector: "Oil Marketing", careers_url: "https://www.psopk.com/careers/", enabled: true }
+  - { id: 40, name: Shell Pakistan, sector: "Oil Marketing", careers_url: "https://www.shell.com.pk/careers.html", enabled: true }
+  - { id: 41, name: Attock Petroleum, sector: "Oil Marketing", careers_url: "https://www.apl.com.pk/careers/", enabled: true }
+  - { id: 42, name: Attock Refinery, sector: Refining, careers_url: "https://www.arl.com.pk/careers/", enabled: true }
+  - { id: 43, name: Pakistan Oilfields, sector: "Oil & Gas", careers_url: "https://www.pol.com.pk/careers/", enabled: true }
+  - { id: 44, name: Sui Northern Gas Pipelines, sector: Gas, careers_url: "https://www.sngpl.com.pk/careers/", enabled: true }
+  - { id: 45, name: Sui Southern Gas Company, sector: Gas, careers_url: "https://www.ssgc.com.pk/careers/", enabled: true }
+  - { id: 46, name: The Hub Power Company, sector: Energy, careers_url: "https://www.hubco.com.pk/careers/", enabled: true }
+  - { id: 47, name: K-Electric, sector: Energy, careers_url: "https://www.ke.com.pk/careers/", enabled: true }
+  - { id: 48, name: Kot Addu Power Company, sector: Energy, careers_url: "https://www.kapco.com.pk/careers/", enabled: true }
+
+  # Conglomerates, Chemicals & Fertilizer
+  - { id: 49, name: Engro Corporation, sector: Conglomerate, careers_url: "https://www.engro.com/careers/", enabled: true }
+  - { id: 50, name: Engro Fertilizers, sector: Fertilizer, careers_url: "https://www.engrofertilizers.com/careers/", enabled: true }
+  - { id: 51, name: Fauji Fertilizer Company, sector: Fertilizer, careers_url: "https://www.ffc.com.pk/careers/", enabled: true }
+  - { id: 52, name: Fatima Fertilizer, sector: Fertilizer, careers_url: "https://fatima-group.com/careers/", enabled: true }
+  - { id: 53, name: Lucky Core Industries, sector: Chemicals, careers_url: "https://www.lucky-core.com/careers/", enabled: true }
+  - { id: 54, name: Descon, sector: Conglomerate, careers_url: "https://www.descon.com/careers/", enabled: true }
+  - { id: 55, name: Packages Group, sector: Conglomerate, careers_url: "https://www.packages.com.pk/careers/", enabled: true }
+  - { id: 56, name: Bestway Group, sector: Conglomerate, careers_url: "https://www.bestway.com.pk/careers/", enabled: true }
+  - { id: 57, name: Nishat Group, sector: Conglomerate, careers_url: "https://www.nishat.net/careers/", enabled: true }
+  - { id: 58, name: Dawood Hercules, sector: Conglomerate, careers_url: "https://www.dawoodhercules.com/careers/", enabled: true }
+
+  # Cement & Construction Materials
+  - { id: 59, name: Lucky Cement, sector: Cement, careers_url: "https://www.lucky-cement.com/careers/", enabled: true }
+  - { id: 60, name: Bestway Cement, sector: Cement, careers_url: "https://www.bestwaycement.com/careers/", enabled: true }
+  - { id: 61, name: Maple Leaf Cement, sector: Cement, careers_url: "https://www.mapleleafcement.com/careers/", enabled: true }
+  - { id: 62, name: DG Khan Cement, sector: Cement, careers_url: "https://www.dgcement.com/careers/", enabled: true }
+  - { id: 63, name: Fauji Cement, sector: Cement, careers_url: "https://www.fccl.com.pk/careers/", enabled: true }
+  - { id: 64, name: Cherat Cement, sector: Cement, careers_url: "https://www.cheratcement.com.pk/careers/", enabled: true }
+  - { id: 65, name: Kohat Cement, sector: Cement, careers_url: "https://www.kohatcement.com/careers/", enabled: true }
+  - { id: 66, name: Pioneer Cement, sector: Cement, careers_url: "https://www.pioneercement.com/careers/", enabled: true }
+
+  # FMCG, Food & Consumer
+  - { id: 67, name: Nestlé Pakistan, sector: FMCG, careers_url: "https://www.nestle.pk/jobs", needs_browser: true, enabled: true }
+  - { id: 68, name: Unilever Pakistan, sector: FMCG, careers_url: "https://www.unilever.pk/careers/", enabled: true }
+  - { id: 69, name: Procter & Gamble Pakistan, sector: FMCG, careers_url: "https://www.pgcareers.com/pk/en/search-jobs", needs_browser: true, enabled: true }
+  - { id: 70, name: Coca-Cola Pakistan, sector: Beverages, careers_url: "https://www.coca-colacompany.com/careers/search", needs_browser: true, enabled: true }
+  - { id: 71, name: PepsiCo Pakistan, sector: Beverages, careers_url: "https://www.pepsicojobs.com/main/jobs", needs_browser: true, enabled: true }
+  - { id: 72, name: National Foods, sector: FMCG, careers_url: "https://www.nationalfoods.com/careers/", enabled: true }
+  - { id: 73, name: Shan Foods, sector: FMCG, careers_url: "https://www.shanfoods.com/careers/", enabled: true }
+  - { id: 74, name: Mitchell's Fruit Farms, sector: FMCG, careers_url: "https://www.mitchells.com.pk/careers/", enabled: true }
+  - { id: 75, name: FrieslandCampina Engro Pakistan, sector: "FMCG / Dairy", careers_url: "https://www.fcepk.com/careers/", enabled: true }
+  - { id: 76, name: Ismail Industries, sector: FMCG, careers_url: "https://www.ismailindustries.com/careers/", enabled: true }
+
+  # Pharmaceuticals & Healthcare
+  - { id: 77, name: Getz Pharma, sector: Pharmaceuticals, careers_url: "https://www.getzpharma.com/careers/", enabled: true }
+  - { id: 78, name: Sami Pharmaceuticals, sector: Pharmaceuticals, careers_url: "https://www.samipharma.com/careers/", enabled: true }
+  - { id: 79, name: Martin Dow, sector: Pharmaceuticals, careers_url: "https://www.martindow.com/careers/", enabled: true }
+  - { id: 80, name: Ferozsons Laboratories, sector: Pharmaceuticals, careers_url: "https://www.ferozsons-labs.com/careers/", enabled: true }
+  - { id: 81, name: AGP Limited, sector: Pharmaceuticals, careers_url: "https://agp.com.pk/careers/", enabled: true }
+  - { id: 82, name: Highnoon Laboratories, sector: Pharmaceuticals, careers_url: "https://www.highnoon.com.pk/careers/", enabled: true }
+  - { id: 83, name: Abbott Laboratories Pakistan, sector: Pharmaceuticals, careers_url: "https://www.abbott.com/careers.html", needs_browser: true, enabled: true }
+  - { id: 84, name: Haleon Pakistan, sector: Healthcare, careers_url: "https://www.haleon.com/careers/", enabled: true }
+
+  # Automotive & Engineering
+  - { id: 85, name: Indus Motor Company, sector: Automobiles, careers_url: "https://www.toyota-indus.com/careers/", enabled: true }
+  - { id: 86, name: Pak Suzuki Motor, sector: Automobiles, careers_url: "https://www.paksuzuki.com.pk/careers/", enabled: true }
+  - { id: 87, name: Honda Atlas Cars Pakistan, sector: Automobiles, careers_url: "https://www.honda.com.pk/careers/", enabled: true }
+  - { id: 88, name: Lucky Motor Corporation, sector: Automobiles, careers_url: "https://www.luckymotorcorp.com/careers/", enabled: true }
+  - { id: 89, name: Millat Tractors, sector: Automobiles, careers_url: "https://www.millat.com.pk/careers/", enabled: true }
+  - { id: 90, name: Sazgar Engineering Works, sector: Automobiles, careers_url: "https://www.sazgar.com/careers/", enabled: true }
+  - { id: 91, name: Atlas Honda, sector: Motorcycles, careers_url: "https://www.atlashonda.com.pk/careers/", enabled: true }
+  - { id: 92, name: Ghandhara Industries, sector: Automobiles, careers_url: "https://www.gil.com.pk/careers/", enabled: true }
+
+  # Textile, Apparel & Manufacturing
+  - { id: 93, name: Interloop Limited, sector: Textile, careers_url: "https://www.interloop-pk.com/careers/", enabled: true }
+  - { id: 94, name: Gul Ahmed Textile Mills, sector: Textile, careers_url: "https://www.gulahmed.com/careers/", enabled: true }
+  - { id: 95, name: Nishat Mills, sector: Textile, careers_url: "https://www.nishatmills.com/careers/", enabled: true }
+  - { id: 96, name: Feroze1888 Mills, sector: Textile, careers_url: "https://www.feroze1888.com/careers/", enabled: true }
+  - { id: 97, name: International Textile Group, sector: Textile, careers_url: "https://www.itg-pak.com/careers/", enabled: true }
+  - { id: 98, name: International Industries, sector: Manufacturing, careers_url: "https://www.international.com.pk/careers/", enabled: true }
+  - { id: 99, name: Packages Limited, sector: "Packaging / Manufacturing", careers_url: "https://www.packages.com.pk/careers/", enabled: true }
+  - { id: 100, name: Lucky Textile Mills, sector: Textile, careers_url: "https://www.luckytextilemills.pk/careers/", enabled: true }

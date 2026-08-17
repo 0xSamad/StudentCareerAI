@@ -1,0 +1,26 @@
+---
+description: Commit after each meaningful step; keep version history current
+alwaysApply: true
+---
+
+# Incremental version control
+
+Maintain a proper git history **as work proceeds**, not only when the user asks at the end.
+
+## Required cadence
+
+- After each coherent, working change (feature slice, bugfix, refactor, or config change), create a git commit before starting the next unrelated step.
+- Prefer several small commits over one large dump at the end of a session.
+- Do not leave a long run of finished work uncommitted in the working tree.
+
+## Commit quality
+
+- Follow the repo commit protocol: status/diff/log, stage only relevant files, clear message focused on why.
+- Exclude secrets, backups (`*.bak*`), runtime data, cookies, and personal CV/profile dumps.
+- Never amend/push unless the user explicitly asks.
+- Never update git config.
+
+## Exception
+
+- Skip empty commits when there is nothing to record.
+- If the user says not to commit yet, wait — otherwise assume step-by-step commits are required.

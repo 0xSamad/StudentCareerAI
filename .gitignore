@@ -1,0 +1,166 @@
+# =============================================================================
+# Secrets & API Keys
+# =============================================================================
+.env
+.env.*
+.env.local
+.env.*.local
+*.secret
+secrets/
+secrets.yml
+secrets.yaml
+secrets.json
+*_secret*
+*_api_key*
+config/keys.yml
+config/keys.yaml
+
+# User CV master (never commit)
+docs/cv.docx
+docs/*.docx
+
+output/
+reports/
+*.pdf
+# Keep template PDFs if ever added
+!templates/*.pdf
+
+# =============================================================================
+# Interview Prep (contains personal notes & strategy)
+# =============================================================================
+interview-prep/
+
+# =============================================================================
+# Application Data (tracker, pipeline, contacts — personal PII)
+# =============================================================================
+data/applications.md
+data/pipeline.md
+data/follow-ups.md
+data/contacts.tsv
+data/reply-candidates.json
+data/salary-observations.tsv
+data/assessments.tsv
+data/scan-history.tsv
+data/scan-runs.tsv
+data/application-queue.json
+data/autonomous-audit.json
+data/autonomous-state.json
+data/apply-agent-state.json
+data/apply-hitl-state.json
+data/apply-batches.json
+data/daily-applications.json
+data/apply-review/
+data/storage/
+data/test-storage/
+data/test-cookies.txt
+data/verify-apply/
+web/data/
+
+# Local editor / profile backup churn
+*.bak
+*.bak-*
+cv.md.bak*
+config/*.bak*
+
+# =============================================================================
+# User Profile & CV (source-of-truth personal files)
+# =============================================================================
+cv.md
+article-digest.md
+config/profile.yml
+config/student-profile.yml
+modes/_profile.md
+modes/_custom.md
+portals.yml
+writing-samples/
+
+# =============================================================================
+# Browser Profiles & Authentication state (NOT application auth source)
+# =============================================================================
+.playwright/
+playwright-data/
+browser-data/
+user-data-dir/
+*.cookies
+*.cookie
+# Root-level browser auth dumps only — never ignore lib/saas/auth/
+/auth/
+auth.json
+cookies.json
+storage-state.json
+
+# =============================================================================
+# Local Databases
+# =============================================================================
+data/saas-auth/
+data/postgres-dev/
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# =============================================================================
+# Logs (may contain sensitive information)
+# =============================================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# =============================================================================
+# Temporary & Cache Files
+# =============================================================================
+tmp/
+temp/
+.tmp/
+.cache/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# Node.js
+# =============================================================================
+node_modules/
+dist/
+build/
+.npm/
+.pnp
+.pnp.js
+
+# =============================================================================
+# OS & Editor Artifacts
+# =============================================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.vscode/settings.json
+.idea/
+*.iml
+.project
+.classpath
+
+# =============================================================================
+# Python (if any tooling scripts use it)
+# =============================================================================
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+.eggs/
+
+# =============================================================================
+# Playwright / Browser Automation State
+# =============================================================================
+playwright-report/
+test-results/

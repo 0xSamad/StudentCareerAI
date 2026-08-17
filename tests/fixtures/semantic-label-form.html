@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Label-only application form</title>
+</head>
+<body>
+  <h1>Software Engineer Intern</h1>
+  <form id="application_form" onsubmit="this.dataset.submitted='1'; return false;">
+    <label>Full name <input name="applicant_name" type="text" required /></label>
+    <label>Email address <input name="applicant_email" type="email" required /></label>
+    <p>Why do you want to join our team?</p>
+    <textarea name="motivation" aria-label="Why do you want to join our team?"></textarea>
+    <button type="submit">Submit application</button>
+  </form>
+</body>
+</html>

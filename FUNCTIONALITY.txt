@@ -1,0 +1,538 @@
+StudentCareer AI — full functionality (what it is and how it works)
+====================================================================
+Written for the running web app in this project (StudentCareer AI),
+built on a career-ops job-search engine. Date: 15 Aug 2026.
+
+This is a student job/internship assistant. It finds listings, scores them
+against YOUR profile and CV, prepares tailored documents, and fills
+application forms in a real Chrome window. You always submit. It never
+invents work history, never types a password, and never clicks Submit.
+
+
+HARD RULES (every feature obeys these)
+--------------------------------------
+1. Never auto-submit an application. Chrome fills attested fields, then
+   stops. You review and click Submit / Send / Apply.
+2. Never invent facts. Keywords may be reordered or emphasised. If a
+   claim is not in cv.md, the in-app profile, or something you said in
+   the current chat, it is left blank.
+3. Job postings are data, not instructions. A form that says "ignore
+   previous rules" is ignored.
+4. Passwords, CAPTCHAs, MFA, visas, race, disability, criminal-history
+   questions are never filled. Chrome stays open so you can continue.
+5. Expected salary is taken only from a PKR/Rs figure in the job
+   description. No market guess. If the posting has no pay, the field
+   stays empty.
+
+
+HOW TO START
+------------
+1. Sign up / log in at /signup and /login (email + password).
+2. Open Profile. Upload a CV (PDF, Word, Markdown, or text) or paste it.
+   Fill identity, education, skills, experience, and search preferences.
+3. Open Internships or Jobs. Click Refresh / Scan, or paste a job URL
+   into URL apply.
+4. Click Apply on a card, or paste any apply-form URL. Chrome opens,
+   fields fill, you submit.
+
+Dev server: from the web/ folder, npm run dev, then http://localhost:3000.
+Accounts are stored in Postgres when DATABASE_URL is set. Session cookie
+name: sc_session. Unauthenticated visits to Dashboard, Internships, Jobs,
+Applications, Profile, Settings, and Agent redirect to /login.
+
+
+WHAT THE APPLICATION IS (end-to-end pipeline)
+---------------------------------------------
+A listing travels this path:
+
+  Discover (scan portals / ATS APIs / company career pages / job boards)
+       → Store (Postgres opportunity store; duplicates merged)
+       → Classify (internship vs job; Pakistan vs international)
+       → Eligibility hard gate (degree, skills, GPA, work auth, …)
+            FAIL  → stop, do not tailor, do not apply
+            UNKNOWN → REQUIRES_REVIEW (you decide)
+            PASS → continue
+       → Match score 0–100 (AI + profile; never overrides eligibility)
+       → Queue (Applications page)
+       → Tailor CV + cover letter from attested facts only
+       → Open headed Chrome, walk Apply / Google sign-in, fill fields
+       → Pause for you to submit
+
+A high match score never overrides a failed eligibility check.
+
+
+PRIMARY PAGES (left nav)
+========================
+
+1. Dashboard  (/)
+---------------
+What: Home overview of your search.
+
+Shows:
+  - Greeting and funnel stats (found, eligible, strong matches,
+    prepared, submitted, failed, interviews, responses).
+  - Discovery health (when the last scan ran, source warnings).
+  - Agent control bar (running / paused / stopped).
+  - Config summary (daily cap, min score, locations, target roles).
+  - Opportunity cards (internships, jobs, or both).
+  - Search, min-score filter, Refresh scan.
+  - URL apply bar (paste any job/application link).
+
+How: Loads /api/auth/me, /api/dashboard/stats, /api/discovery/status,
+/api/autonomous/status, /api/opportunities, /api/applications. Refresh
+calls /api/opportunities/scan (background job, rate-limited).
+
+
+2. Internships  (/internships)
+------------------------------
+What: Feed of student / early-career / intern / trainee / new-grad CS
+roles. Senior/staff/lead titles are kept off this list.
+
+You can:
+  - Search by text.
+  - Filter by min match score.
+  - Filter market: All / National (Pakistan) / International.
+  - Refresh the scan.
+  - Open a card for details.
+  - Save (bookmark stays even if the source listing disappears).
+  - Add to queue (Applications).
+  - Apply (opens Chrome and fills the form; you submit).
+  - Select several and add them to the queue in one go.
+  - Paste a URL that is not in the feed and apply it anyway.
+
+How: GET /api/opportunities?type=INTERNSHIP. Classification uses the
+job title (intern, co-op, trainee, graduate programme, junior, …).
+Scan uses your profile search_mode when possible.
+
+
+3. Jobs  (/jobs)
+----------------
+What: Same as Internships, but for full-time / non-intern roles
+(type=JOB). Intern-titled postings stay on Internships.
+
+Same actions: search, score filter, national/international, scan,
+save, queue, Apply, URL apply.
+
+
+4. Saved  (/saved)
+------------------
+What: Bookmarks you chose on Internships/Jobs.
+
+How: GET /api/v1/opportunities/saved. Save/unsave from a card calls
+the saved-opportunities API. Saved rows survive a listing vanishing
+from the live feed. You can still queue or apply from here.
+
+
+5. Applications  (/applications)
+--------------------------------
+What: Your apply queue and live status for each listing.
+
+Statuses you will see:
+  ANALYZING                 reading the posting
+  CV_PREPARATION            tailoring the CV
+  COVER_LETTER_PREPARATION  drafting the letter
+  APPLICATION_PREPARATION   opening the form
+  APPLYING                  filling fields in Chrome
+  READY / APPLICATION_READY package ready; you still submit
+  REQUIRES_USER_INPUT       paused (password, CAPTCHA, extra page)
+  PAUSED                    safety stop
+  SUBMITTED                 only if a human (or an explicit, gated
+                            auto-submit that is OFF by default) sent it
+  SKIPPED / NOT_ELIGIBLE    eligibility or duplicate / expired
+  FAILED                    error (Chrome closed, site blocked, …)
+
+You can:
+  - Search the queue.
+  - Select rows and Apply selected / Apply all (still never auto-submit
+    unless Settings auto-submit is on — it is off by default and safety
+    gates still apply).
+  - Pause, retry, or delete a row.
+  - Open the live listing.
+  - Paste a URL that was never in Jobs.
+
+How: GET /api/applications. Batch apply: POST /api/applications/apply.
+Single live fill: POST /api/opportunities/apply.
+
+
+6. Profile  (/profile)
+----------------------
+What: Source of truth for matching, eligibility, and form fill.
+
+Sections:
+  - Identity: name, email (applications use Gmail if that is what you
+    stored), phone, city, country, LinkedIn, GitHub, portfolio, gender
+    (only filled on forms if you attested it).
+  - Education: university, degree, major, graduation date, GPA,
+    coursework.
+  - Skills: programming, frameworks, AI/ML, databases, cloud, tools.
+  - Experience: internships and jobs (company, role, dates).
+  - Projects.
+  - Preferences: internships vs jobs, target roles, locations,
+    work authorization / sponsorship, notice period (days), current
+    salary (0 is valid), expected salary from JD only, currency.
+  - Matching: AI provider (e.g. Gemini), model, temperature.
+  - Master CV text (cv.md on disk + stored copy in the account).
+  - Candidate knowledge: extra documents (transcript, certificates,
+    GitHub/LinkedIn/portfolio enrichments you authorised).
+
+You can:
+  - Upload a CV (PDF / Word / Markdown / text). The parser extracts
+    text, then AI + heuristics fill profile fields. You review and save.
+  - Edit any field and Save (writes the account profile; knowledge
+    is re-seeded from the saved profile).
+  - Download / view the raw CV.
+
+How: GET/POST /api/profile. Upload: POST /api/profile/upload.
+Knowledge panel talks to /api/knowledge*.
+
+Important: live Apply overlays config/student-profile.yml from disk
+on top of the database when a disk value is present. Empty arrays on
+disk do not wipe database skills/experience. That is why Gmail, Male,
+current salary 0, and 10-day notice apply even if the in-app form is
+stale.
+
+
+7. Settings  (/settings)
+------------------------
+What: Search policy and safety switches.
+
+  - Autonomous mode (background agent loop). Default off.
+  - Auto-submit. Default OFF. Leave it off.
+  - Applications per day (default 10).
+  - Minimum match score to consider (default 70).
+  - Scan interval (minutes) and auto-scan on/off.
+  - Preferred locations and target roles (also live in the profile).
+  - Safety (all default ON):
+      require eligibility before apply
+      require confident (attested) answers
+      pause on error
+      pause on CAPTCHA
+      pause on auth failure
+      pause on unexpected form
+      pause on sensitive question
+
+How: GET/POST /api/settings, which reads/writes
+data/autonomous-state.json plus profile preference fields.
+
+
+8. Agent  (/agent)
+------------------
+What: Background autonomous loop UI.
+
+Shows: RUNNING / PAUSED / STOPPED / ERROR, pause reason, current job,
+daily counts vs daily limits (internships and jobs separately), queue
+counts, config, audit log.
+
+Buttons: Start, Pause, Resume, Stop, refresh.
+
+How: GET /api/autonomous/status, POST /api/autonomous/control,
+GET/POST /api/autonomous/config.
+
+The loop still respects eligibility, min score, daily caps, and the
+never-submit-unless-auto-submit rule. With auto-submit off (default)
+it prepares and fills, then waits for you.
+
+
+SECONDARY PAGES (not in the main nav, still in the app)
+=======================================================
+
+/apply
+  Dedicated URL-apply screen. Paste any job or application URL.
+  Optional company and role (otherwise guessed from the URL).
+  Opens headed Chrome and a review tab with the tailored CV / letter.
+  A collapsed "preview the form in this tab" panel can re-draw the
+  employer form in plain language (you still submit on the real site).
+
+/apply/review?company=…&role=…
+  Shows the tailored CV (HTML/PDF preview) and cover letter produced
+  for the last apply of that company+role. Facts from the master CV
+  only.
+
+/login  /signup
+  Email + password. Signup creates the account. Logged-in users hitting
+  these pages are sent to Dashboard.
+
+/followups
+  Follow-up cadence for applications already sent: next date, log a
+  follow-up, override the date. APIs: /api/followups, cadence, log,
+  override.
+
+/explore
+  Reverse-ATS / free discovery explorer (title filters, AI hunt).
+  Seeds from portals config. Useful for "find more companies" beyond
+  the Internships/Jobs scan.
+
+/pipeline  and  /pipeline/[id]
+  Classic career-ops tracker view over data/applications.md and
+  reports/. Status changes go through the core tracker scripts.
+  Report pages are A–F evaluations of a posting.
+
+/jobs/[id]
+  Live worker log for a one-off evaluation/research job started from
+  the assistant (in-memory; gone after reload).
+
+/cv
+  Markdown CV editor + HTML preview + PDF generate (Playwright).
+
+/config
+  YAML-ish profile/portals editor for the CLI-oriented config files.
+
+/portals
+  Portal list and health check (which ATS boards are reachable).
+
+/analytics
+  Funnel of tracker states (Evaluated → Applied → Interview → Offer…)
+  and score buckets from data/applications.md.
+
+/admin/health
+  Operator health check (DB, workers). Public enough to ping without
+  a student session.
+
+Assistant console (floating, when enabled)
+  Talks to /api/assistant. Can navigate, filter the pipeline, start a
+  read-only evaluation of a URL, draft apply answers, remember a
+  preference. Cannot submit an application.
+
+
+DISCOVERY — HOW JOBS GET INTO THE APP
+=====================================
+Trigger: Refresh on Dashboard / Internships / Jobs, auto-scan if
+enabled, or the Agent loop.
+
+Endpoint: POST /api/opportunities/scan (GET for status).
+
+What a scan does (web-opportunity-scan):
+
+  Phase 1 — Verified ATS APIs
+    Company career boards that expose a public JSON API (Greenhouse,
+    Lever, Ashby, Workday, iCIMS, SmartRecruiters, Personio, BambooHR,
+    Recruitee, Teamtailor, Rippling, IBM, Amazon, … — 70+ provider
+    plugins in providers/*.mjs). Round-robin so one company does not
+    hog the scan. Title filter: computer-science / software / data /
+    intern / graduate language. Search mode splits internships vs jobs.
+
+  Phase 2 — Pakistan company list
+    Official career pages for a configured Pakistan Top-100 list.
+    Uses the same ATS provider when the board is detected; otherwise
+    HTTP scrape of the careers page.
+
+  Phase 3 — International company list
+    Same idea for a configured international set (e.g. Stripe, IBM,
+    Amazon, OpenAI, NVIDIA).
+
+  Phase 4 — Job-board APIs
+    Adzuna (if ADZUNA keys are in env). Optional web-search queries
+    (Rozee.pk, Mustakbil, LinkedIn, Indeed style queries) capped so
+    the scan stays bounded.
+
+Quality filters:
+  - Drop garbage titles and category/search URLs.
+  - Infer location; tag market NATIONAL vs INTERNATIONAL.
+  - Dedup by source URL / source id.
+  - Cache + refresh policy so the same query is not hammered.
+  - Rate limiting and backoff per source.
+
+Results land in the opportunity store (Postgres when configured,
+otherwise in-memory/dual-write). Internships page and Jobs page
+read from that store.
+
+URL apply does NOT need a listing in the store. Paste the link;
+the app guesses company/role from the URL, optionally fetches the
+parent careers page (…/role/apply → …/role) for JD text, then opens
+Chrome.
+
+
+MATCHING AND ELIGIBILITY
+========================
+Eligibility (lib/eligibility-engine.mjs) — HARD GATE
+  Checks, each PASS / FAIL / UNKNOWN:
+    degree level, major/coursework, current enrollment,
+    graduation year window, academic year, mandatory skills,
+    years of experience, GPA, work authorization / sponsorship,
+    citizenship, location / remote, language, age if stated,
+    and similar explicit JD requirements.
+  Overall:
+    any FAIL  → NOT_ELIGIBLE (pipeline stops)
+    only UNKNOWN leftovers → REQUIRES_REVIEW
+    all PASS → ELIGIBLE
+  Missing data is UNKNOWN, never assumed positive.
+
+Match (lib/match-engine.mjs) — SOFT SCORE
+  Runs only after eligibility is not NOT_ELIGIBLE.
+  AI (Gemini by default, from profile.matching) returns 0–100 plus
+  strengths, missing skills, relevant experience/projects, concerns.
+  Tiers: EXCELLENT ≥90, STRONG ≥80, GOOD ≥70, WEAK ≥60, else SKIP.
+  Settings minScore (default 70) is the floor the UI and agent use.
+  Unscored dimensions stay null. No fabricated metrics.
+
+
+APPLY — HOW A FORM GETS FILLED
+==============================
+Two entry points, same Chrome engine:
+
+  A) Card Apply / queue Apply
+     POST /api/opportunities/apply with opportunityId (and URL from
+     the listing). Uses stored JD text when present.
+
+  B) URL apply bar
+     POST /api/opportunities/apply with url=https://…
+     No opportunityId required. Company/role optional.
+
+Live engine (web/src/lib/apply/live-from-profile.ts + session.ts):
+
+  1. Load profile (database, then overlay non-empty disk
+     config/student-profile.yml). Load CV (account text, else cv.md).
+  2. Tailor a CV and cover letter for this company+role from attested
+     facts (reorder/emphasise only). Write HTML + PDF artifacts.
+     Greenhouse-style ATS get a PDF, not a .txt dump.
+  3. Launch headed Chrome (Playwright, persistent profile under the
+     OS temp dir). Navigate to the URL (retries).
+  4. Walk the page: cookie consent, Apply now, guest apply, signup
+     tab, Next/Continue, Continue with Google. Types your email on
+     Google sign-in. NEVER types the Google password. Stops there.
+  5. Detect a real application form (not a job-search filter box),
+     including forms inside iframes (Greenhouse/Lever embeds).
+  6. Fill attested fields:
+       first/last name, email, phone (national digits when the
+       country code is already +92), graduation year, years of
+       experience (from CV dates, e.g. 2024–Present), current
+       employer, skills, LinkedIn, GitHub/portfolio, current and
+       preferred location, gender if attested, current salary
+       (including 0), notice period (10 or "10 days" depending on
+       number vs text/select), expected salary only if the JD/page
+       states PKR/Rs, cover letter, how-you-heard when an honest
+       option exists (e.g. company website), résumé file input.
+  7. Skip: passwords, agreements, self-ID, visa, race, disability,
+     criminal, "I agree", AI-challenge guesses.
+  8. Advance up to several steps (Next). Never click Submit.
+  9. Leave Chrome open. Open /apply/review so you can read the
+     tailored CV. You submit in Chrome.
+
+If Chrome was closed from a previous run, click Apply again; it
+relaunches.
+
+Attested apply defaults currently stored for this user (disk profile,
+not committed to git):
+  email             okzsamad57@gmail.com
+  gender            Male
+  current salary    0
+  notice period     10 days
+  expected salary   from JD PKR figure only
+
+
+DOCUMENTS (CV AND COVER LETTER)
+===============================
+Master CV: cv.md (and the Profile CV text). Canonical facts.
+
+On each apply:
+  - Tailor (lib/cv-tailor.mjs and web tailor-documents): reorder
+    bullets and skills toward the JD. A fabrication checker rejects
+    invented companies, dates, metrics, skills, projects.
+  - HTML template → Playwright PDF attached to the file input.
+  - Cover letter: short, attested, company/role from the listing.
+    Optional/required detection: if the form has no cover field, the
+    letter is still generated for you to copy.
+
+Review tab shows exactly what was attached.
+
+
+CANDIDATE KNOWLEDGE
+===================
+Optional extra evidence on Profile:
+  Upload transcripts, certificates, project docs.
+  Authorised GitHub / LinkedIn / portfolio fetch (public APIs / pages
+  you pointed at — not a scrape of the whole internet).
+  Facts are classified and stored; the application agent may use them
+  to answer a form field only when the fact is attested.
+
+This is NOT used to invent experience. GitHub stars ≠ "I built X"
+unless the CV already says so.
+
+
+AUTONOMOUS AGENT
+================
+When you press Start on /agent (and autonomousMode is on):
+  Loop: scan → score new listings → enqueue those above min score
+  and eligible → run the apply workflow (fill, pause for you).
+  Daily caps per internship and per job.
+  Stops or pauses on CAPTCHA, login wall, unexpected form, errors.
+  Auto-submit remains off unless you explicitly enable it in
+  Settings — do not enable it if you want to review every form.
+
+
+DATA THE APP READS AND WRITES
+=============================
+User layer (yours; not overwritten by system updates):
+  cv.md
+  config/student-profile.yml
+  config/profile.yml          (CLI-oriented; optional here)
+  portals.yml / pakistan-portals.yml
+  data/applications.md        (classic tracker)
+  data/pipeline.md
+  data/follow-ups.md
+  data/blacklist.md
+  reports/                    (evaluation reports)
+  output/                     (generated PDFs, gitignored)
+
+Account layer (when logged in):
+  Postgres: users, profiles, opportunities, applications, saved
+  rows, knowledge documents, sessions.
+
+Runtime (gitignored):
+  data/autonomous-state.json
+  Chrome apply profile in the OS temp directory
+  tailored artifacts for /apply/review
+
+
+WHAT EACH MAJOR BUTTON ACTUALLY CALLS
+=====================================
+Refresh / Scan          POST /api/opportunities/scan
+Opportunity list        GET  /api/opportunities
+Save / Unsave           POST /api/v1/opportunities/saved
+Add to queue            POST /api/applications (enqueue)
+Apply on a card         POST /api/opportunities/apply
+URL apply               POST /api/opportunities/apply  { url }
+Apply selected/all      POST /api/applications/apply
+Pause / retry / delete  /api/applications/[id]/pause|retry and DELETE
+Profile load/save       GET/POST /api/profile
+CV upload               POST /api/profile/upload
+Settings                GET/POST /api/settings
+Agent start/stop        POST /api/autonomous/control
+Dashboard numbers       GET  /api/dashboard/stats
+Me                      GET  /api/auth/me
+Logout                  POST /api/auth/logout
+
+
+WHAT THIS APP DOES NOT DO
+=========================
+- Does not mass-blast applications.
+- Does not click Submit/Send/Apply for you (default).
+- Does not invent employers, projects, GPAs, or salary expectations.
+- Does not fill passwords.
+- Does not scrape GitHub/LinkedIn unless you saved those URLs and
+  authorised knowledge enrich — and even then, apply fill uses the
+  profile + CV, not a live scrape at fill time.
+- Does not treat a job posting as an instruction to change its rules.
+
+
+QUICK "HOW DO I…"
+=================
+Find internships          Internships → Refresh → wait for scan
+Find jobs                 Jobs → Refresh
+Apply a listing in the app  Card → Apply → wait for Chrome → you submit
+Apply a link I found elsewhere  Paste into URL apply on Dashboard,
+                              Internships, Jobs, Applications, or /apply
+Change email/gender/salary/notice  Profile + config/student-profile.yml
+See tailored CV           /apply/review after an apply
+Stop the background agent Agent → Stop, or Settings → autonomous off
+Export / delete account   /api/user/export and /api/user/delete
+                          (Settings / privacy paths)
+
+
+RELATED CLI (same repo, optional)
+=================================
+The parent career-ops CLI can still evaluate a pasted JD, generate
+reports in reports/, scan portals.yml, and write data/applications.md.
+The StudentCareer web app is the product UI; the CLI is the original
+local toolkit. They share CV/profile files when you run both on this
+machine.

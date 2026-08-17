@@ -1,0 +1,401 @@
+international_companies:
+  - name: Google
+    sector: Technology
+    careers_url: https://www.google.com/about/careers/applications/jobs/results
+    enabled: true
+  - name: Microsoft
+    sector: Technology
+    careers_url: https://jobs.careers.microsoft.com/global/en/search
+    enabled: true
+  - name: Amazon
+    sector: Technology
+    careers_url: https://www.amazon.jobs/en/search
+    enabled: true
+  - name: Meta
+    sector: Technology
+    careers_url: https://www.metacareers.com/jobs
+    enabled: true
+  - name: Apple
+    sector: Technology
+    careers_url: https://jobs.apple.com/en-us/search
+    enabled: true
+  - name: NVIDIA
+    sector: Technology
+    careers_url: https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+    enabled: true
+  - name: Tesla
+    sector: Technology
+    careers_url: https://www.tesla.com/careers/search
+    enabled: true
+  - name: Netflix
+    sector: Technology
+    careers_url: https://jobs.netflix.com/search
+    enabled: true
+  - name: Adobe
+    sector: Technology
+    careers_url: https://careers.adobe.com/us/en/search-results
+    enabled: true
+  - name: Salesforce
+    sector: Technology
+    careers_url: https://careers.salesforce.com/en/jobs
+    enabled: true
+  - name: Oracle
+    sector: Technology
+    careers_url: https://careers.oracle.com/jobs
+    enabled: true
+  - name: IBM
+    sector: Technology
+    careers_url: https://www.ibm.com/careers/search
+    enabled: true
+  - name: Intel
+    sector: Technology
+    careers_url: https://jobs.intel.com/en/search-jobs
+    enabled: true
+  - name: AMD
+    sector: Technology
+    careers_url: https://careers.amd.com/careers-home/jobs
+    enabled: true
+  - name: Qualcomm
+    sector: Technology
+    careers_url: https://careers.qualcomm.com/careers
+    enabled: true
+  - name: Cisco
+    sector: Technology
+    careers_url: https://jobs.cisco.com/jobs/SearchJobs
+    enabled: true
+  - name: Dell
+    sector: Technology
+    careers_url: https://jobs.dell.com/en/search-jobs
+    enabled: true
+  - name: HP
+    sector: Technology
+    careers_url: https://jobs.hp.com/search-results
+    enabled: true
+  - name: HPE
+    sector: Technology
+    careers_url: https://careers.hpe.com/us/en/search-results
+    enabled: true
+  - name: SAP
+    sector: Technology
+    careers_url: https://jobs.sap.com
+    enabled: true
+  - name: ServiceNow
+    sector: Technology
+    careers_url: https://careers.servicenow.com/jobs
+    enabled: true
+  - name: Workday
+    sector: Technology
+    careers_url: https://workday.wd5.myworkdayjobs.com/Workday
+    enabled: true
+  - name: Atlassian
+    sector: Technology
+    careers_url: https://www.atlassian.com/company/careers/all-jobs
+    enabled: true
+  - name: GitHub
+    sector: Technology
+    careers_url: https://www.github.careers/careers-home/jobs
+    enabled: true
+  - name: GitLab
+    sector: Technology
+    careers_url: https://about.gitlab.com/jobs/all-jobs
+    enabled: true
+  - name: Stripe
+    sector: Fintech
+    careers_url: https://stripe.com/jobs/search
+    enabled: true
+  - name: Block
+    sector: Fintech
+    careers_url: https://block.xyz/careers/jobs
+    enabled: true
+  - name: PayPal
+    sector: Fintech
+    careers_url: https://paypal.eightfold.ai/careers
+    enabled: true
+  - name: Mastercard
+    sector: Fintech
+    careers_url: https://careers.mastercard.com/us/en/search-results
+    enabled: true
+  - name: Visa
+    sector: Fintech
+    careers_url: https://corporate.visa.com/en/jobs
+    enabled: true
+  - name: Coinbase
+    sector: Fintech
+    careers_url: https://www.coinbase.com/careers/positions
+    enabled: true
+  - name: Wise
+    sector: Fintech
+    careers_url: https://www.wise.jobs/jobs
+    enabled: true
+  - name: Revolut
+    sector: Fintech
+    careers_url: https://www.revolut.com/careers
+    enabled: true
+  - name: Uber
+    sector: Mobility
+    careers_url: https://www.uber.com/global/en/careers/list
+    enabled: true
+  - name: Airbnb
+    sector: Marketplace
+    careers_url: https://careers.airbnb.com/positions
+    enabled: true
+  - name: Booking.com
+    sector: Travel
+    careers_url: https://jobs.booking.com/careers
+    enabled: true
+  - name: Expedia Group
+    sector: Travel
+    careers_url: https://careers.expediagroup.com/jobs
+    enabled: true
+  - name: Shopify
+    sector: Commerce
+    careers_url: https://www.shopify.com/careers/search
+    enabled: true
+  - name: eBay
+    sector: Commerce
+    careers_url: https://jobs.ebayinc.com/us/en/search-results
+    enabled: true
+  - name: Walmart Global Tech
+    sector: Commerce
+    careers_url: https://tech.walmart.com/content/walmart-global-tech/en_us/careers.html
+    enabled: true
+  - name: ByteDance
+    sector: Technology
+    careers_url: https://jobs.bytedance.com/en/position
+    enabled: true
+  - name: TikTok
+    sector: Technology
+    careers_url: https://careers.tiktok.com
+    enabled: true
+  - name: Spotify
+    sector: Media
+    careers_url: https://www.lifeatspotify.com/jobs
+    enabled: true
+  - name: Snap
+    sector: Technology
+    careers_url: https://careers.snap.com/jobs
+    enabled: true
+  - name: Pinterest
+    sector: Technology
+    careers_url: https://www.pinterestcareers.com/jobs
+    enabled: true
+  - name: Reddit
+    sector: Technology
+    careers_url: https://www.redditinc.com/careers
+    enabled: true
+  - name: Discord
+    sector: Technology
+    careers_url: https://discord.com/careers
+    enabled: true
+  - name: Dropbox
+    sector: Technology
+    careers_url: https://jobs.dropbox.com/listing
+    enabled: true
+  - name: Box
+    sector: Technology
+    careers_url: https://careers.box.com/us/en/search-results
+    enabled: true
+  - name: Cloudflare
+    sector: Technology
+    careers_url: https://www.cloudflare.com/careers/jobs
+    enabled: true
+  - name: Datadog
+    sector: Technology
+    careers_url: https://careers.datadoghq.com/all-jobs
+    enabled: true
+  - name: Snowflake
+    sector: Data
+    careers_url: https://careers.snowflake.com/us/en/search-results
+    enabled: true
+  - name: Databricks
+    sector: Data
+    careers_url: https://www.databricks.com/company/careers/open-positions
+    enabled: true
+  - name: MongoDB
+    sector: Data
+    careers_url: https://www.mongodb.com/careers/jobs
+    enabled: true
+  - name: Elastic
+    sector: Data
+    careers_url: https://www.elastic.co/careers/jobs
+    enabled: true
+  - name: Confluent
+    sector: Data
+    careers_url: https://www.confluent.io/careers
+    enabled: true
+  - name: HashiCorp
+    sector: Cloud
+    careers_url: https://www.hashicorp.com/careers/open-positions
+    enabled: true
+  - name: Red Hat
+    sector: Cloud
+    careers_url: https://www.redhat.com/en/jobs
+    enabled: true
+  - name: Canonical
+    sector: Cloud
+    careers_url: https://canonical.com/careers/all
+    enabled: true
+  - name: DigitalOcean
+    sector: Cloud
+    careers_url: https://www.digitalocean.com/careers
+    enabled: true
+  - name: Twilio
+    sector: Communications
+    careers_url: https://www.twilio.com/en-us/company/jobs
+    enabled: true
+  - name: Zoom
+    sector: Communications
+    careers_url: https://careers.zoom.us/jobs
+    enabled: true
+  - name: Slack
+    sector: Communications
+    careers_url: https://slack.com/careers
+    enabled: true
+  - name: Okta
+    sector: Security
+    careers_url: https://www.okta.com/company/careers
+    enabled: true
+  - name: CrowdStrike
+    sector: Security
+    careers_url: https://www.crowdstrike.com/careers
+    enabled: true
+  - name: Palo Alto Networks
+    sector: Security
+    careers_url: https://jobs.paloaltonetworks.com/en/jobs
+    enabled: true
+  - name: Zscaler
+    sector: Security
+    careers_url: https://www.zscaler.com/careers/search-jobs
+    enabled: true
+  - name: Fortinet
+    sector: Security
+    careers_url: https://www.fortinet.com/corporate/careers
+    enabled: true
+  - name: OpenAI
+    sector: AI
+    careers_url: https://openai.com/careers/search
+    enabled: true
+  - name: Anthropic
+    sector: AI
+    careers_url: https://www.anthropic.com/jobs
+    enabled: true
+  - name: Cohere
+    sector: AI
+    careers_url: https://cohere.com/careers
+    enabled: true
+  - name: Hugging Face
+    sector: AI
+    careers_url: https://huggingface.co/jobs
+    enabled: true
+  - name: Scale AI
+    sector: AI
+    careers_url: https://www.scale.com/careers
+    enabled: true
+  - name: Palantir
+    sector: Data
+    careers_url: https://www.palantir.com/careers
+    enabled: true
+  - name: Accenture
+    sector: Consulting
+    careers_url: https://www.accenture.com/us-en/careers/jobsearch
+    enabled: true
+  - name: Deloitte
+    sector: Consulting
+    careers_url: https://apply.deloitte.com/careers
+    enabled: true
+  - name: PwC
+    sector: Consulting
+    careers_url: https://www.pwc.com/gx/en/careers.html
+    enabled: true
+  - name: EY
+    sector: Consulting
+    careers_url: https://www.ey.com/en_gl/careers/job-search
+    enabled: true
+  - name: KPMG
+    sector: Consulting
+    careers_url: https://kpmg.com/xx/en/home/careers.html
+    enabled: true
+  - name: McKinsey
+    sector: Consulting
+    careers_url: https://www.mckinsey.com/careers/search-jobs
+    enabled: true
+  - name: BCG
+    sector: Consulting
+    careers_url: https://careers.bcg.com/search-results
+    enabled: true
+  - name: Bain
+    sector: Consulting
+    careers_url: https://www.bain.com/careers/find-a-role
+    enabled: true
+  - name: JPMorgan Chase
+    sector: Finance
+    careers_url: https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/requisitions
+    enabled: true
+  - name: Goldman Sachs
+    sector: Finance
+    careers_url: https://higher.gs.com/roles
+    enabled: true
+  - name: Morgan Stanley
+    sector: Finance
+    careers_url: https://morganstanley.eightfold.ai/careers
+    enabled: true
+  - name: Citi
+    sector: Finance
+    careers_url: https://jobs.citi.com
+    enabled: true
+  - name: HSBC
+    sector: Finance
+    careers_url: https://www.hsbc.com/careers
+    enabled: true
+  - name: Standard Chartered
+    sector: Finance
+    careers_url: https://www.sc.com/en/global-careers
+    enabled: true
+  - name: Barclays
+    sector: Finance
+    careers_url: https://search.jobs.barclays
+    enabled: true
+  - name: UBS
+    sector: Finance
+    careers_url: https://jobs.ubs.com
+    enabled: true
+  - name: Deutsche Bank
+    sector: Finance
+    careers_url: https://careers.db.com/professionals/search-roles
+    enabled: true
+  - name: Siemens
+    sector: Industrial Tech
+    careers_url: https://jobs.siemens.com/careers
+    enabled: true
+  - name: Bosch
+    sector: Industrial Tech
+    careers_url: https://www.bosch.com/careers/jobs
+    enabled: true
+  - name: GE Vernova
+    sector: Industrial Tech
+    careers_url: https://jobs.gecareers.com/vernova/global/en
+    enabled: true
+  - name: Schneider Electric
+    sector: Industrial Tech
+    careers_url: https://www.se.com/ww/en/about-us/careers/job-details
+    enabled: true
+  - name: Ericsson
+    sector: Telecom
+    careers_url: https://jobs.ericsson.com/careers
+    enabled: true
+  - name: Nokia
+    sector: Telecom
+    careers_url: https://www.nokia.com/about-us/careers
+    enabled: true
+  - name: Samsung
+    sector: Technology
+    careers_url: https://www.samsung.com/us/careers
+    enabled: true
+  - name: Sony
+    sector: Technology
+    careers_url: https://www.sonyjobs.com
+    enabled: true
+  - name: Toyota
+    sector: Automotive
+    careers_url: https://www.toyota.com/usa/careers
+    enabled: true
