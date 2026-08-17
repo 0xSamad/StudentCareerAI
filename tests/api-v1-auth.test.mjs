@@ -115,3 +115,34 @@ describe("api v1 http smoke with isolated container", () => {
     assert.equal(opps.length, 0);
   });
 });
+
+describe("session cookie Secure flag", () => {
+  it("omits Secure on HTTP requests so browsers keep the cookie", async () => {
+    const { resolveCookieSecure, buildSessionCookie } = await import(COOKIE_MOD);
+    const prev = process.env.COOKIE_SECURE;
+    delete process.env.COOKIE_SECURE;
+    try {
+      const httpReq = { url: "http://129.159.236.63:3000/api/auth/login", headers: { get: () => null } };
+      const httpsReq = { url: "https://example.com/api/auth/login", headers: { get: () => null } };
+      assert.equal(resolveCookieSecure(httpReq), false);
+      assert.equal(resolveCookieSecure(httpsReq), true);
+      assert.equal(buildSessionCookie("sess_x", { request: httpReq }).includes("Secure"), false);
+      assert.equal(buildSessionCookie("sess_x", { request: httpsReq }).includes("Secure"), true);
+    } finally {
+      if (prev === undefined) delete process.env.COOKIE_SECURE;
+      else process.env.COOKIE_SECURE = prev;
+    }
+  });
+
+  it("COOKIE_SECURE=false wins over production NODE_ENV", async () => {
+    const { resolveCookieSecure } = await import(COOKIE_MOD);
+    const prev = process.env.COOKIE_SECURE;
+    process.env.COOKIE_SECURE = "false";
+    try {
+      assert.equal(resolveCookieSecure(), false);
+    } finally {
+      if (prev === undefined) delete process.env.COOKIE_SECURE;
+      else process.env.COOKIE_SECURE = prev;
+    }
+  });
+});

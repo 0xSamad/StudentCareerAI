@@ -113,7 +113,7 @@ async function handleApiV1(req, res, url) {
         res,
         201,
         { ok: true, user: login.user, token: login.token, expiresAt: login.expiresAt, verificationToken: reg.verificationToken },
-        { "Set-Cookie": buildSessionCookie(login.token, { expiresAt: login.expiresAt }) }
+        { "Set-Cookie": buildSessionCookie(login.token, { expiresAt: login.expiresAt, request: req }) }
       );
     }
 
@@ -132,7 +132,7 @@ async function handleApiV1(req, res, url) {
         res,
         200,
         { ok: true, user: login.user, token: login.token, expiresAt: login.expiresAt },
-        { "Set-Cookie": buildSessionCookie(login.token, { expiresAt: login.expiresAt }) }
+        { "Set-Cookie": buildSessionCookie(login.token, { expiresAt: login.expiresAt, request: req }) }
       );
     }
 
@@ -140,7 +140,7 @@ async function handleApiV1(req, res, url) {
     if (method === "POST" && path === "/api/v1/auth/logout") {
       const token = extractSessionToken(req.headers.cookie, req.headers.authorization);
       if (token) await container.authService.logout(token);
-      return json(res, 200, { ok: true }, { "Set-Cookie": clearSessionCookie() });
+      return json(res, 200, { ok: true }, { "Set-Cookie": clearSessionCookie({ request: req }) });
     }
 
     // ── Auth: me ────────────────────────────────────────────────────────────

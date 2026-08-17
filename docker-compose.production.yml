@@ -89,6 +89,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       NEXT_PUBLIC_API_URL: http://api:4000
+      COOKIE_SECURE: "false"
     depends_on:
       api:
         condition: service_healthy

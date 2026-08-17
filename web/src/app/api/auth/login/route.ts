@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       user: login.user,
       expiresAt: login.expiresAt,
     });
-    res.cookies.set(SESSION_COOKIE_NAME, String(login.token), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 });
+    res.cookies.set(SESSION_COOKIE_NAME, String(login.token), sessionCookieOptions(login.expiresAt, req));
     return res;
   } catch (err: unknown) {
     return NextResponse.json({ error: authErrorMessage(err, "Login failed") }, { status: 401 });

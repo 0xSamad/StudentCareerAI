@@ -11,8 +11,8 @@ import {
 
 export { SESSION_COOKIE_NAME, extractSessionToken };
 
-export function sessionCookieOptions(expiresAt?: string | null): Partial<ResponseCookie> {
-  const opts = rawSessionCookieOptions(expiresAt) as {
+export function sessionCookieOptions(expiresAt?: string | null, req?: Request): Partial<ResponseCookie> {
+  const opts = rawSessionCookieOptions(expiresAt, req) as {
     httpOnly?: boolean;
     secure?: boolean;
     sameSite?: string;
