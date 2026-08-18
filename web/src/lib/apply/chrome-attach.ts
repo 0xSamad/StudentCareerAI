@@ -82,24 +82,44 @@ export async function connectUserChromeCdp(): Promise<{ browser: Browser; contex
   return null;
 }
 
+export function applyUsesHeadlessBrowser(): boolean {
+  const override = String(process.env.APPLY_HEADLESS || "").trim().toLowerCase();
+  if (override === "true" || override === "1") return true;
+  if (override === "false" || override === "0") return false;
+  return process.env.NODE_ENV === "production";
+}
+
+export function chromiumSandboxArgs(): string[] {
+  return [
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+  ];
+}
+
+function applyLaunchOptions() {
+  const headless = applyUsesHeadlessBrowser();
+  return {
+    headless,
+    viewport: headless ? { width: 1280, height: 720 } : (null as null),
+    args: headless ? chromiumSandboxArgs() : ["--no-first-run", "--no-default-browser-check"],
+  };
+}
+
 export async function launchDedicatedApplyChrome(): Promise<BrowserContext> {
   const userData = applyChromeUserDataDir();
   mkdirSync(userData, { recursive: true });
-  const opts = {
-    headless: false,
-    viewport: null as null,
-    args: ["--no-first-run", "--no-default-browser-check"],
-  };
-  try {
-    return await chromium.launchPersistentContext(userData, { ...opts, channel: "chrome" });
-  } catch (err) {
-    if (chromeProfileLockError(err)) throw err;
+  const opts = applyLaunchOptions();
+  if (!opts.headless) {
     try {
-      return await chromium.launchPersistentContext(userData, opts);
-    } catch (inner) {
-      throw inner instanceof Error ? inner : err instanceof Error ? err : new Error("Could not open Chrome.");
+      return await chromium.launchPersistentContext(userData, { ...opts, channel: "chrome" });
+    } catch (err) {
+      if (chromeProfileLockError(err)) throw err;
     }
   }
+  return chromium.launchPersistentContext(userData, opts);
 }
 
 export function chromeOpenFailedMessage(err?: unknown): string {

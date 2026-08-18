@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { chromium } from "playwright-core";
+import { applyUsesHeadlessBrowser, chromiumSandboxArgs } from "@/lib/apply/chrome-attach";
 
 /**
  * Render HTML to a print PDF. Uses a short-lived headless Chrome — Playwright
@@ -9,10 +10,15 @@ import { chromium } from "playwright-core";
 export async function renderHtmlToPdf(html: string, pdfPath: string): Promise<string> {
   mkdirSync(dirname(pdfPath), { recursive: true });
   let browser;
+  const args = applyUsesHeadlessBrowser() ? chromiumSandboxArgs() : [];
   try {
-    browser = await chromium.launch({ channel: "chrome", headless: true });
+    if (!applyUsesHeadlessBrowser()) {
+      browser = await chromium.launch({ channel: "chrome", headless: true, args });
+    } else {
+      browser = await chromium.launch({ headless: true, args });
+    }
   } catch {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, args });
   }
   try {
     const page = await browser.newPage();

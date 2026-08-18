@@ -90,6 +90,9 @@ services:
       PORT: 3000
       NEXT_PUBLIC_API_URL: http://api:4000
       COOKIE_SECURE: "false"
+      APPLY_HEADLESS: "true"
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    shm_size: "1gb"
     depends_on:
       api:
         condition: service_healthy
@@ -103,8 +106,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 1024M
+          cpus: "1.5"
+          memory: 2048M
     networks:
       - internal_network
 
