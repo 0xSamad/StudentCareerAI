@@ -21,6 +21,44 @@ import type { ApplyField } from "./extract";
 
 export { answersFromProfile, candidateFacts, latestEmployment };
 
+let lastApplyPreviewAt = 0;
+
+async function captureApplyPreview(page: unknown, force = false): Promise<string | undefined> {
+  if (!page || typeof (page as { screenshot?: unknown }).screenshot !== "function") return undefined;
+  const now = Date.now();
+  if (!force && now - lastApplyPreviewAt < 1200) return undefined;
+  try {
+    const buf = await (page as { screenshot: (opts: Record<string, unknown>) => Promise<Buffer> }).screenshot({
+      type: "jpeg",
+      quality: 42,
+      timeout: 2500,
+    });
+    lastApplyPreviewAt = now;
+    return `data:image/jpeg;base64,${buf.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
+}
+
+type FillProgressInfo = {
+  sessionId: string;
+  extracted: string[];
+  completed: string[];
+  pending: string[];
+  log?: string;
+  preview?: string;
+};
+
+async function emitFillProgress(
+  page: unknown,
+  onFillProgress: ((info: FillProgressInfo) => void) | null | undefined,
+  info: Omit<FillProgressInfo, "preview">,
+  force = false,
+) {
+  const preview = await captureApplyPreview(page, force);
+  onFillProgress?.({ ...info, preview });
+}
+
 type ProfileLike = {
   identity?: {
     name?: string;
@@ -272,13 +310,7 @@ export async function runStudentCareerLiveApply({
   fetchGitHubEvidence?: ((input: Record<string, unknown>) => Promise<unknown>) | null;
   githubToken?: string;
   onSessionOpen?: ((sessionId: string) => void) | null;
-  onFillProgress?: ((info: {
-    sessionId: string;
-    extracted: string[];
-    completed: string[];
-    pending: string[];
-    log?: string;
-  }) => void) | null;
+  onFillProgress?: ((info: FillProgressInfo) => void) | null;
 }) {
   const master = String(cvText || "").trim();
   const facts = candidateFacts(profile, master);
@@ -334,6 +366,15 @@ export async function runStudentCareerLiveApply({
     opened.lastActiveAt = Date.now();
   }
   onSessionOpen?.(session.id);
+  const firstPreview = session.shots?.at(-1) || (await captureApplyPreview(opened?.page, true));
+  onFillProgress?.({
+    sessionId: session.id,
+    extracted: (session.fields || []).map((f) => f.label || f.id),
+    completed: [],
+    pending: [],
+    log: "Opened the employer form — you can watch it below",
+    preview: firstPreview,
+  });
   await handoffSession(session.id).catch(() => {});
   const liveSess = getSession(session.id);
   const pageText = liveSess
@@ -395,13 +436,18 @@ export async function runStudentCareerLiveApply({
   const agentKey = useFormAgent ? formAgentResumeKey(url) || session.id : "";
   const touched = new Set<string>([...(opened?.filledIds || [])]);
   const reportProgress = (log?: string) => {
-    onFillProgress?.({
-      sessionId: session.id,
-      extracted: fields.map((f) => f.label || f.id),
-      completed: [...new Set(allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean))],
-      pending: waitingFields.map((w) => w.label),
-      log,
-    });
+    void (async () => {
+      const page = getSession(session.id)?.page;
+      const preview = await captureApplyPreview(page);
+      onFillProgress?.({
+        sessionId: session.id,
+        extracted: fields.map((f) => f.label || f.id),
+        completed: [...new Set(allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean))],
+        pending: waitingFields.map((w) => w.label),
+        log,
+        preview,
+      });
+    })();
   };
   reportProgress("Opened a Chrome tab and started filling empty fields");
   if (useFormAgent) {
@@ -668,6 +714,19 @@ export async function runStudentCareerLiveApply({
             ? "Chrome is open on this posting. Click Apply now / create profile in that window if needed — we fill attested fields and never submit."
             : `Chrome is open on the ${where} form.${attached}${waitingNote} Complete any remaining fields yourself — nothing was submitted.`;
 
+  await emitFillProgress(
+    getSession(session.id)?.page,
+    onFillProgress,
+    {
+      sessionId: session.id,
+      extracted: fields.map((f) => f.label || f.id),
+      completed: [...new Set(allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean))],
+      pending: uniqueWaiting.map((w) => w.label),
+      log: "Paused — last view of the employer form",
+    },
+    true,
+  );
+
   return {
     sessionId: session.id,
     title: session.title,
@@ -727,13 +786,7 @@ export async function continueStudentCareerLiveApply({
   userAnswers?: Record<string, string> | { byId?: Record<string, string>; byLabel?: Record<string, string> };
   cvPath?: string;
   coverPath?: string;
-  onFillProgress?: ((info: {
-    sessionId: string;
-    extracted: string[];
-    completed: string[];
-    pending: string[];
-    log?: string;
-  }) => void) | null;
+  onFillProgress?: ((info: FillProgressInfo) => void) | null;
 }) {
   const live = sessionId ? getSession(sessionId) : undefined;
   if (!live) {
@@ -778,6 +831,18 @@ export async function continueStudentCareerLiveApply({
   await withBudget(2000, () => prepareIntelligentForm(live.page, profile), undefined);
   live.filledIds ??= new Set();
   live.lastActiveAt = Date.now();
+  void emitFillProgress(
+    live.page,
+    onFillProgress,
+    {
+      sessionId: live.id,
+      extracted: (live.fields || []).map((f) => f.label || f.id),
+      completed: [],
+      pending: [],
+      log: "Resumed filling — watch the form below",
+    },
+    true,
+  );
   let waitingFields = [];
   let lastTurn = null;
   const touched = new Set(live.filledIds);
@@ -820,7 +885,7 @@ export async function continueStudentCareerLiveApply({
       }
       idleNoWork += 1;
       if (scan % 8 === 0) {
-        onFillProgress?.({
+        void emitFillProgress(live.page, onFillProgress, {
           sessionId: live.id,
           extracted: fieldsNow.map((f) => f.label || f.id),
           completed: allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean),
@@ -888,7 +953,7 @@ export async function continueStudentCareerLiveApply({
       } catch {
         for (const id of Object.keys(answers)) waitingSeen.add(id);
       }
-      onFillProgress?.({
+      void emitFillProgress(live.page, onFillProgress, {
         sessionId: live.id,
         extracted: fieldsNow.map((f) => f.label || f.id),
         completed: allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean),
@@ -907,7 +972,7 @@ export async function continueStudentCareerLiveApply({
     }
     idleNoWork += 1;
     if (scan % 8 === 0) {
-      onFillProgress?.({
+      void emitFillProgress(live.page, onFillProgress, {
         sessionId: live.id,
         extracted: fieldsNow.map((f) => f.label || f.id),
         completed: allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean),
@@ -922,6 +987,18 @@ export async function continueStudentCareerLiveApply({
   const filledCount = allSteps.filter((step) => step.ok).length;
   const status = sawCaptcha ? "HUMAN_ACTION_REQUIRED" : waitingFields.length ? "waiting_for_user" : "in_progress";
   const captchaNote = sawCaptcha ? " Human verification is still required in Chrome — we did not solve it." : "";
+  await emitFillProgress(
+    live.page,
+    onFillProgress,
+    {
+      sessionId: live.id,
+      extracted: (live.fields || []).map((f) => f.label || f.id),
+      completed: allSteps.filter((s) => s.ok).map((s) => s.label).filter(Boolean),
+      pending: waitingFields.map((w) => w.label),
+      log: "Paused — last view of the employer form",
+    },
+    true,
+  );
   return {
     sessionId: live.id,
     title: live.title,

@@ -282,6 +282,7 @@ export function publicJob(job) {
     snapshot: job.snapshot || null,
     actionRequired: isWaitingPhase(job.phase) ? buildActionRequiredCard(job) : null,
     currentStage: (job.stages || []).find((row) => row.status !== "complete")?.name || (job.stages || []).at(-1)?.name || phaseLabel(job.phase),
+    preview: job.preview || null,
     qualityGate: job.qualityGate || null,
     errorClass: job.errorClass || null,
     tone: job.phase === URL_APPLY_PHASE.FAILED ? "failed" : job.phase === URL_APPLY_PHASE.COMPLETED ? "done" : isWaitingPhase(job.phase) ? "waiting" : "running",
@@ -675,6 +676,7 @@ export async function fillUrlApplyJob(batchId, jobId, deps = {}) {
           phase: URL_APPLY_PHASE.RUNNING,
           sessionId: info?.sessionId || prev?.sessionId,
           fields: { extracted, completed, pending },
+          ...(info?.preview ? { preview: info.preview } : {}),
           ...(grew ? { log: info?.log || `Filled ${completed.length} field${completed.length === 1 ? "" : "s"}` } : {}),
         });
       },
@@ -886,6 +888,7 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
           phase: URL_APPLY_PHASE.RUNNING,
           sessionId: info?.sessionId || job.sessionId,
           fields: { extracted, completed, pending },
+          ...(info?.preview ? { preview: info.preview } : {}),
           ...(grew ? { log: info?.log || `Filled ${completed.length} field${completed.length === 1 ? "" : "s"}` } : {}),
         });
       },

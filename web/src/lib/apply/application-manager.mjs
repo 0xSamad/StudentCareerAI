@@ -176,6 +176,7 @@ function serializableBatch(batch) {
     createdAt: batch.createdAt,
     jobs: (batch.jobs || []).map((job) => ({
       ...job,
+      preview: undefined,
       documents: job.documents
         ? {
             cvText: String(job.documents.cvText || "").slice(0, 40000),

@@ -59,6 +59,7 @@ type BatchJob = {
   currentStage?: string;
   logs?: { at: number; message: string }[];
   tone?: string;
+  preview?: string | null;
 };
 
 type Batch = {
@@ -112,6 +113,47 @@ function statusTone(job: BatchJob) {
   return "text-muted";
 }
 
+function showLiveForm(job: BatchJob) {
+  return Boolean(job.preview) || job.phase === "APPLYING" || job.phase === "RUNNING" || isWaitingPhase(job.phase);
+}
+
+function LiveFormWindow({ job }: { job: BatchJob }) {
+  const live = job.phase === "APPLYING" || job.phase === "RUNNING" || isWaitingPhase(job.phase);
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-zinc-950 shadow-inner">
+      <div className="flex items-center gap-2 border-b border-white/10 bg-zinc-900 px-3 py-1.5">
+        <span className="size-2.5 rounded-full bg-red-400/90" aria-hidden />
+        <span className="size-2.5 rounded-full bg-amber-400/90" aria-hidden />
+        <span className="size-2.5 rounded-full bg-emerald-400/90" aria-hidden />
+        <p className="ml-2 min-w-0 flex-1 truncate rounded-md bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-300">
+          {job.url}
+        </p>
+        {live && job.preview ? (
+          <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-400">Live</span>
+        ) : null}
+      </div>
+      <div className="relative aspect-[16/10] bg-zinc-900">
+        {job.preview ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={job.preview}
+            alt={`Live view of the ${headingFor(job)} application form`}
+            className="h-full w-full object-cover object-top"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center px-4 text-center text-xs text-zinc-400">
+            Opening the employer form…
+          </div>
+        )}
+      </div>
+      <p className="border-t border-white/10 px-3 py-1.5 text-[11px] leading-snug text-zinc-400">
+        Live view of Chrome filling this form on the server. It will not open a window on your computer, and nothing is
+        submitted for you.
+      </p>
+    </div>
+  );
+}
+
 export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const [rows, setRows] = useState<UrlRow[]>([newRow()]);
   const [busy, setBusy] = useState(false);
@@ -131,7 +173,18 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
     const timer = window.setInterval(() => {
       void getUrlApplicationBatch(batch.id)
         .then((data) => {
-          if (data.batch) setBatch(data.batch);
+          if (!data.batch) return;
+          setBatch((prev) => {
+            const incoming = data.batch as Batch;
+            if (!prev) return incoming;
+            return {
+              ...incoming,
+              jobs: (incoming.jobs || []).map((job) => {
+                const old = prev.jobs.find((row) => row.id === job.id);
+                return { ...job, preview: job.preview || old?.preview || null };
+              }),
+            };
+          });
         })
         .catch(() => {});
     }, 1400);
@@ -231,8 +284,9 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
           <p className="text-xs font-semibold uppercase tracking-wider text-brand">Apply to jobs</p>
           <h2 className="mt-1 text-base font-semibold text-foreground">Paste one or more job URLs</h2>
           <p className="mt-1 text-xs text-muted">
-            Each URL becomes its own application — its own CV, cover letter, form, and status. A CAPTCHA on one does not
-            stop the others. Nothing is submitted for you.
+            Each URL becomes its own application — its own CV, cover letter, form, and status. Fill runs on the server;
+            watch the live form in Application Center below. A CAPTCHA on one does not stop the others. Nothing is
+            submitted for you.
           </p>
         </div>
 
@@ -320,6 +374,8 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
 
                   <p className={cn("text-sm font-medium", statusTone(job))}>{statusLine(job)}</p>
 
+                  {showLiveForm(job) ? <LiveFormWindow job={job} /> : null}
+
                   <dl className="grid gap-1 text-[11px] text-muted sm:grid-cols-2">
                     <div>
                       <dt className="uppercase tracking-wider text-faint">Tailored CV</dt>
@@ -402,7 +458,12 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
               );
             })}
           </div>
-          {active ? <p className="text-xs text-muted">Chrome fills one form at a time so tabs do not fight. Other jobs keep preparing in parallel.</p> : null}
+          {active ? (
+            <p className="text-xs text-muted">
+              Chrome fills one form at a time on the server so tabs do not fight. Watch the live window on each card —
+              other jobs keep preparing in parallel.
+            </p>
+          ) : null}
         </section>
       ) : null}
     </section>
