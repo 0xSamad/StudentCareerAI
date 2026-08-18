@@ -37,6 +37,10 @@ RUN apk add --no-cache wget && \
 
 COPY --from=builder --chown=nextjs:nodejs /repo /repo
 
+# WORKDIR /repo is created as root; Apply writes output/apply/{job}.
+RUN mkdir -p /repo/output/apply /repo/data/apply-review /repo/.student-career-ai-web \
+    && chown -R nextjs:nodejs /repo
+
 WORKDIR /repo/web
 USER nextjs
 EXPOSE 3000
