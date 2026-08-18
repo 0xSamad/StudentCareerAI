@@ -13,6 +13,9 @@ const {
   runUrlApplyBatch,
   resetUrlApplyBatchesForTests,
   MAX_URL_APPLY_JOBS,
+  takeLocalChromeWork,
+  fillUrlApplyJob,
+  updateUrlApplyJob,
 } = await import(MOD);
 
 console.log('\nmulti-url-apply — independent jobs around existing URL apply');
@@ -328,4 +331,28 @@ function delay(ms) {
 {
   if (MAX_URL_APPLY_JOBS >= 3) pass('UI/API allow more than three URLs');
   else fail('Max URL cap is too low');
+}
+
+{
+  resetUrlApplyBatchesForTests();
+  const batch = createUrlApplyBatch(['https://jobs.lever.co/acme/1'], { userId: 'user-1' });
+  const job = getUrlApplyBatch(batch.id).jobs[0];
+  updateUrlApplyJob(batch.id, job.id, {
+    documents: { cvText: 'cv', coverLetter: 'cover' },
+    description: 'Intern role',
+    company: 'Acme',
+    role: 'Intern',
+  });
+  const wait = fillUrlApplyJob(batch.id, job.id, {
+    useLocalChrome: true,
+    localChromeWaitMs: 2500,
+    localChromePollMs: 40,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 80));
+  const work = takeLocalChromeWork('user-1');
+  if (work?.action === 'fill' && /lever/.test(work.url || '')) {
+    pass('Local Chrome helper claims a queued fill for this computer');
+  } else fail('Local Chrome helper did not receive the queued job');
+  updateUrlApplyJob(batch.id, job.id, { phase: URL_APPLY_PHASE.COMPLETED, pauseReason: null });
+  await wait;
 }

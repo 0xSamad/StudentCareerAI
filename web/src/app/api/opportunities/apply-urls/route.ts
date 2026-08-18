@@ -120,7 +120,7 @@ async function buildUrlApplyDeps({
     ? async (_resolved: unknown, sys: string, usr: string) =>
         container.aiWorkerService.complete({ prompt: usr, system: sys, schema: true }, authContext)
     : (resolved: unknown, sys: string, usr: string) => engines.callAI(resolved, sys, usr);
-  const { sessionHasInteractiveCaptcha, sessionIsUsableForFill, handoffSession } = await import("@/lib/apply/session");
+  const { sessionIsUsableForFill, handoffSession } = await import("@/lib/apply/session");
 
   return {
     profile,
@@ -141,7 +141,8 @@ async function buildUrlApplyDeps({
     originalMime: original?.mimeType || "",
     fetchGitHubEvidence,
     githubToken,
-    captchaStillPresent: sessionHasInteractiveCaptcha,
+    useLocalChrome: true,
+    watchCaptcha: false,
     sessionUsable: sessionIsUsableForFill,
     focusSession: handoffSession,
     notifyHub: applyNotificationHub(),
@@ -229,7 +230,22 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: "Batch not found." }, { status: 404 });
     }
     const notifications = applyNotificationHub().listInApp(userId, tenantId);
-    return NextResponse.json({ ok: true, batch, notifications });
+    const { localChromeConnected, tokenForUser, localChromeCommand } = await import("@/lib/apply/local-chrome-registry.mjs");
+    const origin = new URL(req.url);
+    const forwarded = req.headers.get("x-forwarded-host");
+    const proto = req.headers.get("x-forwarded-proto") || origin.protocol.replace(":", "") || "http";
+    const server = forwarded ? `${proto}://${forwarded.split(",")[0].trim()}` : `${origin.protocol}//${origin.host}`;
+    const token = tokenForUser(userId, tenantId);
+    return NextResponse.json({
+      ok: true,
+      batch,
+      notifications,
+      localChrome: {
+        connected: localChromeConnected(userId),
+        command: localChromeCommand(server, token),
+        server,
+      },
+    });
   } catch (err: unknown) {
     const status = err && typeof err === "object" && "status" in err ? Number((err as { status?: number }).status) || 500 : 500;
     return NextResponse.json(

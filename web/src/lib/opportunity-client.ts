@@ -111,7 +111,14 @@ export async function startUrlApplications(
   return data;
 }
 
-export async function getUrlApplicationBatch(batchId: string) {
+export async function getLocalChromeHelper() {
+  const res = await fetch("/api/apply/local-chrome");
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || "Could not load Chrome helper status.");
+  }
+  return data as { ok: true; connected: boolean; command: string; server: string; token: string };
+}
   const res = await fetch(`/api/opportunities/apply-urls?batchId=${encodeURIComponent(batchId)}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok || data.ok === false) {

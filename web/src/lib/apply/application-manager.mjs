@@ -177,6 +177,12 @@ function serializableBatch(batch) {
     jobs: (batch.jobs || []).map((job) => ({
       ...job,
       preview: undefined,
+      localPayload: job.localPayload
+        ? {
+            profile: job.localPayload.profile || null,
+            cvText: String(job.localPayload.cvText || "").slice(0, 40000),
+          }
+        : undefined,
       documents: job.documents
         ? {
             cvText: String(job.documents.cvText || "").slice(0, 40000),

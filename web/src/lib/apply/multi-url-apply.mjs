@@ -283,6 +283,9 @@ export function publicJob(job) {
     actionRequired: isWaitingPhase(job.phase) ? buildActionRequiredCard(job) : null,
     currentStage: (job.stages || []).find((row) => row.status !== "complete")?.name || (job.stages || []).at(-1)?.name || phaseLabel(job.phase),
     preview: job.preview || null,
+    pauseReason: job.pauseReason || null,
+    claimedBy: job.claimedBy || null,
+    localChrome: job.claimedBy === "local-chrome" || job.pauseReason === "LOCAL_CHROME",
     qualityGate: job.qualityGate || null,
     errorClass: job.errorClass || null,
     tone: job.phase === URL_APPLY_PHASE.FAILED ? "failed" : job.phase === URL_APPLY_PHASE.COMPLETED ? "done" : isWaitingPhase(job.phase) ? "waiting" : "running",
@@ -447,6 +450,168 @@ function siblingCompanies(batchId, jobId) {
 
 function currentJob(batchId, jobId) {
   return getRawBatch(batchId)?.jobs?.find((row) => row.id === jobId) || null;
+}
+
+function bufferToBase64(buf) {
+  if (!buf) return "";
+  return Buffer.from(buf).toString("base64");
+}
+
+function packLocalChromePayload(deps = {}) {
+  return {
+    profile: deps.profile || null,
+    cvText: deps.cvText || "",
+    githubToken: deps.githubToken || "",
+    originalFilename: deps.originalFilename || "",
+    originalMime: deps.originalMime || "",
+    originalBase64: bufferToBase64(deps.originalBuffer),
+  };
+}
+
+function workPayload(batch, job, action, extra = {}) {
+  const packed = job.localPayload || packLocalChromePayload(batch.deps || {});
+  return {
+    action,
+    batchId: batch.id,
+    jobId: job.id,
+    url: job.url,
+    company: job.company,
+    role: job.role,
+    description: job.description || job.jdText || "",
+    documents: job.documents,
+    files: {
+      stem: job.files?.stem || "",
+      cvName: job.files?.cvName || "",
+      coverName: job.files?.coverName || "",
+      cvPath: job.files?.cvPath || "",
+      coverPath: job.files?.coverPath || "",
+    },
+    sessionId: job.sessionId || null,
+    userAnswers: job.userAnswers || {},
+    ...packed,
+    ...extra,
+  };
+}
+
+export function takeLocalChromeWork(userId, { busyJobId = "" } = {}) {
+  restoreManagedBatches(BATCHES);
+  const uid = String(userId || "");
+  if (!uid) return null;
+  for (const batch of BATCHES.values()) {
+    if (String(batch.userId || "") !== uid) continue;
+    for (const job of batch.jobs || []) {
+      if (busyJobId && job.id !== busyJobId) continue;
+      if (!job.pendingResume) continue;
+      const resume = job.pendingResume;
+      job.pendingResume = null;
+      persistManagedBatches(BATCHES);
+      return workPayload(batch, job, "continue", { resume });
+    }
+  }
+  if (busyJobId) return null;
+  for (const batch of BATCHES.values()) {
+    if (String(batch.userId || "") !== uid) continue;
+    for (const job of batch.jobs || []) {
+      if (job.pauseReason !== "LOCAL_CHROME") continue;
+      if (job.phase !== URL_APPLY_PHASE.WAITING_FOR_USER && job.phase !== URL_APPLY_PHASE.READY_TO_APPLY) continue;
+      updateUrlApplyJob(batch.id, job.id, {
+        phase: URL_APPLY_PHASE.RUNNING,
+        claimedBy: "local-chrome",
+        pauseReason: "LOCAL_CHROME",
+        message: "Opening Chrome on your computer",
+        log: "Opening Chrome on your computer",
+      });
+      return workPayload(batch, currentJob(batch.id, job.id), "fill");
+    }
+  }
+  return null;
+}
+
+async function finalizeLiveFill(batchId, jobId, live, deps = {}) {
+  const job = currentJob(batchId, jobId) || {};
+  const patch = (partial) => updateUrlApplyJob(batchId, jobId, partial);
+  const outcome = applyQualityToOutcome(job, live || {}, classifyLiveOutcome(live || {}));
+  const steps = live?.steps || [];
+  patch({
+    phase: outcome.phase,
+    pauseReason: outcome.pauseReason,
+    message: outcome.message,
+    error: outcome.phase === URL_APPLY_PHASE.FAILED ? outcome.message : null,
+    captcha: outcome.phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED,
+    sessionId: live?.sessionId || job.sessionId || null,
+    issues: live?.issues || [],
+    stages: live?.stages || job.stages || [],
+    waitingFields: live?.waitingFields || [],
+    qualityGate: outcome.qualityGate || null,
+    claimedBy: job.claimedBy || null,
+    fields: {
+      extracted: fieldNames(steps).length ? fieldNames(steps) : job.fields?.extracted || [],
+      completed: fieldNames(steps, true).length ? fieldNames(steps, true) : job.fields?.completed || [],
+      pending: fieldNames(steps, false).length ? fieldNames(steps, false) : job.fields?.pending || [],
+    },
+    files: {
+      ...(job.files || {}),
+      reviewPath: live?.reviewPath || job.files?.reviewPath,
+      attachedAs: live?.attachedAs || null,
+      cvPath: live?.cvPath || job.files?.cvPath || null,
+      coverPath: live?.coverPath || job.files?.coverPath || null,
+      cvName: job.files?.cvName,
+      coverName: job.files?.coverName,
+      job_id: jobId,
+    },
+    log: outcome.message,
+  });
+  await persistPhase(currentJob(batchId, jobId), deps, {
+    reason: outcome.pauseReason,
+    last_message: outcome.message,
+    pause_reason: outcome.pauseReason,
+  });
+  notifyIfPaused(batchId, jobId, deps);
+  notifyIfCompleted(batchId, jobId, deps);
+  if (outcome.phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED && deps.watchCaptcha !== false) {
+    scheduleCaptchaWatch(batchId, jobId, deps);
+  }
+  return getUrlApplyBatch(batchId);
+}
+
+export async function applyLocalChromeLiveResult(userId, batchId, jobId, live) {
+  const batch = getRawBatch(batchId);
+  if (!batch || String(batch.userId || "") !== String(userId || "")) return null;
+  if (!currentJob(batchId, jobId)) return null;
+  return finalizeLiveFill(batchId, jobId, live, { ...(batch.deps || {}), watchCaptcha: false });
+}
+
+async function waitForLocalChromeFill(batchId, jobId, deps = {}) {
+  const job = currentJob(batchId, jobId);
+  if (!job) return null;
+  const patch = (partial) => updateUrlApplyJob(batchId, jobId, partial);
+  if (job.pauseReason !== "LOCAL_CHROME") {
+    patch({
+      phase: URL_APPLY_PHASE.WAITING_FOR_USER,
+      pauseReason: "LOCAL_CHROME",
+      claimedBy: null,
+      message: "Start Chrome on this computer — a real window will open so you can solve CAPTCHAs.",
+      log: "Waiting for Chrome on your computer",
+      localPayload: packLocalChromePayload(deps),
+    });
+  }
+  const sleep = deps.sleepFn || ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+  const deadline = Date.now() + (deps.localChromeWaitMs || 45 * 60 * 1000);
+  while (Date.now() < deadline) {
+    const latest = currentJob(batchId, jobId);
+    if (!latest) return getUrlApplyBatch(batchId);
+    if (isTerminalPhase(latest.phase)) return getUrlApplyBatch(batchId);
+    if (isWaitingPhase(latest.phase) && latest.pauseReason !== "LOCAL_CHROME") {
+      return getUrlApplyBatch(batchId);
+    }
+    await sleep(deps.localChromePollMs || 1000);
+  }
+  patch({
+    phase: URL_APPLY_PHASE.FAILED,
+    error: "Chrome on your computer did not connect. In the StudentCareer AI folder run: npm run apply:chrome",
+    log: "Local Chrome helper did not connect",
+  });
+  return getUrlApplyBatch(batchId);
 }
 
 export async function extractUrlApplyJob(batchId, jobId, deps = {}) {
@@ -626,11 +791,14 @@ export async function fillUrlApplyJob(batchId, jobId, deps = {}) {
   if (!job || job.phase === URL_APPLY_PHASE.FAILED) {
     return getUrlApplyBatch(batchId);
   }
-  if (isWaitingPhase(job.phase)) {
+  if (isWaitingPhase(job.phase) && job.pauseReason !== "LOCAL_CHROME") {
     return getUrlApplyBatch(batchId);
   }
   if (!job.documents && !job.description) {
     return getUrlApplyBatch(batchId);
+  }
+  if (deps.useLocalChrome) {
+    return waitForLocalChromeFill(batchId, jobId, deps);
   }
   const patch = (partial) => updateUrlApplyJob(batchId, jobId, partial);
   const liveApply = deps.runStudentCareerLiveApply;
@@ -683,47 +851,7 @@ export async function fillUrlApplyJob(batchId, jobId, deps = {}) {
     }),
   );
 
-  const outcome = applyQualityToOutcome(currentJob(batchId, jobId) || job, live || {}, classifyLiveOutcome(live || {}));
-  const steps = live?.steps || [];
-    patch({
-      phase: outcome.phase,
-      pauseReason: outcome.pauseReason,
-      message: outcome.message,
-      error: outcome.phase === URL_APPLY_PHASE.FAILED ? outcome.message : null,
-      captcha: outcome.phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED,
-      sessionId: live?.sessionId || null,
-      issues: live?.issues || [],
-      stages: live?.stages || [],
-      waitingFields: live?.waitingFields || [],
-      qualityGate: outcome.qualityGate || null,
-    fields: {
-      extracted: fieldNames(steps),
-      completed: fieldNames(steps, true),
-      pending: fieldNames(steps, false),
-    },
-    files: {
-      ...(job.files || {}),
-      reviewPath: live?.reviewPath || job.files?.reviewPath,
-      attachedAs: live?.attachedAs || null,
-      cvPath: live?.cvPath || null,
-      coverPath: live?.coverPath || null,
-      cvName: job.files?.cvName,
-      coverName: job.files?.coverName,
-      job_id: jobId,
-    },
-    log: outcome.message,
-  });
-  await persistPhase(currentJob(batchId, jobId), deps, {
-    reason: outcome.pauseReason,
-    last_message: outcome.message,
-    pause_reason: outcome.pauseReason,
-  });
-  notifyIfPaused(batchId, jobId, deps);
-  notifyIfCompleted(batchId, jobId, deps);
-  if (outcome.phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED) {
-    scheduleCaptchaWatch(batchId, jobId, deps);
-  }
-  return getUrlApplyBatch(batchId);
+  return finalizeLiveFill(batchId, jobId, live, deps);
 }
 
 function notifyIfPaused(batchId, jobId, deps = {}) {
@@ -813,6 +941,7 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
   const job = currentJob(batchId, jobId);
   if (!job) return null;
   const patch = (partial) => updateUrlApplyJob(batchId, jobId, partial);
+  const local = Boolean(merged.useLocalChrome || job.claimedBy === "local-chrome" || job.pauseReason === "LOCAL_CHROME");
 
   if (resolution.jdText) {
     patch({
@@ -831,6 +960,28 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
     return getUrlApplyBatch(batchId);
   }
 
+  const indexed = indexUserAnswers(resolution.answers || job.userAnswers);
+  if (indexed.list.length) {
+    patch({
+      userAnswers: { ...(job.userAnswers || {}), ...indexed.byId },
+      log: "Saved your answer",
+    });
+  }
+
+  if (local) {
+    patch({
+      pendingResume: {
+        captchaCleared: Boolean(resolution.captchaCleared),
+        answers: resolution.answers || [],
+      },
+      message: resolution.captchaCleared
+        ? "Continuing in Chrome on your computer"
+        : "Sent to Chrome on your computer",
+      log: "Resume queued for Chrome on your computer",
+    });
+    return getUrlApplyBatch(batchId);
+  }
+
   if (job.phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED && job.sessionId && typeof merged.captchaStillPresent === "function") {
     const still = await merged.captchaStillPresent(job.sessionId);
     if (still && resolution.captchaCleared !== true) {
@@ -840,14 +991,6 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
       });
       return getUrlApplyBatch(batchId);
     }
-  }
-
-  const indexed = indexUserAnswers(resolution.answers || job.userAnswers);
-  if (indexed.list.length) {
-    patch({
-      userAnswers: { ...(job.userAnswers || {}), ...indexed.byId },
-      log: "Saved your answer",
-    });
   }
 
   const continueFn = merged.continueLiveApply || merged.runStudentCareerLiveApply;
