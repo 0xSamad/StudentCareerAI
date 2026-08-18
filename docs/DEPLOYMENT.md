@@ -72,8 +72,8 @@ sudo usermod -aG docker $USER
 
 ### Step 2: Clone Repository & Configure Secrets
 ```bash
-git clone https://github.com/your-org/career-ops.git /app/career-ops
-cd /app/career-ops
+git clone https://github.com/your-org/student-career-ai.git /app/student-career-ai
+cd /app/student-career-ai
 cp config/env.production.example .env
 ```
 
@@ -129,7 +129,7 @@ sudo systemctl reload caddy
 Automate daily database snapshots:
 ```bash
 # Daily Cron at 02:00 UTC
-0 2 * * * docker exec studentcareer-postgres pg_dump -U career_prod_user career_ops_prod | gzip > /backups/db_$(date +\%F).sql.gz
+0 2 * * * docker exec studentcareer-postgres pg_dump -U career_prod_user student_career_ai_prod | gzip > /backups/db_$(date +\%F).sql.gz
 ```
 
 ---

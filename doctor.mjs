@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * doctor.mjs — Setup validation for career-ops
+ * doctor.mjs — Setup validation for student-career-ai
  * Checks all prerequisites and prints a pass/fail checklist.
  */
 
@@ -185,7 +185,7 @@ function isPlaywrightMcpConfigured(root, activeCli) {
   });
 }
 
-// CLI resolution: --cli flag > $CAREER_OPS_CLI > .env (CAREER_OPS_CLI=...) >
+// CLI resolution: --cli flag > $STUDENT_CAREER_AI_CLI > .env (STUDENT_CAREER_AI_CLI=...) >
 // default ('claude'). An unknown value at ANY level returns the sentinel
 // 'unknown' and produces no output — CLI-dependent checks are silently
 // skipped. .env parsing is best-effort: missing file is normal, malformed
@@ -197,20 +197,20 @@ function resolveActiveCli() {
     }
     return { cli: cliFlag, source: 'flag' };
   }
-  if (process.env.CAREER_OPS_CLI) {
-    if (!VALID_CLIS.includes(process.env.CAREER_OPS_CLI)) {
-      return { cli: 'unknown', source: 'env', warning: `CAREER_OPS_CLI="${process.env.CAREER_OPS_CLI}" is not a recognized CLI. Valid: ${VALID_CLIS.join(', ')}.` };
+  if (process.env.STUDENT_CAREER_AI_CLI) {
+    if (!VALID_CLIS.includes(process.env.STUDENT_CAREER_AI_CLI)) {
+      return { cli: 'unknown', source: 'env', warning: `STUDENT_CAREER_AI_CLI="${process.env.STUDENT_CAREER_AI_CLI}" is not a recognized CLI. Valid: ${VALID_CLIS.join(', ')}.` };
     }
-    return { cli: process.env.CAREER_OPS_CLI, source: 'env' };
+    return { cli: process.env.STUDENT_CAREER_AI_CLI, source: 'env' };
   }
   // .env is best-effort: missing file → fall through to default. dotenv does
   // not throw on a missing path when `quiet: true`, so no try/catch is needed.
   dotenv.config({ path: join(projectRoot, '.env'), quiet: true });
-  if (process.env.CAREER_OPS_CLI) {
-    if (!VALID_CLIS.includes(process.env.CAREER_OPS_CLI)) {
-      return { cli: 'unknown', source: '.env', warning: `CAREER_OPS_CLI in .env is not a recognized CLI. Valid: ${VALID_CLIS.join(', ')}.` };
+  if (process.env.STUDENT_CAREER_AI_CLI) {
+    if (!VALID_CLIS.includes(process.env.STUDENT_CAREER_AI_CLI)) {
+      return { cli: 'unknown', source: '.env', warning: `STUDENT_CAREER_AI_CLI in .env is not a recognized CLI. Valid: ${VALID_CLIS.join(', ')}.` };
     }
-    return { cli: process.env.CAREER_OPS_CLI, source: '.env' };
+    return { cli: process.env.STUDENT_CAREER_AI_CLI, source: '.env' };
   }
   return { cli: 'claude', source: 'default' };
 }
@@ -392,7 +392,7 @@ async function checkPortalSlugs(root) {
 
 const PIPELINE_SKELETON = `# Pipeline — Pending URLs
 
-Paste job URLs below as \`- [ ] {url}\` then run \`/career-ops pipeline\`.
+Paste job URLs below as \`- [ ] {url}\` then run \`/student-career-ai pipeline\`.
 
 ## Pending
 
@@ -443,7 +443,7 @@ function checkPlugins(root) {
 }
 
 async function main() {
-  console.log('\ncareer-ops doctor');
+  console.log('\nstudent-career-ai doctor');
   console.log('================\n');
 
   const { cli: activeCli, source: cliSource, warning: cliWarning } = resolveActiveCli();

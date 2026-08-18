@@ -4,7 +4,7 @@
 // mutate the string, writeFileSync. It's exported and called from three
 // places — scan.mjs itself, scan-ats-full.mjs, and plugins.mjs (pipeline
 // mode) — so any two of them running concurrently (a scheduled scan
-// overlapping a manual `/career-ops pipeline` run, or two plugin jobs) can
+// overlapping a manual `/student-career-ai pipeline` run, or two plugin jobs) can
 // silently drop one side's offers: whichever write lands second overwrites
 // the first's in-memory read, with no error and no trace anything was lost.
 //
@@ -116,9 +116,9 @@ export async function acquirePipelineLock(pipelinePath, options = {}) {
   // Env overrides let a caller several frames up the stack (a test driving
   // appendToPipeline, say) tune contention timing without threading options
   // through every signature — same escape hatch the tracker lock provides.
-  const timeoutMs = options.timeoutMs ?? (Number(process.env.CAREER_OPS_PIPELINE_LOCK_TIMEOUT_MS) || DEFAULT_TIMEOUT_MS);
-  const retryMs = options.retryMs ?? (Number(process.env.CAREER_OPS_PIPELINE_LOCK_RETRY_MS) || DEFAULT_RETRY_MS);
-  const staleMs = options.staleMs ?? (Number(process.env.CAREER_OPS_PIPELINE_LOCK_STALE_MS) || DEFAULT_STALE_MS);
+  const timeoutMs = options.timeoutMs ?? (Number(process.env.STUDENT_CAREER_AI_PIPELINE_LOCK_TIMEOUT_MS) || DEFAULT_TIMEOUT_MS);
+  const retryMs = options.retryMs ?? (Number(process.env.STUDENT_CAREER_AI_PIPELINE_LOCK_RETRY_MS) || DEFAULT_RETRY_MS);
+  const staleMs = options.staleMs ?? (Number(process.env.STUDENT_CAREER_AI_PIPELINE_LOCK_STALE_MS) || DEFAULT_STALE_MS);
   const lockDir = lockDirFor(pipelinePath);
   const recoverGuardDir = `${lockDir}.recover`;
   const token = randomUUID();

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * invite-match.mjs — Interview-Invite → Tracker Matcher for career-ops
+ * invite-match.mjs — Interview-Invite → Tracker Matcher for student-career-ai
  *
  * Recruiter calendar/ATS invite emails frequently name only the company
  * (generic subject lines like "Schedule Your Phone Screen") with no job
@@ -20,7 +20,7 @@
  *      echo "..." | node invite-match.mjs --summary
  *      node invite-match.mjs --self-test
  *
- * Issue #1495 — github.com/santifer/career-ops
+ * Issue #1495 — github.com/0xSamad/StudentCareerAI
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -28,10 +28,10 @@ import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { resolveColumns, parseTrackerRow } from './tracker-parse.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const APPS_FILE = existsSync(join(CAREER_OPS, 'data/applications.md'))
-  ? join(CAREER_OPS, 'data/applications.md')
-  : join(CAREER_OPS, 'applications.md');
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
+const APPS_FILE = existsSync(join(STUDENT_CAREER_AI, 'data/applications.md'))
+  ? join(STUDENT_CAREER_AI, 'data/applications.md')
+  : join(STUDENT_CAREER_AI, 'applications.md');
 
 // --- CLI args ---
 const args = process.argv.slice(2);
@@ -406,7 +406,7 @@ export function analyzeInvite(text, trackerRows = null) {
 // --- Summary mode ---
 function printSummary(result) {
   console.log(`\n${'='.repeat(70)}`);
-  console.log('  Interview Invite Matcher — career-ops');
+  console.log('  Interview Invite Matcher — student-career-ai');
   console.log(`${'='.repeat(70)}\n`);
 
   console.log(`  Extracted company:  ${result.signals.company || '(not found)'}`);

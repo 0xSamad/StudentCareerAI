@@ -1,7 +1,7 @@
 // tests/scan-output-paths.test.mjs - scan.mjs's two outputs must be
 // env-overridable, the same way its two inputs already are (#2271).
 //
-// `CAREER_OPS_PORTALS` and `CAREER_OPS_PROFILE` already let a second search lane
+// `STUDENT_CAREER_AI_PORTALS` and `STUDENT_CAREER_AI_PROFILE` already let a second search lane
 // bring its own targeting, but data/pipeline.md and data/scan-history.tsv were
 // hardcoded, so every lane landed in one inbox. The quiet half is dedup:
 // scan-history.tsv is the dedup source, so a posting surfaced by lane A is
@@ -67,7 +67,7 @@ function entries(pipelinePath) {
 {
   const { dir, portals } = makeLane();
   try {
-    runScan(dir, { CAREER_OPS_PORTALS: portals });
+    runScan(dir, { STUDENT_CAREER_AI_PORTALS: portals });
     const defaultEntries = entries(join(dir, 'data', 'pipeline.md')).length;
     const defaultHistory = existsSync(join(dir, 'data', 'scan-history.tsv'));
     if (defaultEntries > 0 && defaultHistory) {
@@ -91,9 +91,9 @@ function entries(pipelinePath) {
     const lanePipeline = join(dir, 'data', 'pipeline.bridge.md');
     const laneHistory = join(dir, 'data', 'scan-history.bridge.tsv');
     runScan(dir, {
-      CAREER_OPS_PORTALS: portals,
-      CAREER_OPS_PIPELINE: lanePipeline,
-      CAREER_OPS_SCAN_HISTORY: laneHistory,
+      STUDENT_CAREER_AI_PORTALS: portals,
+      STUDENT_CAREER_AI_PIPELINE: lanePipeline,
+      STUDENT_CAREER_AI_SCAN_HISTORY: laneHistory,
     });
 
     const laneEntries = entries(lanePipeline).length;
@@ -101,7 +101,7 @@ function entries(pipelinePath) {
       || existsSync(join(dir, 'data', 'scan-history.tsv'));
 
     if (laneEntries > 0 && existsSync(laneHistory) && !defaultTouched) {
-      pass('CAREER_OPS_PIPELINE / CAREER_OPS_SCAN_HISTORY redirect both outputs, leaving the defaults untouched');
+      pass('STUDENT_CAREER_AI_PIPELINE / STUDENT_CAREER_AI_SCAN_HISTORY redirect both outputs, leaving the defaults untouched');
     } else {
       fail(`override did not fully redirect: ${laneEntries} lane entr(y/ies), lane history ${existsSync(laneHistory) ? 'present' : 'MISSING'}, default files ${defaultTouched ? 'WRITTEN' : 'untouched'}`);
     }
@@ -123,15 +123,15 @@ function entries(pipelinePath) {
     const laneA = { pipeline: join(dir, 'data', 'pipeline.a.md'), history: join(dir, 'data', 'scan-history.a.tsv') };
     const laneB = { pipeline: join(dir, 'data', 'pipeline.b.md'), history: join(dir, 'data', 'scan-history.b.tsv') };
 
-    runScan(dir, { CAREER_OPS_PORTALS: portals, CAREER_OPS_PIPELINE: laneA.pipeline, CAREER_OPS_SCAN_HISTORY: laneA.history });
-    runScan(dir, { CAREER_OPS_PORTALS: portals, CAREER_OPS_PIPELINE: laneB.pipeline, CAREER_OPS_SCAN_HISTORY: laneB.history });
+    runScan(dir, { STUDENT_CAREER_AI_PORTALS: portals, STUDENT_CAREER_AI_PIPELINE: laneA.pipeline, STUDENT_CAREER_AI_SCAN_HISTORY: laneA.history });
+    runScan(dir, { STUDENT_CAREER_AI_PORTALS: portals, STUDENT_CAREER_AI_PIPELINE: laneB.pipeline, STUDENT_CAREER_AI_SCAN_HISTORY: laneB.history });
 
     const aCount = entries(laneA.pipeline).length;
     const bCount = entries(laneB.pipeline).length;
 
     // Control: lane B pointed at lane A's history is the pre-fix behavior.
     const shared = join(dir, 'data', 'pipeline.shared.md');
-    runScan(dir, { CAREER_OPS_PORTALS: portals, CAREER_OPS_PIPELINE: shared, CAREER_OPS_SCAN_HISTORY: laneA.history });
+    runScan(dir, { STUDENT_CAREER_AI_PORTALS: portals, STUDENT_CAREER_AI_PIPELINE: shared, STUDENT_CAREER_AI_SCAN_HISTORY: laneA.history });
     const sharedCount = entries(shared).length;
 
     if (aCount > 0 && bCount === aCount && sharedCount === 0) {
@@ -158,9 +158,9 @@ function entries(pipelinePath) {
     const lanePipeline = join(dir, 'lanes', 'bridge', 'pipeline.md');
     const laneHistory = join(dir, 'lanes', 'bridge', 'scan-history.tsv');
     runScan(dir, {
-      CAREER_OPS_PORTALS: portals,
-      CAREER_OPS_PIPELINE: lanePipeline,
-      CAREER_OPS_SCAN_HISTORY: laneHistory,
+      STUDENT_CAREER_AI_PORTALS: portals,
+      STUDENT_CAREER_AI_PIPELINE: lanePipeline,
+      STUDENT_CAREER_AI_SCAN_HISTORY: laneHistory,
     });
     if (entries(lanePipeline).length > 0 && existsSync(laneHistory)) {
       pass('an override into a not-yet-existing directory creates it instead of failing');

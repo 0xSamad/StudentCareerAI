@@ -1,6 +1,6 @@
-# career-ops Trademark Policy
+# student-career-ai Trademark Policy
 
-This document explains how the "career-ops" name and brand may be used.
+This document explains how the "student-career-ai" name and brand may be used.
 It complements — not replaces — the MIT [LICENSE](LICENSE) that governs
 the source code.
 
@@ -16,7 +16,7 @@ the source code.
 
 The MIT license grants broad freedoms to use, copy, modify, and
 redistribute the source code. It does not grant rights to the name
-"career-ops," its visual identity, or any associated brand assets.
+"student-career-ai," its visual identity, or any associated brand assets.
 Those are reserved by the project's maintainer, Santiago Fernández de
 Valderrama, and any successor entity stewarding the project.
 
@@ -30,10 +30,10 @@ The following uses are explicitly welcome:
 
 - **Forking and modifying the code** — per MIT, no permission needed.
 - **Describing compatibility, origin, and lineage** — "works with
-  career-ops," "based on career-ops," "fork of career-ops," "extends
-  career-ops" are all welcome and encouraged with attribution.
+  student-career-ai," "based on student-career-ai," "fork of student-career-ai," "extends
+  student-career-ai" are all welcome and encouraged with attribution.
 - **Naming a fork distinctly** — pick your own product name; mention
-  career-ops as origin if you like.
+  student-career-ai as origin if you like.
 - **Educational, journalistic, and personal use** — blog posts,
   tutorials, videos, talks, papers, research.
 - **Community contributions** — using the name freely in PRs, issues,
@@ -45,20 +45,20 @@ The following uses are reserved because they cause — or can be
 reasonably perceived to cause — confusion about official affiliation,
 endorsement, or sponsorship:
 
-- **Product, service, or company names** that include "career-ops" or
+- **Product, service, or company names** that include "student-career-ai" or
   close variants. This includes prefixes, suffixes, and capitalizations:
-  "career-ops Cloud," "career-ops Pro," "career-ops SaaS," "Career-Ops
-  Hosted," "CareerOps by [vendor]," "Cloud career-ops," etc.
+  "student-career-ai Cloud," "student-career-ai Pro," "student-career-ai SaaS," "StudentCareer AI
+  Hosted," "StudentCareerAI by [vendor]," "Cloud student-career-ai," etc.
 - **Endorsement, sponsorship, or affiliation claims** in any context:
-  "Powered by career-ops," "Official career-ops," "Sponsored by
-  career-ops," "Partner of career-ops," "Featured by career-ops," and
+  "Powered by student-career-ai," "Official student-career-ai," "Sponsored by
+  student-career-ai," "Partner of student-career-ai," "Featured by student-career-ai," and
   similar phrasings.
 - **Domain names, social handles, and app store listings** containing
-  "career-ops" or close variants for commercial purposes.
+  "student-career-ai" or close variants for commercial purposes.
 - **Logos, wordmarks, color schemes, and visual identity assets** in
   any commercial context.
 - **Compatibility certifications** that imply official testing or
-  approval ("career-ops Certified," "career-ops Verified").
+  approval ("student-career-ai Certified," "student-career-ai Verified").
 
 This list is illustrative, not exhaustive. The principle is: if your
 use suggests an official relationship that doesn't exist, please ask.
@@ -79,7 +79,7 @@ use case described.
 
 ## Why this policy exists
 
-career-ops is a community-built project used by tens of thousands of
+student-career-ai is a community-built project used by tens of thousands of
 people. A clear brand allows the code to remain free, the documentation
 trustworthy, and contributors confident that no one is impersonating
 the project.
@@ -102,7 +102,7 @@ will be announced in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
-© 2026 Santiago Fernández de Valderrama. "career-ops"™ is a trademark of
+© 2026 Santiago Fernández de Valderrama. "student-career-ai"™ is a trademark of
 Santiago Fernández de Valderrama. A trademark application has been filed
 with the Spanish Patent and Trademark Office (OEPM) in classes 9
 (downloadable software) and 42 (Software-as-a-Service); registration

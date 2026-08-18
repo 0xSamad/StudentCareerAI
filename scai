@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# cops — thin wrapper: run any career-ops command inside the docker container.
+# scai — thin wrapper: run any StudentCareer AI command inside the docker container.
 #
 # Examples:
-#   ./cops doctor
-#   ./cops verify
-#   ./cops pdf cv.html output/cv.pdf
-#   ./cops scan
-#   ./cops node generate-pdf.mjs cv.html output/cv.pdf
-#   ./cops shell                     # interactive bash
-#   ./cops up | down | rebuild | logs
+#   ./scai doctor
+#   ./scai verify
+#   ./scai pdf cv.html output/cv.pdf
+#   ./scai scan
+#   ./scai node generate-pdf.mjs cv.html output/cv.pdf
+#   ./scai shell                     # interactive bash
+#   ./scai up | down | rebuild | logs
 #
 # Anything not matching a known subcommand is forwarded to npm run <subcommand>
 # when package.json defines it, otherwise executed verbatim inside the container.
@@ -17,7 +17,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-SERVICE="career-ops"
+SERVICE="student-career-ai"
 
 ensure_up() {
   if ! docker compose ps --services --filter "status=running" | grep -qx "$SERVICE"; then

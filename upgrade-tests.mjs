@@ -25,8 +25,8 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { seedFixture, loadExpectations } from './seed-fixture.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
-const CANONICAL = 'https://github.com/santifer/career-ops.git';
-const TAG_RE = /^career-ops-v(\d+)\.(\d+)\.(\d+)$/;
+const CANONICAL = 'https://github.com/0xSamad/StudentCareerAI.git';
+const TAG_RE = /^student-career-ai-v(\d+)\.(\d+)\.(\d+)$/;
 
 function git(cwd, ...args) {
   return execFileSync('git', args, { cwd, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -34,7 +34,7 @@ function git(cwd, ...args) {
 
 const semverKey = (t) => TAG_RE.exec(t).slice(1).map(Number);
 export function releaseTags(cwd = ROOT) {
-  return git(cwd, 'tag', '--list', 'career-ops-v*').split('\n').filter((t) => TAG_RE.test(t))
+  return git(cwd, 'tag', '--list', 'student-career-ai-v*').split('\n').filter((t) => TAG_RE.test(t))
     .sort((a, b) => { const [x, y] = [semverKey(a), semverKey(b)];
       return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; });
 }
@@ -59,7 +59,7 @@ function buildMirror(work, targetSha) {
 function writeGitConfig(work, mirror) {
   const cfg = join(work, 'gitconfig');
   const url = pathToFileURL(mirror).href;
-  writeFileSync(cfg, `[user]\n\tname = upgrade-tests\n\temail = upgrade-tests@career-ops.test\n[url "${url}"]\n\tinsteadOf = ${CANONICAL}\n[safe]\n\tdirectory = *\n`);
+  writeFileSync(cfg, `[user]\n\tname = upgrade-tests\n\temail = upgrade-tests@student-career-ai.test\n[url "${url}"]\n\tinsteadOf = ${CANONICAL}\n[safe]\n\tdirectory = *\n`);
   return cfg;
 }
 

@@ -1,7 +1,7 @@
 # StudentCareer AI — Repair Baseline
 
 **Recorded:** 2026-08-12  
-**Purpose:** Stable checkpoint before repair work. Do not apply career-ops v1.26.0 or unrelated dependency upgrades during this repair.
+**Purpose:** Stable checkpoint before repair work. Do not apply student-career-ai v1.26.0 or unrelated dependency upgrades during this repair.
 
 ---
 
@@ -63,12 +63,12 @@ Working tree at baseline included substantial **uncommitted** StudentCareer SaaS
 | AI keys (optional for engine unit tests) | `GEMINI_API_KEY` / `OPENAI_API_KEY` in `.env` |
 | PostgreSQL | Documented in `config/env.production.example` but **not required/used** at baseline |
 | Redis | Documented, **not used** |
-| Playwright Chromium | Used by career-ops PDF/browser paths |
+| Playwright Chromium | Used by student-career-ai PDF/browser paths |
 
 ---
 
 ## Explicit non-goals for this repair window
 
-- Do **not** apply upstream career-ops `v1.26.0` update yet
+- Do **not** apply upstream student-career-ai `v1.26.0` update yet
 - Do **not** upgrade unrelated dependencies for convenience
 - Do **not** fake job listings or successful submissions to make demos look good

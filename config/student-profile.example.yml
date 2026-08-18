@@ -1,4 +1,4 @@
-# CareerOS — Student Profile Configuration
+# StudentCareer AI — Student Profile Configuration
 # Copy this file to config/student-profile.yml and fill in your details.
 # This file is gitignored — your personal data never leaves your machine.
 #
@@ -216,7 +216,7 @@ preferences:
     cpt_eligible: false                  # [OPTIONAL] F-1 CPT eligible?
     opt_eligible: false                  # [OPTIONAL] F-1 OPT eligible?
 
-  # Compensation thresholds — CareerOS will not apply below these
+  # Compensation thresholds — StudentCareer AI will not apply below these
   compensation:
     # For internship mode
     internship_stipend_min: 20           # [OPTIONAL] Minimum acceptable, null = no floor
@@ -234,7 +234,7 @@ preferences:
     credit_bearing_ok: true            # [OPTIONAL] Accept academic-credit internships?
     paid_only: false                    # [OPTIONAL] Filter to paid positions only?
 
-  # Automation limits — CareerOS will never exceed these
+  # Automation limits — StudentCareer AI will never exceed these
   automation:
     min_match_score: 3.5               # [REQUIRED] 1.0–5.0. Don't apply below this score.
     max_applications_per_day: 5        # [REQUIRED] Hard daily cap (1–50).

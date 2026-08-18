@@ -6,10 +6,10 @@ import { parseApplications } from "@/lib/tracker-table.mjs";
 /**
  * Resolve the StudentCareer AI project root — sibling to web/ and holding
  * cv.md, data/, lib/, etc. Override with STUDENT_CAREER_AI_ROOT (or legacy
- * CAREER_OPS_ROOT) in web/.env.local when data lives elsewhere.
+ * STUDENT_CAREER_AI_ROOT) in web/.env.local when data lives elsewhere.
  */
 export function studentCareerRoot(): string {
-  const env = process.env.STUDENT_CAREER_AI_ROOT?.trim() || process.env.CAREER_OPS_ROOT?.trim();
+  const env = process.env.STUDENT_CAREER_AI_ROOT?.trim() || process.env.STUDENT_CAREER_AI_ROOT?.trim();
   if (env) return env;
   return path.resolve(process.cwd(), "..");
 }
@@ -292,7 +292,7 @@ export function readMemory(): string {
   }
   try {
     const root = studentCareerRoot();
-    for (const rel of [".student-career-ai-web/memory.md", ".career-ops-web/memory.md"]) {
+    for (const rel of [".student-career-ai-web/memory.md", ".student-career-ai-web/memory.md"]) {
       try {
         return fs.readFileSync(path.join(root, rel), "utf8").trim();
       } catch {

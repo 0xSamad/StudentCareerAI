@@ -15,7 +15,7 @@ export const maxDuration = 600;
 
 const OUTPUT_CONTRACT = `
 
---- OUTPUT CONTRACT (the career-ops WEB is parsing your stream) ---
+--- OUTPUT CONTRACT (the student-career-ai WEB is parsing your stream) ---
 Follow modes/discover.md exactly. You are running headless for the web:
 - You are a PROPOSER — never write a file (Write/Edit/Bash are disabled).
 - Emit each candidate as ONE line, never inside a code fence:
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   try {
     mode = fs.readFileSync(path.join(studentCareerRoot(), "modes", "discover.md"), "utf8");
   } catch {
-    return Response.json({ code: "MODE_MISSING", error: "AI search needs a newer career-ops — update to enable it." }, { status: 400 });
+    return Response.json({ code: "MODE_MISSING", error: "AI search needs a newer student-career-ai — update to enable it." }, { status: 400 });
   }
 
   const { lines } = assembleDedupContext();

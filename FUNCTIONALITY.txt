@@ -1,7 +1,6 @@
 StudentCareer AI — full functionality (what it is and how it works)
 ====================================================================
-Written for the running web app in this project (StudentCareer AI),
-built on a career-ops job-search engine. Date: 15 Aug 2026.
+Written for the running web app in this project (StudentCareer AI). Date: 15 Aug 2026.
 
 This is a student job/internship assistant. It finds listings, scores them
 against YOUR profile and CV, prepares tailored documents, and fills
@@ -263,13 +262,13 @@ SECONDARY PAGES (not in the main nav, still in the app)
   the Internships/Jobs scan.
 
 /pipeline  and  /pipeline/[id]
-  Classic career-ops tracker view over data/applications.md and
+  Classic student-career-ai tracker view over data/applications.md and
   reports/. Status changes go through the core tracker scripts.
   Report pages are A–F evaluations of a posting.
 
 /jobs/[id]
   Live worker log for a one-off evaluation/research job started from
-  the assistant (in-memory; gone after reload).
+  the Agent page (in-memory; gone after reload).
 
 /cv
   Markdown CV editor + HTML preview + PDF generate (Playwright).
@@ -287,11 +286,6 @@ SECONDARY PAGES (not in the main nav, still in the app)
 /admin/health
   Operator health check (DB, workers). Public enough to ping without
   a student session.
-
-Assistant console (floating, when enabled)
-  Talks to /api/assistant. Can navigate, filter the pipeline, start a
-  read-only evaluation of a URL, draft apply answers, remember a
-  preference. Cannot submit an application.
 
 
 DISCOVERY — HOW JOBS GET INTO THE APP
@@ -531,7 +525,7 @@ Export / delete account   /api/user/export and /api/user/delete
 
 RELATED CLI (same repo, optional)
 =================================
-The parent career-ops CLI can still evaluate a pasted JD, generate
+The parent student-career-ai CLI can still evaluate a pasted JD, generate
 reports in reports/, scan portals.yml, and write data/applications.md.
 The StudentCareer web app is the product UI; the CLI is the original
 local toolkit. They share CV/profile files when you run both on this

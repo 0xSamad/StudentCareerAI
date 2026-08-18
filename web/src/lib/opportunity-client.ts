@@ -38,7 +38,7 @@ export async function applyQueuedOpportunities(ids: string[], all = false) {
   return data;
 }
 
-/** Enqueue by persisted id, then open the career-ops headed apply engine. */
+/** Enqueue by persisted id, then open the student-career-ai headed apply engine. */
 export async function enqueueAndApply(items: Opportunity[]) {
   const payload = Array.isArray(items) ? items.filter((o) => o?.id || o?.url) : [];
   if (payload.length === 0) throw new Error("Select at least one opportunity.");

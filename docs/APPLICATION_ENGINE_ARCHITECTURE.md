@@ -1,7 +1,7 @@
 # StudentCareer AI — Application Engine Architecture
 
 **Date:** 2026-08-13  
-**Rule:** Do not rebuild browser/application automation. Reuse the existing career-ops apply engine.
+**Rule:** Do not rebuild browser/application automation. Reuse the existing student-career-ai apply engine.
 
 This document traces the real code path from a job URL to a recorded result, names what already exists, and states what is reusable, broken, or still missing for StudentCareer AI.
 
@@ -27,7 +27,7 @@ There are **two stacks** in this repo. Only the first one actually drives a real
 
 | Stack | Role | Submits? |
 |---|---|---|
-| **A. career-ops apply engine** `web/src/lib/apply/*` | Production-grade Playwright session: open, extract, fill, hand off | **Never** |
+| **A. student-career-ai apply engine** `web/src/lib/apply/*` | Production-grade Playwright session: open, extract, fill, hand off | **Never** |
 | **B. StudentCareer overlay** `lib/autonomous-pipeline.mjs` + `lib/application-agent.mjs` + SaaS browser worker | Orchestrates eligibility → CV → answers → agent; worker is a stub | Overlay can click Submit if `liveSubmit`/`AUTO_SUBMIT` is true |
 
 StudentCareer AI must call stack A (or the same Playwright session it owns). It must not invent a third filler.
@@ -187,7 +187,7 @@ Do not confuse discovery adapters with the apply engine.
 | File / store | Role |
 |---|---|
 | `cv.md` | Canonical CV |
-| `config/profile.yml` | Identity, targeting, spend tier (legacy career-ops) |
+| `config/profile.yml` | Identity, targeting, spend tier (legacy student-career-ai) |
 | `config/student-profile.yml` | StudentCareer profile (`lib/student-profile.mjs`) |
 | `modes/_profile.md` | Archetypes / narrative |
 | `article-digest.md` | Proof points |
@@ -231,7 +231,7 @@ Cover letters: `application-generator.mjs` produces `cover_letter.body`. The ori
 Prepared (not sent): `PREPARED`, `DRY_RUN`, `APPLICATION_READY`  
 Actually sent: `SUBMITTED`, `APPLIED` (legacy alias)
 
-History: each queue item has `state_history[]`. Audit: `data/autonomous-audit.json`. Tracker: `data/applications.md` (career-ops) and SaaS `applicationRepository`.
+History: each queue item has `state_history[]`. Audit: `data/autonomous-audit.json`. Tracker: `data/applications.md` (student-career-ai) and SaaS `applicationRepository`.
 
 ### 7.2 Agent session (`SESSION_STATUS`)
 
@@ -282,7 +282,7 @@ These defects prevent the existing engine from functioning as a real apply path.
 ### Fixed in this pass
 
 1. **DRY_RUN never opened a browser.**  
-   Pipeline now launches Playwright whenever a URL exists and `SKIP_BROWSER` is not set (DRY_RUN and live). Unit tests set `CAREER_OPS_SKIP_BROWSER=1` so they stay offline.
+   Pipeline now launches Playwright whenever a URL exists and `SKIP_BROWSER` is not set (DRY_RUN and live). Unit tests set `STUDENT_CAREER_AI_SKIP_BROWSER=1` so they stay offline.
 
 2. **Simulated fields hid missing forms.**  
    `runApplicationAgent` no longer invents `first_name`/`email` when a live `page` is present and extraction returns nothing.
@@ -308,7 +308,7 @@ These defects prevent the existing engine from functioning as a real apply path.
 
 9. **Headed apply sessions are process-global** (`globalThis.__coApplySessions`). That is correct for a single-user desktop CLI, not multi-tenant SaaS. Isolated dirs exist but are unused.
 
-10. **Web UI currently posts `confirmSubmit: true`**, which opts the overlay into live submit. That contradicts the original career-ops contract (“candidate always clicks Submit”) and skips the proven handoff path.
+10. **Web UI currently posts `confirmSubmit: true`**, which opts the overlay into live submit. That contradicts the original student-career-ai contract (“candidate always clicks Submit”) and skips the proven handoff path.
 
 ---
 

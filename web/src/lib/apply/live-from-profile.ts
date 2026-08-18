@@ -231,7 +231,7 @@ export async function writeApplyArtifacts({
   };
 }
 
-export async function runCareerOpsLiveApply({
+export async function runStudentCareerLiveApply({
   url,
   profile,
   company = "",
@@ -692,7 +692,7 @@ export async function runCareerOpsLiveApply({
  * Resume a paused URL apply on the open Chrome tab.
  * Regenerates nothing. Never submits. Never touches CAPTCHA widgets.
  */
-export async function continueCareerOpsLiveApply({
+export async function continueStudentCareerLiveApply({
   sessionId,
   url,
   profile,
@@ -737,7 +737,7 @@ export async function continueCareerOpsLiveApply({
 }) {
   const live = sessionId ? getSession(sessionId) : undefined;
   if (!live) {
-    return runCareerOpsLiveApply({
+    return runStudentCareerLiveApply({
       url,
       profile,
       company,

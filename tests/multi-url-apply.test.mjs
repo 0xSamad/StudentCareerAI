@@ -98,7 +98,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async (args) => {
+    runStudentCareerLiveApply: async (args) => {
       liveCalls.push(args.company);
       return {
         filledCount: 5,
@@ -130,7 +130,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async ({ company }) => ({
+    runStudentCareerLiveApply: async ({ company }) => ({
       filledCount: 3,
       steps: [{ fieldId: 'name', label: 'Name', ok: true }],
       issues: [],
@@ -160,7 +160,7 @@ function delay(ms) {
       tailored.push(args.opportunity.company);
       return fakeTailor(args);
     },
-    runCareerOpsLiveApply: async ({ company, role }) => ({
+    runStudentCareerLiveApply: async ({ company, role }) => ({
       filledCount: 4,
       steps: [{ fieldId: 'name', label: 'Name', ok: true }],
       issues: [],
@@ -193,7 +193,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async ({ company }) => ({
+    runStudentCareerLiveApply: async ({ company }) => ({
       filledCount: 2,
       steps: [{ fieldId: 'name', label: 'Name', ok: true }],
       issues: [],
@@ -220,7 +220,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async ({ company }) => {
+    runStudentCareerLiveApply: async ({ company }) => {
       if (company === 'Microsoft') {
         return {
           filledCount: 1,
@@ -259,7 +259,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async () => {
+    runStudentCareerLiveApply: async () => {
       throw new Error('live apply should not run without a JD');
     },
     listingUrl: { isCredibleListingUrl: () => true },
@@ -282,7 +282,7 @@ function delay(ms) {
   await runUrlApplyBatch(batch.id, {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
-    runCareerOpsLiveApply: async ({ company }) => {
+    runStudentCareerLiveApply: async ({ company }) => {
       concurrent += 1;
       maxConcurrent = Math.max(maxConcurrent, concurrent);
       await delay(40);
@@ -312,7 +312,7 @@ function delay(ms) {
       generating -= 1;
       return fakeTailor(args);
     },
-    runCareerOpsLiveApply: async ({ company }) => {
+    runStudentCareerLiveApply: async ({ company }) => {
       await delay(15);
       if (generating > 0) fillWhileSiblingGenerating = true;
       await delay(20);

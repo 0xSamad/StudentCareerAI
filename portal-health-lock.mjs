@@ -111,9 +111,9 @@ export async function acquirePortalHealthLock(filePath, options = {}) {
   // Env overrides let a caller several frames up the stack tune contention
   // timing without threading options through every signature — the same
   // escape hatch the tracker lock provides.
-  const timeoutMs = options.timeoutMs ?? (Number(process.env.CAREER_OPS_PORTAL_HEALTH_LOCK_TIMEOUT_MS) || DEFAULT_TIMEOUT_MS);
-  const retryMs = options.retryMs ?? (Number(process.env.CAREER_OPS_PORTAL_HEALTH_LOCK_RETRY_MS) || DEFAULT_RETRY_MS);
-  const staleMs = options.staleMs ?? (Number(process.env.CAREER_OPS_PORTAL_HEALTH_LOCK_STALE_MS) || DEFAULT_STALE_MS);
+  const timeoutMs = options.timeoutMs ?? (Number(process.env.STUDENT_CAREER_AI_PORTAL_HEALTH_LOCK_TIMEOUT_MS) || DEFAULT_TIMEOUT_MS);
+  const retryMs = options.retryMs ?? (Number(process.env.STUDENT_CAREER_AI_PORTAL_HEALTH_LOCK_RETRY_MS) || DEFAULT_RETRY_MS);
+  const staleMs = options.staleMs ?? (Number(process.env.STUDENT_CAREER_AI_PORTAL_HEALTH_LOCK_STALE_MS) || DEFAULT_STALE_MS);
   const lockDir = lockDirFor(filePath);
   const recoverGuardDir = `${lockDir}.recover`;
   const token = randomUUID();

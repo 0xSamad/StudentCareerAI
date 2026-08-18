@@ -4,11 +4,11 @@
 import './_dns-cache.mjs'; // memoize dns.lookup process-wide (see that file)
 
 const DEFAULT_TIMEOUT_MS = 10_000;
-const DEFAULT_USER_AGENT = 'Mozilla/5.0 (compatible; career-ops/1.3)';
+const DEFAULT_USER_AGENT = 'Mozilla/5.0 (compatible; student-career-ai/1.3)';
 
 /**
  * Browser-like User-Agent for providers that must clear WAF/CDN bot
- * management blocking the default career-ops UA outright (seen live:
+ * management blocking the default student-career-ai UA outright (seen live:
  * Glints' firewall, Geico's Cloudflare-gated Workday tenant). Shared so
  * every provider working around such a block bumps one constant instead
  * of drifting Chrome versions independently per file.

@@ -2,7 +2,7 @@
 //
 // `validateStatus` is not exported and importing merge-tracker.mjs runs the CLI
 // (top-level lock + merge), so this exercises the real merge path as a CLI
-// integration test via the CAREER_OPS_TRACKER / CAREER_OPS_ADDITIONS env
+// integration test via the STUDENT_CAREER_AI_TRACKER / STUDENT_CAREER_AI_ADDITIONS env
 // overrides the script already supports for test isolation.
 import { pass, fail, NODE, ROOT } from './helpers.mjs';
 import { join } from 'path';
@@ -65,7 +65,7 @@ function runMergeDetailed(additions, opts = {}) {
         // separator-row fixture below deliberately triggers a loud failure,
         // and its error text would otherwise land in the suite's own log.
         stdio: ['ignore', 'pipe', 'pipe'],
-        env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: addsDir },
+        env: { ...process.env, STUDENT_CAREER_AI_TRACKER: tracker, STUDENT_CAREER_AI_ADDITIONS: addsDir },
       });
     } catch (e) {
       output = String(e.stdout ?? '') + String(e.stderr ?? '');

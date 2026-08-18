@@ -102,7 +102,7 @@ function fakeTailor({ opportunity }) {
     tailorUrlApplyDocuments: fakeTailor,
     notifyHub: hub,
     watchCaptcha: false,
-    runCareerOpsLiveApply: async ({ company }) => {
+    runStudentCareerLiveApply: async ({ company }) => {
       if (company === 'Microsoft') {
         return {
           filledCount: 2,
@@ -149,7 +149,7 @@ function fakeTailor({ opportunity }) {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
     watchCaptcha: false,
-    runCareerOpsLiveApply: async ({ company }) => {
+    runStudentCareerLiveApply: async ({ company }) => {
       if (company === 'Microsoft') {
         return {
           filledCount: 2,
@@ -182,7 +182,7 @@ function fakeTailor({ opportunity }) {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
     watchCaptcha: false,
-    runCareerOpsLiveApply: async () => ({
+    runStudentCareerLiveApply: async () => ({
       filledCount: 1,
       sessionId: 'sess-ms',
       steps: [{ fieldId: 'name', label: 'Name', ok: true }],
@@ -229,7 +229,7 @@ function fakeTailor({ opportunity }) {
     extractExternalJob: fakeExtract,
     tailorUrlApplyDocuments: fakeTailor,
     watchCaptcha: false,
-    runCareerOpsLiveApply: async () => ({
+    runStudentCareerLiveApply: async () => ({
       filledCount: 1,
       sessionId: 'sess-cap',
       issues: [{ code: 'captcha-present' }],

@@ -36,7 +36,7 @@ const preserving = `<!DOCTYPE html><html><head>
 
 {
   if (isRebuiltTemplateCv(rebuilt) && !isFormatPreservingCv(rebuilt)) {
-    pass("Detects career-ops template rebuilds (Themeable tokens / GitHub-lab blurbs)");
+    pass("Detects student-career-ai template rebuilds (Themeable tokens / GitHub-lab blurbs)");
   } else fail("Missed rebuilt template CV");
 }
 
@@ -46,7 +46,7 @@ const preserving = `<!DOCTYPE html><html><head>
   } else fail("Missed format-preserving CV");
 }
 
-const root = join(tmpdir(), `career-ops-artifacts-${Date.now()}`);
+const root = join(tmpdir(), `student-career-ai-artifacts-${Date.now()}`);
 try {
   const jobDir = join(root, "output", "apply", "urljob-f4ac1160-0ed1-4348-b3b1-17a2fb180ea5");
   const companyDir = join(root, "output", "apply", "xsolla-ai-first-engineering-intern");

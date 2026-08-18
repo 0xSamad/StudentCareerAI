@@ -30,7 +30,7 @@
 
 ## 2. Root causes
 
-1. **Product shell overlaid on local career-ops** without real tenancy, so UI invented “live” data to look complete.
+1. **Product shell overlaid on local student-career-ai** without real tenancy, so UI invented “live” data to look complete.
 2. **`.gitignore` `auth/`** intended for browser auth dumps also ignored `lib/saas/auth/`.
 3. **`PostgresClient` never opened a pool**; readiness checked object presence, not connectivity.
 4. **Apply/agent paths** treated “process succeeded” as “submitted”.

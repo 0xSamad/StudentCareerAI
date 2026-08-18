@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 const KEY = "student-career-ai:theme";
-const LEGACY_KEY = "career-ops:theme";
 
 function readStoredTheme(): string | null {
   try {
-    return localStorage.getItem(KEY) || localStorage.getItem(LEGACY_KEY);
+    return localStorage.getItem(KEY);
   } catch {
     return null;
   }

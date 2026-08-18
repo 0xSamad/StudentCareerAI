@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * verify-pipeline.mjs — Health check for career-ops pipeline integrity
+ * verify-pipeline.mjs — Health check for student-career-ai pipeline integrity
  *
  * Checks:
  * 1. All statuses are canonical (per states.yml)
@@ -16,7 +16,7 @@
  * 11. Via channel consistency (see #1596)
  * 12. No # value reused across 2+ tracker rows (error — see #1704)
  *
- * Run: node career-ops/verify-pipeline.mjs
+ * Run: node student-career-ai/verify-pipeline.mjs
  */
 
 import { readFileSync, readdirSync, existsSync, mkdirSync, unlinkSync, statSync } from 'fs';
@@ -27,23 +27,23 @@ import {
   normalizeTextKey, normalizeVia,
 } from './tracker-parse.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
 // Support both layouts: data/applications.md (boilerplate) and applications.md (original).
-// CAREER_OPS_TRACKER overrides the path (used by tests and non-standard layouts).
-const APPS_FILE = process.env.CAREER_OPS_TRACKER
-  ? process.env.CAREER_OPS_TRACKER
-  : existsSync(join(CAREER_OPS, 'data/applications.md'))
-    ? join(CAREER_OPS, 'data/applications.md')
-    : join(CAREER_OPS, 'applications.md');
-const ADDITIONS_DIR = join(CAREER_OPS, 'batch/tracker-additions');
-// CAREER_OPS_REPORTS overrides the reports dir (used by tests, mirrors CAREER_OPS_TRACKER).
-const REPORTS_DIR = process.env.CAREER_OPS_REPORTS || join(CAREER_OPS, 'reports');
-const STATES_FILE = existsSync(join(CAREER_OPS, 'templates/states.yml'))
-  ? join(CAREER_OPS, 'templates/states.yml')
-  : join(CAREER_OPS, 'states.yml');
+// STUDENT_CAREER_AI_TRACKER overrides the path (used by tests and non-standard layouts).
+const APPS_FILE = process.env.STUDENT_CAREER_AI_TRACKER
+  ? process.env.STUDENT_CAREER_AI_TRACKER
+  : existsSync(join(STUDENT_CAREER_AI, 'data/applications.md'))
+    ? join(STUDENT_CAREER_AI, 'data/applications.md')
+    : join(STUDENT_CAREER_AI, 'applications.md');
+const ADDITIONS_DIR = join(STUDENT_CAREER_AI, 'batch/tracker-additions');
+// STUDENT_CAREER_AI_REPORTS overrides the reports dir (used by tests, mirrors STUDENT_CAREER_AI_TRACKER).
+const REPORTS_DIR = process.env.STUDENT_CAREER_AI_REPORTS || join(STUDENT_CAREER_AI, 'reports');
+const STATES_FILE = existsSync(join(STUDENT_CAREER_AI, 'templates/states.yml'))
+  ? join(STUDENT_CAREER_AI, 'templates/states.yml')
+  : join(STUDENT_CAREER_AI, 'states.yml');
 
 // Ensure required directories exist (fresh setup)
-mkdirSync(join(CAREER_OPS, 'data'), { recursive: true });
+mkdirSync(join(STUDENT_CAREER_AI, 'data'), { recursive: true });
 mkdirSync(REPORTS_DIR, { recursive: true });
 
 const CANONICAL_STATUSES = [
@@ -173,7 +173,7 @@ for (const e of entries) {
   const match = e.report.match(/\]\(([^)]+)\)/);
   if (!match) continue;
   const link = match[1];
-  if (!existsSync(join(TRACKER_DIR, link)) && !existsSync(join(CAREER_OPS, link))) {
+  if (!existsSync(join(TRACKER_DIR, link)) && !existsSync(join(STUDENT_CAREER_AI, link))) {
     error(`#${e.num}: Report not found: ${link}`);
     brokenReports++;
   }

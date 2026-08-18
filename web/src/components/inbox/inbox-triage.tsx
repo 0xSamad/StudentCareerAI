@@ -15,9 +15,9 @@ import { cn } from "@/lib/cn";
 const SHORTLIST_KEY = "student-career-ai:shortlist";
 const HIDDEN_KEY = "student-career-ai:hidden";
 const CONFIG_KEY = "student-career-ai:config";
-const LEGACY_SHORTLIST = "career-ops:shortlist";
-const LEGACY_HIDDEN = "career-ops:hidden";
-const LEGACY_CONFIG = "career-ops:config";
+const LEGACY_SHORTLIST = "student-career-ai:shortlist";
+const LEGACY_HIDDEN = "student-career-ai:hidden";
+const LEGACY_CONFIG = "student-career-ai:config";
 
 function readJsonKey(primary: string, legacy: string) {
   try {

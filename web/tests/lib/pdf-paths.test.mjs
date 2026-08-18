@@ -19,7 +19,7 @@ test("slugify: trims leading/trailing hyphens", () => {
   assert.equal(slugify("  -Weird Name!- "), "weird-name");
 });
 
-// Given a career-ops root with a report on disk and a profile.yml naming the candidate
+// Given a student-career-ai root with a report on disk and a profile.yml naming the candidate
 function makeRoot({ profileYaml } = {}) {
   const root = mkdtempSync(join(tmpdir(), "co-pdfpaths-"));
   mkdirSync(join(root, "config"), { recursive: true });
@@ -39,8 +39,8 @@ test("resolvePdfPaths: happy path builds html/meta/finalPdf from report + profil
 
     // Then it returns deterministic scratch + final paths using the candidate/company slugs
     assert.equal(result.ok, true);
-    assert.equal(result.paths.html, join(root, ".career-ops-web", "pdf-tmp", "cv-web-018.html"));
-    assert.equal(result.paths.meta, join(root, ".career-ops-web", "pdf-tmp", "cv-web-018.meta.json"));
+    assert.equal(result.paths.html, join(root, ".student-career-ai-web", "pdf-tmp", "cv-web-018.html"));
+    assert.equal(result.paths.meta, join(root, ".student-career-ai-web", "pdf-tmp", "cv-web-018.meta.json"));
     assert.equal(result.paths.finalPdf, join(root, "output", "cv-jane-smith-acme-2026-07-26.pdf"));
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -52,7 +52,7 @@ test("resolvePdfPaths: path-traversal selector is rejected before any path is bu
   // traversal-shaped selector to a real report, and a directory sentinel to
   // prove no scratch dir gets created for this input
   const root = makeRoot();
-  const scratchDir = join(root, ".career-ops-web", "pdf-tmp");
+  const scratchDir = join(root, ".student-career-ai-web", "pdf-tmp");
   const findReportFile = () => join(root, "reports", "123-acme-2026-07-01.md");
   try {
     // When resolving paths for a crafted, non-canonical selector

@@ -9,7 +9,7 @@ const MOD = pathToFileURL(join(ROOT, 'lib/autonomous-pipeline.mjs')).href;
 console.log('\nautonomous-pipeline — background autonomous engine & safety rules');
 
 process.env.GEMINI_API_KEY = 'mock_key_for_tests';
-process.env.CAREER_OPS_SKIP_BROWSER = '1';
+process.env.STUDENT_CAREER_AI_SKIP_BROWSER = '1';
 
 const {
   AutonomousPipeline,

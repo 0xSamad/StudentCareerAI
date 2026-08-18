@@ -1,7 +1,7 @@
 # StudentCareer AI — Automatic Application Engine
 
 **Date:** 2026-08-13  
-**Rule:** Orchestrate the existing Career-OPS engines. Do not rebuild ATS adapters, CV/cover-letter generation, knowledge retrieval, or Playwright filling.
+**Rule:** Orchestrate the existing StudentCareer AI engines. Do not rebuild ATS adapters, CV/cover-letter generation, knowledge retrieval, or Playwright filling.
 
 This is the canonical apply path. Every selected job or internship runs it independently:
 
@@ -159,7 +159,7 @@ Helpers: `applyEligibilitySafety`, `applySubmitSafety`, `applyKnowledgeSafety`, 
 
 - Live fill uses Playwright via `runApplicationAgent`.
 - Launch is retried once on failure. Persistent failure → package stays `READY` (not `SUBMITTED`).
-- Headed Career-OPS apply session (`web/src/lib/apply/session.ts`) still **never clicks Submit**; it hands off to the student.
+- Headed StudentCareer AI apply session (`web/src/lib/apply/session.ts`) still **never clicks Submit**; it hands off to the student.
 - Overlay submit is allowed only when `AUTO_APPLY` / `liveSubmit` is true **and** safety checks pass.
 
 Never:

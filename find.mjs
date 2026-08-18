@@ -48,7 +48,7 @@ const cleanStatus = (s) =>
  * The report number and path come from the Report cell's markdown link. The
  * path is normalized to be root-relative: trackers at `data/applications.md`
  * carry `../reports/...` links (relative to the tracker file, see #760), which
- * would be misleading when printed from the career-ops root.
+ * would be misleading when printed from the student-career-ai root.
  *
  * @param {string} text - Full contents of applications.md.
  * @returns {Array<{trackerNum:number,date:string,company:string,role:string,score:string,status:string,reportNum:string|null,reportPath:string|null}>}
@@ -136,7 +136,7 @@ function main() {
     return;
   }
 
-  const trackerPath = process.env.CAREER_OPS_TRACKER || resolve(ROOT, 'data', 'applications.md');
+  const trackerPath = process.env.STUDENT_CAREER_AI_TRACKER || resolve(ROOT, 'data', 'applications.md');
   if (!existsSync(trackerPath)) {
     console.error(`Error: ${trackerPath} not found — nothing to search.`);
     process.exitCode = 1;
@@ -145,7 +145,7 @@ function main() {
   const rows = parseTrackerRows(readFileSync(trackerPath, 'utf-8'));
 
   // Derived from the tracker resolved just above, not from ROOT: a redirected
-  // CAREER_OPS_TRACKER must not be searched against this install's manifest (#2471).
+  // STUDENT_CAREER_AI_TRACKER must not be searched against this install's manifest (#2471).
   const manifestPath = resolvePdfIndexPath(trackerPath);
   const pdfIndex = existsSync(manifestPath)
     ? parsePdfIndex(readFileSync(manifestPath, 'utf-8'))

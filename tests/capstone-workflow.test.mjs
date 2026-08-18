@@ -10,7 +10,7 @@ const APP_GEN_MOD = pathToFileURL(join(ROOT, 'lib/application-generator.mjs')).h
 
 console.log('\ncapstone-workflow — complete 21-stage student career search pipeline');
 
-process.env.CAREER_OPS_SKIP_BROWSER = '1';
+process.env.STUDENT_CAREER_AI_SKIP_BROWSER = '1';
 
 const { AutonomousPipeline, AutonomousAuditLog } = await import(PIPELINE_MOD);
 const { validateStudentProfile } = await import(PROFILE_MOD);

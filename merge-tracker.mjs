@@ -11,7 +11,7 @@
  * If duplicate with higher score → update in-place, update report link
  * Validates status against states.yml (rejects non-canonical, logs warning)
  *
- * Run: node career-ops/merge-tracker.mjs [--dry-run] [--verify]
+ * Run: node student-career-ai/merge-tracker.mjs [--dry-run] [--verify]
  */
 
 import { readFileSync, readdirSync, mkdirSync, renameSync, existsSync } from 'fs';
@@ -24,22 +24,22 @@ import { parsePdfIndex } from './find.mjs';
 import { LEGACY_COLMAP, detectColumns, resolveScoreStatus, normalizeVia, SEPARATOR_ROW_RE } from './tracker-parse.mjs';
 import { resolveTrackerPath, resolveWorkspaceRoot, resolvePdfIndexPath, trackerLockDirFor, acquireTrackerLock, writeFileAtomic, normalizeCompany, cell } from './tracker-utils.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
 // Support both layouts: data/applications.md (boilerplate) and applications.md
-// (original). CAREER_OPS_TRACKER overrides the path (used by tests and
+// (original). STUDENT_CAREER_AI_TRACKER overrides the path (used by tests and
 // non-standard layouts). Resolution lives in tracker-utils.mjs so every tracker
 // writer agrees on the same canonical path (and therefore the same lock).
-const APPS_FILE = resolveTrackerPath(CAREER_OPS);
+const APPS_FILE = resolveTrackerPath(STUDENT_CAREER_AI);
 const TRACKER_DIR = dirname(APPS_FILE);
-// CAREER_OPS_ADDITIONS overrides the additions dir (used by tests, mirrors CAREER_OPS_TRACKER).
-const ADDITIONS_DIR = process.env.CAREER_OPS_ADDITIONS
-  ? process.env.CAREER_OPS_ADDITIONS
-  : join(CAREER_OPS, 'batch/tracker-additions');
+// STUDENT_CAREER_AI_ADDITIONS overrides the additions dir (used by tests, mirrors STUDENT_CAREER_AI_TRACKER).
+const ADDITIONS_DIR = process.env.STUDENT_CAREER_AI_ADDITIONS
+  ? process.env.STUDENT_CAREER_AI_ADDITIONS
+  : join(STUDENT_CAREER_AI, 'batch/tracker-additions');
 const MERGED_DIR = join(ADDITIONS_DIR, 'merged');
-// CAREER_OPS_BATCH_STATE overrides the batch-state.tsv path (used by tests).
-const BATCH_STATE_FILE = process.env.CAREER_OPS_BATCH_STATE
-  ? process.env.CAREER_OPS_BATCH_STATE
-  : join(CAREER_OPS, 'batch/batch-state.tsv');
+// STUDENT_CAREER_AI_BATCH_STATE overrides the batch-state.tsv path (used by tests).
+const BATCH_STATE_FILE = process.env.STUDENT_CAREER_AI_BATCH_STATE
+  ? process.env.STUDENT_CAREER_AI_BATCH_STATE
+  : join(STUDENT_CAREER_AI, 'batch/batch-state.tsv');
 
 // Cross-check against batch-state.tsv (found 2026-07-30): a worker can write
 // a well-formed tracker TSV even when its own JSON result said "failed" --
@@ -71,8 +71,8 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const VERIFY = process.argv.includes('--verify');
 const MIGRATE = process.argv.includes('--migrate');
 const MIGRATE_VIA = process.argv.includes('--migrate-via');
-const MERGE_HOLD_MS = Number(process.env.CAREER_OPS_MERGE_HOLD_MS) || 0;
-const MERGE_READY_IPC = process.env.CAREER_OPS_MERGE_READY_IPC === '1';
+const MERGE_HOLD_MS = Number(process.env.STUDENT_CAREER_AI_MERGE_HOLD_MS) || 0;
+const MERGE_READY_IPC = process.env.STUDENT_CAREER_AI_MERGE_READY_IPC === '1';
 
 const TRACKER_LOCK_DIR = trackerLockDirFor(APPS_FILE);
 
@@ -97,13 +97,13 @@ const PDF_INDEX_FILE = resolvePdfIndexPath(APPS_FILE);
 const normalizeReportLink = (reportField) => normalizeLink(reportField, TRACKER_DIR, REPORTS_ROOT);
 
 // Ensure required directories exist (fresh setup)
-mkdirSync(join(CAREER_OPS, 'data'), { recursive: true });
+mkdirSync(join(STUDENT_CAREER_AI, 'data'), { recursive: true });
 mkdirSync(ADDITIONS_DIR, { recursive: true });
 
 /**
  * Pause the async merge flow for a fixed number of milliseconds.
  *
- * Used by the regression test hook (`CAREER_OPS_MERGE_HOLD_MS`), which
+ * Used by the regression test hook (`STUDENT_CAREER_AI_MERGE_HOLD_MS`), which
  * deliberately holds the first merge after it reads `applications.md` so a
  * second merge can try to enter the same critical section. (The lock retry
  * loop's own sleep lives in tracker-utils.mjs with the lock.)
@@ -118,9 +118,9 @@ function sleep(ms) {
 let trackerLock;
 try {
   trackerLock = await acquireTrackerLock(TRACKER_LOCK_DIR, {
-    timeoutMs: Number(process.env.CAREER_OPS_TRACKER_LOCK_TIMEOUT_MS) || 60_000,
-    retryMs: Number(process.env.CAREER_OPS_TRACKER_LOCK_RETRY_MS) || 75,
-    staleMs: Number(process.env.CAREER_OPS_TRACKER_LOCK_STALE_MS) || 10 * 60_000,
+    timeoutMs: Number(process.env.STUDENT_CAREER_AI_TRACKER_LOCK_TIMEOUT_MS) || 60_000,
+    retryMs: Number(process.env.STUDENT_CAREER_AI_TRACKER_LOCK_RETRY_MS) || 75,
+    staleMs: Number(process.env.STUDENT_CAREER_AI_TRACKER_LOCK_STALE_MS) || 10 * 60_000,
     tracker: APPS_FILE,
   });
   process.once('exit', () => trackerLock?.release());
@@ -602,7 +602,7 @@ if (MIGRATE) {
     console.log(`🔎 Migration (dry-run): ${changed} row(s) would be rewritten in ${basename(APPS_FILE)}`);
   } else {
     writeFileAtomic(APPS_FILE, migrated.join('\n'));
-    console.log(`✅ Migration: rewrote ${changed} report link(s) in ${basename(APPS_FILE)} relative to ${TRACKER_DIR === CAREER_OPS ? 'repo root' : 'data/'}`);
+    console.log(`✅ Migration: rewrote ${changed} report link(s) in ${basename(APPS_FILE)} relative to ${TRACKER_DIR === STUDENT_CAREER_AI ? 'repo root' : 'data/'}`);
   }
   process.exit(0);
 }
@@ -1040,7 +1040,7 @@ trackerLock.release();
 // Sync PDF flags (idempotent; uses its own lock/transaction)
 if (!DRY_RUN) {
   try {
-    execFileSync('node', [join(CAREER_OPS, 'sync-pdf-flags.mjs')], { stdio: 'inherit' });
+    execFileSync('node', [join(STUDENT_CAREER_AI, 'sync-pdf-flags.mjs')], { stdio: 'inherit' });
   } catch (e) {
     console.warn(`⚠️  Failed to sync PDF flags: ${e.message}`);
   }
@@ -1050,7 +1050,7 @@ if (!DRY_RUN) {
 if (VERIFY && !DRY_RUN) {
   console.log('\n--- Running verification ---');
   try {
-    execFileSync('node', [join(CAREER_OPS, 'verify-pipeline.mjs')], { stdio: 'inherit' });
+    execFileSync('node', [join(STUDENT_CAREER_AI, 'verify-pipeline.mjs')], { stdio: 'inherit' });
   } catch (e) {
     process.exit(1);
   }

@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { studentCareerRoot } from "@/lib/student-career-ai";
 import { emptyProfileShape, requireUserSession, withPreferredAiMatching } from "@/lib/user-session";
-import { runCareerOpsLiveApply } from "@/lib/apply/live-from-profile";
+import { runStudentCareerLiveApply } from "@/lib/apply/live-from-profile";
 import { guessListingFromUrl, listingUrlFromApplyUrl, normalizeApplyUrl } from "@/lib/apply/url-listing.mjs";
 import { extractExternalJob, logUrlApply } from "@/lib/apply/extract-external-job.mjs";
 import { tailorUrlApplyDocuments } from "@/lib/apply/url-apply-tailor.mjs";
@@ -76,7 +76,7 @@ function shapeProfile(stored: Record<string, unknown> | null | undefined) {
 }
 
 /**
- * Apply one listing with the career-ops headed Chrome engine.
+ * Apply one listing with the student-career-ai headed Chrome engine.
  * Enqueue is best-effort. Discovery is not run. Never submits.
  */
 export async function POST(req: Request) {
@@ -267,7 +267,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const live = await runCareerOpsLiveApply({
+    const live = await runStudentCareerLiveApply({
       url,
       profile,
       company,

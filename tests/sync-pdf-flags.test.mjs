@@ -39,7 +39,7 @@ function runSync() {
     execFileSync(NODE, [join(ROOT, 'sync-pdf-flags.mjs')], {
       encoding: 'utf-8',
       timeout: 30000,
-      env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_PDF_INDEX: pdfIndex },
+      env: { ...process.env, STUDENT_CAREER_AI_TRACKER: tracker, STUDENT_CAREER_AI_PDF_INDEX: pdfIndex },
     });
     
     return readFileSync(tracker, 'utf-8');
@@ -94,7 +94,7 @@ try {
     const result = spawnSync(NODE, [join(ROOT, 'sync-pdf-flags.mjs'), '--dry-rn', '--json'], {
       encoding: 'utf-8',
       timeout: 30000,
-      env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_PDF_INDEX: pdfIndex },
+      env: { ...process.env, STUDENT_CAREER_AI_TRACKER: tracker, STUDENT_CAREER_AI_PDF_INDEX: pdfIndex },
     });
     const unchanged = readFileSync(tracker, 'utf-8') === TRACKER_HEADER;
 

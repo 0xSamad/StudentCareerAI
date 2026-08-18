@@ -99,7 +99,7 @@ export function runDiscovery(filters: ExploreFilters, onEvent: (e: ScanEvent) =>
 
     const child = spawn(process.execPath, args, {
       cwd: studentCareerRoot(),
-      env: { ...process.env, CAREER_OPS_PORTALS: tempPortals },
+      env: { ...process.env, STUDENT_CAREER_AI_PORTALS: tempPortals },
     });
 
     const offers: DiscoveredOffer[] = [];

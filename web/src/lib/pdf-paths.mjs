@@ -2,8 +2,8 @@
  * pdf-paths.mjs — deterministic scratch + final paths for a web "pdf" run (#2172).
  *
  * Plain .mjs (same pattern as clean-chips.mjs / tracker-table.mjs) so this can
- * be unit-tested with `node --test`, no TypeScript build step. `careerOpsRoot`
- * and `findReportFile` are passed in rather than imported from career-ops.ts,
+ * be unit-tested with `node --test`, no TypeScript build step. `studentcareerRoot`
+ * and `findReportFile` are passed in rather than imported from student-career-ai.ts,
  * keeping this module free of TypeScript dependencies.
  */
 import fs from "node:fs";
@@ -36,14 +36,14 @@ export function slugify(s) {
  * Framework-agnostic: returns a result instead of constructing a Response, so
  * the caller (a Next.js route today) decides how to surface `ok: false`.
  *
- * Side effect: creates `.career-ops-web/pdf-tmp/` under `root` if it doesn't
+ * Side effect: creates `.student-career-ai-web/pdf-tmp/` under `root` if it doesn't
  * exist yet (the agent needs it to exist before it can write there) — this is
  * NOT a pure path computation, despite the name.
  *
  * @param {string} input - The report number (e.g. "018").
  * @param {string} today - YYYY-MM-DD.
- * @param {string} root - careerOpsRoot().
- * @param {(input: string) => string | null} findReportFile - career-ops.ts's findReportFile.
+ * @param {string} root - studentcareerRoot().
+ * @param {(input: string) => string | null} findReportFile - student-career-ai.ts's findReportFile.
  * @returns {{ok: true, paths: PdfPaths} | {ok: false, error: string}}
  */
 export function resolvePdfPaths(input, today, root, findReportFile) {
@@ -77,7 +77,7 @@ export function resolvePdfPaths(input, today, root, findReportFile) {
       console.warn(`resolvePdfPaths: could not read/parse config/profile.yml, defaulting candidate slug: ${err.message}`);
     }
   }
-  const scratchDir = path.join(root, ".career-ops-web", "pdf-tmp");
+  const scratchDir = path.join(root, ".student-career-ai-web", "pdf-tmp");
   fs.mkdirSync(scratchDir, { recursive: true });
   return {
     ok: true,

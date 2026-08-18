@@ -1,6 +1,6 @@
-# career-ops — Türkçe Modlar (`modes/tr/`)
+# student-career-ai — Türkçe Modlar (`modes/tr/`)
 
-Bu klasör, Türkiye iş piyasasında iş arayanlar veya Türkçe ilanlarla çalışanlar için career-ops modlarının Türkçe çevirilerini içerir.
+Bu klasör, Türkiye iş piyasasında iş arayanlar veya Türkçe ilanlarla çalışanlar için student-career-ai modlarının Türkçe çevirilerini içerir.
 
 ## Ne Zaman Kullanılır?
 

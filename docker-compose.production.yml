@@ -12,14 +12,14 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-career_prod_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeThisStrongSecretInProd}
-      POSTGRES_DB: ${POSTGRES_DB:-career_ops_prod}
+      POSTGRES_DB: ${POSTGRES_DB:-student_career_ai_prod}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./lib/saas/database/migrations:/docker-entrypoint-initdb.d:ro
     ports:
       - "127.0.0.1:5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-career_prod_user} -d ${POSTGRES_DB:-career_ops_prod}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-career_prod_user} -d ${POSTGRES_DB:-student_career_ai_prod}"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * process-quality.mjs — Recruiting-Process Friction Aggregator for career-ops
+ * process-quality.mjs — Recruiting-Process Friction Aggregator for student-career-ai
  *
  * Parses data/active-interviews.md, extracts inline `[process-friction]` tags
  * from the Notes column, and aggregates them per company into a friction
@@ -22,7 +22,7 @@
  *      node process-quality.mjs --file path/to/active-interviews.md  (override the data path; test isolation)
  *      node process-quality.mjs --self-test
  *
- * Issue #1466 — github.com/santifer/career-ops
+ * Issue #1466 — github.com/0xSamad/StudentCareerAI
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -30,10 +30,10 @@ import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { flagValue } from './lib/cli-flags.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const DEFAULT_ACTIVE_INTERVIEWS_PATH = existsSync(join(CAREER_OPS, 'data/active-interviews.md'))
-  ? join(CAREER_OPS, 'data/active-interviews.md')
-  : join(CAREER_OPS, 'active-interviews.md');
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
+const DEFAULT_ACTIVE_INTERVIEWS_PATH = existsSync(join(STUDENT_CAREER_AI, 'data/active-interviews.md'))
+  ? join(STUDENT_CAREER_AI, 'data/active-interviews.md')
+  : join(STUDENT_CAREER_AI, 'active-interviews.md');
 
 const FRICTION_TAG = /\[process-friction(?::\s*([^\]]+))?\]/i;
 
@@ -204,7 +204,7 @@ function loadActiveInterviews(path = ACTIVE_INTERVIEWS_PATH) {
 // --- Summary mode ---
 function printSummary(signals) {
   console.log(`\n${'='.repeat(78)}`);
-  console.log('  Process Quality Signal — career-ops');
+  console.log('  Process Quality Signal — student-career-ai');
   console.log(`  min threshold: ${MIN_THRESHOLD} interview(s) | companies: ${signals.length}`);
   console.log(`${'='.repeat(78)}\n`);
 

@@ -632,7 +632,7 @@ export async function fillUrlApplyJob(batchId, jobId, deps = {}) {
     return getUrlApplyBatch(batchId);
   }
   const patch = (partial) => updateUrlApplyJob(batchId, jobId, partial);
-  const liveApply = deps.runCareerOpsLiveApply;
+  const liveApply = deps.runStudentCareerLiveApply;
   const lock = deps.withChromeLock || withChromeLock;
 
   patch({
@@ -848,7 +848,7 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
     });
   }
 
-  const continueFn = merged.continueLiveApply || merged.runCareerOpsLiveApply;
+  const continueFn = merged.continueLiveApply || merged.runStudentCareerLiveApply;
   if (typeof continueFn !== "function") {
     patch({ message: "Saved. Open Chrome to continue.", log: "No live session to resume" });
     return getUrlApplyBatch(batchId);

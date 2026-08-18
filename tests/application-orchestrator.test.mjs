@@ -95,7 +95,7 @@ const baseDeps = {
   if (
     src.includes('const isUrlApply = !opportunityId') &&
     src.includes('useFormAgent: isUrlApply') &&
-    /runCareerOpsLiveApply\(/.test(src)
+    /runStudentCareerLiveApply\(/.test(src)
   ) {
     pass('In-app Apply still uses POST /api/opportunities/apply with form-agent off when opportunityId is present');
   } else fail('In-app Apply route drifted');
@@ -134,10 +134,10 @@ const baseDeps = {
   if (
     live.includes('useFormAgent = false') &&
     live.includes('if (!live)') &&
-    live.includes('return runCareerOpsLiveApply')
+    live.includes('return runStudentCareerLiveApply')
   ) {
     pass('Browser recovery reopens the form through the existing live apply engine when the session is gone');
-  } else fail('continueCareerOpsLiveApply no longer falls back to a fresh live apply');
+  } else fail('continueStudentCareerLiveApply no longer falls back to a fresh live apply');
 }
 
 {
@@ -241,7 +241,7 @@ const baseDeps = {
   const batch = createUrlApplyBatch(['https://careers.google.com/jobs/ai-intern']);
   await runUrlApplyBatch(batch.id, {
     ...baseDeps,
-    runCareerOpsLiveApply: async (args) => liveOk(args),
+    runStudentCareerLiveApply: async (args) => liveOk(args),
   });
   const job = getUrlApplyBatch(batch.id).jobs[0];
   if (job.phase === URL_APPLY_PHASE.COMPLETED && job.company === 'Google' && job.role === 'AI Intern' && job.qualityGate?.ok) {
@@ -255,7 +255,7 @@ const baseDeps = {
     'https://careers.google.com/jobs/ai-intern',
     'https://careers.microsoft.com/jobs/ml-intern',
   ]);
-  await runUrlApplyBatch(batch.id, { ...baseDeps, runCareerOpsLiveApply: async (args) => liveOk(args) });
+  await runUrlApplyBatch(batch.id, { ...baseDeps, runStudentCareerLiveApply: async (args) => liveOk(args) });
   const jobs = getUrlApplyBatch(batch.id).jobs;
   if (jobs.length === 2 && jobs.every((job) => job.phase === URL_APPLY_PHASE.COMPLETED) && jobs[0].company !== jobs[1].company) {
     pass('2. Two URLs stay independent through completion');
@@ -269,7 +269,7 @@ const baseDeps = {
     'https://careers.microsoft.com/jobs/ml-intern',
     'https://companyx.example/jobs/ds-intern',
   ]);
-  await runUrlApplyBatch(batch.id, { ...baseDeps, runCareerOpsLiveApply: async (args) => liveOk(args) });
+  await runUrlApplyBatch(batch.id, { ...baseDeps, runStudentCareerLiveApply: async (args) => liveOk(args) });
   const jobs = getUrlApplyBatch(batch.id).jobs;
   const roles = jobs.map((job) => job.role).join(',');
   const cvs = new Set(jobs.map((job) => job.files?.cvName));
@@ -290,7 +290,7 @@ const baseDeps = {
   const batch = createUrlApplyBatch(['https://careers.google.com/jobs/ai-intern']);
   await runUrlApplyBatch(batch.id, {
     ...baseDeps,
-    runCareerOpsLiveApply: async () => ({
+    runStudentCareerLiveApply: async () => ({
       ...liveOk({ company: 'Google', role: 'AI Intern' }),
       stages: [
         { name: 'Personal Information', status: 'complete' },
@@ -314,7 +314,7 @@ const baseDeps = {
   ]);
   await runUrlApplyBatch(batch.id, {
     ...baseDeps,
-    runCareerOpsLiveApply: async ({ company, role }) => {
+    runStudentCareerLiveApply: async ({ company, role }) => {
       if (company === 'Microsoft') {
         return {
           filledCount: 2,
@@ -348,7 +348,7 @@ const baseDeps = {
   ]);
   await runUrlApplyBatch(batch.id, {
     ...baseDeps,
-    runCareerOpsLiveApply: async ({ company, role }) => {
+    runStudentCareerLiveApply: async ({ company, role }) => {
       if (company === 'Microsoft') {
         return {
           filledCount: 2,
@@ -394,7 +394,7 @@ const baseDeps = {
     'https://fail.example/jobs/broken',
     'https://careers.microsoft.com/jobs/ml-intern',
   ]);
-  await runUrlApplyBatch(batch.id, { ...baseDeps, runCareerOpsLiveApply: async (args) => liveOk(args) });
+  await runUrlApplyBatch(batch.id, { ...baseDeps, runStudentCareerLiveApply: async (args) => liveOk(args) });
   const jobs = getUrlApplyBatch(batch.id).jobs;
   if (jobs[0].phase === URL_APPLY_PHASE.COMPLETED && jobs[1].phase === URL_APPLY_PHASE.FAILED && jobs[2].phase === URL_APPLY_PHASE.COMPLETED && jobs[1].errorClass) {
     pass('13. A failed URL is classified and does not fail sibling applications');
@@ -407,7 +407,7 @@ const baseDeps = {
   const file = join(dir, 'apply-batches.json');
   setBatchPersistPath(file);
   const batch = createUrlApplyBatch(['https://careers.google.com/jobs/ai-intern']);
-  await runUrlApplyBatch(batch.id, { ...baseDeps, runCareerOpsLiveApply: async (args) => liveOk(args) });
+  await runUrlApplyBatch(batch.id, { ...baseDeps, runStudentCareerLiveApply: async (args) => liveOk(args) });
   const id = batch.id;
   resetUrlApplyBatchesForTests();
   setBatchPersistPath(file);

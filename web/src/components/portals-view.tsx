@@ -64,13 +64,13 @@ export function PortalsView() {
 
       {res && !res.available && (
         <p className="mt-4 rounded-xl border border-dashed border-border bg-surface/30 p-4 text-sm text-muted">
-          <code className="text-foreground">verify-portals.mjs</code> not found — this needs a complete career-ops
+          <code className="text-foreground">verify-portals.mjs</code> not found — this needs a complete student-career-ai
           checkout (the web orchestrates the core&apos;s validator).
         </p>
       )}
       {res && res.available && !res.configured && (
         <p className="mt-4 rounded-xl border border-dashed border-border bg-surface/30 p-4 text-sm text-muted">
-          No <code className="text-foreground">portals.yml</code> yet — ask the assistant to set up the companies to scan.
+          No <code className="text-foreground">portals.yml</code> yet — add one in the project root to choose companies to scan.
         </p>
       )}
 
@@ -88,8 +88,7 @@ export function PortalsView() {
                 scan
               </span>{" "}
               <span className="text-muted">
-                — their careers link is broken. Fix the <code>careers_url</code> in <code>portals.yml</code> (or ask the
-                assistant to repair them).
+                — their careers link is broken. Fix the <code>careers_url</code> in <code>portals.yml</code>.
               </span>
             </div>
           )}

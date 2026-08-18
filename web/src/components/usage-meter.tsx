@@ -28,9 +28,9 @@ export function UsageMeter() {
 
   useEffect(() => {
     try {
-      const cfg = localStorage.getItem("student-career-ai:config") || localStorage.getItem("career-ops:config");
+      const cfg = localStorage.getItem("student-career-ai:config") || localStorage.getItem("student-career-ai:config");
       setCli(cfg ? JSON.parse(cfg).cliId || null : null);
-      const b = localStorage.getItem("student-career-ai:usage-budget") || localStorage.getItem("career-ops:usage-budget");
+      const b = localStorage.getItem("student-career-ai:usage-budget") || localStorage.getItem("student-career-ai:usage-budget");
       if (b) setBudget({ ...DEFAULT_BUDGET, ...JSON.parse(b) });
     } catch {
       /* ignore */

@@ -42,7 +42,7 @@ const CHECKPOINT_REL = join('data', 'cache', 'ats-full-checkpoint.json');
  * @returns {string} Sandbox directory.
  */
 function makeSandbox() {
-  const dir = mkdtempSync(join(tmpdir(), 'career-ops-outage-'));
+  const dir = mkdtempSync(join(tmpdir(), 'student-career-ai-outage-'));
   // Minimal portals.yml: main() exits early without one. The filters never
   // matter here — no board is reachable, so no posting reaches them.
   writeFileSync(join(dir, 'portals.yml'), 'title_filter:\n  positive:\n    - director\n', 'utf-8');
@@ -92,7 +92,7 @@ function sweep(dir, dnsCode, extraArgs = []) {
   return run(NODE, [join(dir, 'launch.mjs'), '--ats', 'greenhouse', '--json', ...extraArgs], {
     cwd: dir,
     // Pacing would only add wall-clock time to a run whose every lookup fails.
-    env: { ...process.env, STUB_DNS_CODE: dnsCode, CAREER_OPS_DNS_LOOKUPS_PER_MIN: '0' },
+    env: { ...process.env, STUB_DNS_CODE: dnsCode, STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '0' },
     timeout: 120_000,
   });
 }

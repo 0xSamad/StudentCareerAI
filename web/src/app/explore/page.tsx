@@ -5,7 +5,7 @@ import { readInbox, readApplications, studentCareerRoot } from "@/lib/student-ca
 import { DEFAULT_FILTERS } from "@/lib/explore";
 
 // Read live data at request time so a bare checkout (or `next build` with no
-// CAREER_OPS_ROOT) never fails — discovery seeds are best-effort.
+// STUDENT_CAREER_AI_ROOT) never fails — discovery seeds are best-effort.
 export const dynamic = "force-dynamic";
 
 export default function ExplorePage() {

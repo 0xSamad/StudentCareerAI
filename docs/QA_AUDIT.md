@@ -3,7 +3,7 @@
 **Audit date:** 2026-08-12  
 **Auditor mode:** Read-only inspection + local runtime verification (no product code fixes in this phase)  
 **Product claim:** Multi-user SaaS — “Find suitable internships/jobs and apply automatically”  
-**Repo reality:** Hybrid of (1) career-ops local CLI toolkit, (2) Next.js local-first web UI branded StudentCareer AI, (3) in-process SaaS prototype under `lib/saas/`
+**Repo reality:** Hybrid of (1) student-career-ai local CLI toolkit, (2) Next.js local-first web UI branded StudentCareer AI, (3) in-process SaaS prototype under `lib/saas/`
 
 ---
 
@@ -24,7 +24,7 @@
 ## 1. What was inspected and how
 
 ### Code & docs
-- Root career-ops scripts, `providers/` (72 ATS modules), `modes/`, `lib/` engines
+- Root student-career-ai scripts, `providers/` (72 ATS modules), `modes/`, `lib/` engines
 - `lib/saas/` (container, queue, browser, discovery, AI, notifications, storage, DB)
 - `web/` Next.js 16 app (routes, APIs, dashboard, internships, agent, settings, profile)
 - Docs: `PRODUCTION_ARCHITECTURE.md`, `DATABASE_ARCHITECTURE.md`, `AUTH_ARCHITECTURE.md`, `DEPLOYMENT.md`, `CAPSTONE_ARCHITECTURE.md`
@@ -55,7 +55,7 @@
 | Database | PostgreSQL + RLS | SQL migrations exist; app uses **Maps / files**; no `pg` driver |
 | Queue | Redis / BullMQ | In-process `Map` queue; workers do not share state across containers |
 | Discovery (SaaS) | Pluggable ATS | Default **`MockJobSource`** (Careem/Arbisoft fixtures) |
-| Discovery (career-ops) | 70+ real providers | **Real** Greenhouse/Lever/Ashby/Workday/etc. via `scan.mjs` — **not wired as the default web agent loop** |
+| Discovery (student-career-ai) | 70+ real providers | **Real** Greenhouse/Lever/Ashby/Workday/etc. via `scan.mjs` — **not wired as the default web agent loop** |
 | AI (SaaS) | OpenRouter/OpenAI | Default **`MockAIProvider`** |
 | Browser workers | Playwright pool | Dry-run stubs + CAPTCHA string heuristics; no real Playwright launch in SaaS pool |
 | Notifications | Email + in-app | In-memory in-app only; no SMTP channel |
@@ -84,7 +84,7 @@
 | Agent status API | Live `/api/autonomous/status` returns state, config, dailyStats, audit |
 
 ### B. Safety posture that is genuinely good
-- Ethical rule in AGENTS.md: never auto-submit without human review (career-ops core)
+- Ethical rule in AGENTS.md: never auto-submit without human review (student-career-ai core)
 - Fabrication rejection is enforced in unit-tested tailor path
 - CAPTCHA/MFA detection deliberately does not attempt to defeat challenges
 - AccessGuard / TenantContext patterns exist and pass in-memory isolation tests
@@ -146,10 +146,10 @@
 24. **Daily limit early reservation** can burn slots before eligibility/match complete.
 
 ### LOW
-25. Branding inconsistency: StudentCareer AI / CareerOS / career-ops mixed in package names and UI.
+25. Branding inconsistency: StudentCareer AI / StudentCareer AI / student-career-ai mixed in package names and UI.
 26. Sidebar UsageMeter shows Claude token windows, not applications remaining.
 27. Playwright image pin mismatch in Docker vs package.json versions.
-28. Upstream career-ops update available (local `0.1.0` vs remote `1.26.0`) — system layer drift risk.
+28. Upstream student-career-ai update available (local `0.1.0` vs remote `1.26.0`) — system layer drift risk.
 
 ---
 
@@ -198,7 +198,7 @@
 5. Profile shows one university/major; CV text shows another.
 6. Settings daily limit vs remaining counter disagree.
 7. Eligibility always green on cards — no PASS/FAIL/UNKNOWN breakdown visible as product promise describes.
-8. Terminology mix: career-ops statuses vs StudentCareer queue states vs SaaS schema.
+8. Terminology mix: student-career-ai statuses vs StudentCareer queue states vs SaaS schema.
 9. Important setup (`/config` CLI selection) hidden from primary nav.
 10. Footer says “local-first · v0” while marketing metadata says autonomous SaaS platform.
 
@@ -258,7 +258,7 @@ Mark as **NOT_SUPPORTED** for StudentCareer AI product claims until wired + veri
 - Pakistan-specific company career sites as first-class sources: Jazz, Zong, Nayatel, Huawei Pakistan, Systems Limited, NETSOL, 10Pearls, Careem, Daraz (Careem/10Pearls/Systems appear as **UI mocks**, not verified live integrations)
 - SaaS `MockJobSource` fixtures (must never be shown as live jobs)
 
-**Actually supported at career-ops scanner layer (when `portals.yml` configured):** Greenhouse, Lever, Ashby, Workday, and ~70 other boards listed in `docs/SUPPORTED_JOB_BOARDS.md` — but this is **CLI scan**, not the default StudentCareer agent discovery loop.
+**Actually supported at student-career-ai scanner layer (when `portals.yml` configured):** Greenhouse, Lever, Ashby, Workday, and ~70 other boards listed in `docs/SUPPORTED_JOB_BOARDS.md` — but this is **CLI scan**, not the default StudentCareer agent discovery loop.
 
 ---
 

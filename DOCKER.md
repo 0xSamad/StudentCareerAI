@@ -1,4 +1,4 @@
-# Running career-ops in Docker
+# Running student-career-ai in Docker
 
 Use this when the host can't install Playwright/Chromium directly (e.g. Ubuntu
 26.04, NixOS without the `playwright-driver` shell, locked-down corporate
@@ -19,47 +19,47 @@ all generated artifacts live on the host as before.
 
 ```bash
 # from project root
-./cops up           # builds image (first run takes a few minutes) and starts container
-./cops doctor       # confirms node + playwright + chromium + go are present
+./scai up           # builds image (first run takes a few minutes) and starts container
+./scai doctor       # confirms node + playwright + chromium + go are present
 ```
 
 That's it. Container stays running in the background. Re-runs are instant.
 
 ## Daily use
 
-The `./cops` wrapper forwards any command into the container.
+The `./scai` wrapper forwards any command into the container.
 
 | Task | Command |
 |------|---------|
-| Health check | `./cops doctor` |
-| Verify pipeline | `./cops verify` |
-| Generate PDF | `./cops pdf output/cv.html output/cv.pdf` |
-| Scan portals | `./cops scan` |
-| Check liveness | `./cops liveness <url>` |
-| Merge tracker | `./cops merge` |
-| Dedup tracker | `./cops dedup` |
-| Normalize statuses | `./cops normalize` |
-| Update check | `./cops update:check` |
-| Apply update | `./cops update` |
-| Rollback | `./cops rollback` |
-| Interactive shell | `./cops shell` |
-| Raw node script | `./cops node check-liveness.mjs <url>` |
-| Build dashboard | `./cops bash -c 'cd dashboard && go build -buildvcs=false -o career-dashboard . && ./career-dashboard --path ..'` |
+| Health check | `./scai doctor` |
+| Verify pipeline | `./scai verify` |
+| Generate PDF | `./scai pdf output/cv.html output/cv.pdf` |
+| Scan portals | `./scai scan` |
+| Check liveness | `./scai liveness <url>` |
+| Merge tracker | `./scai merge` |
+| Dedup tracker | `./scai dedup` |
+| Normalize statuses | `./scai normalize` |
+| Update check | `./scai update:check` |
+| Apply update | `./scai update` |
+| Rollback | `./scai rollback` |
+| Interactive shell | `./scai shell` |
+| Raw node script | `./scai node check-liveness.mjs <url>` |
+| Build dashboard | `./scai bash -c 'cd dashboard && go build -buildvcs=false -o career-dashboard . && ./career-dashboard --path ..'` |
 
 Unknown subcommands fall through to `docker compose exec` so anything works:
 
 ```bash
-./cops npm test
-./cops bash -c 'find reports -name "*.md" | wc -l'
+./scai npm test
+./scai bash -c 'find reports -name "*.md" | wc -l'
 ```
 
 ## Lifecycle
 
 ```bash
-./cops up        # start (idempotent)
-./cops down      # stop and remove the container (volumes kept)
-./cops rebuild   # full rebuild (use after Dockerfile or deps change)
-./cops logs      # tail container logs
+./scai up        # start (idempotent)
+./scai down      # stop and remove the container (volumes kept)
+./scai rebuild   # full rebuild (use after Dockerfile or deps change)
+./scai logs      # tail container logs
 ```
 
 ## How it works
@@ -74,12 +74,12 @@ Unknown subcommands fall through to `docker compose exec` so anything works:
 ## API keys
 
 Drop your keys in `.env` at the project root or export them in the shell that
-runs `./cops`. The compose file forwards `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`,
+runs `./scai`. The compose file forwards `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`,
 and `OPENAI_API_KEY` into the container.
 
 ```bash
 echo "GEMINI_API_KEY=..." >> .env
-./cops gemini:eval
+./scai gemini:eval
 ```
 
 ## Data persistence
@@ -90,18 +90,18 @@ Everything under the project root is on your host filesystem:
 - `data/applications.md`, `data/pipeline.md`, `data/scan-history.tsv`
 - `reports/`, `output/`, `interview-prep/`, `jds/`
 
-Nothing important is stored inside the container. `./cops down` is safe.
+Nothing important is stored inside the container. `./scai down` is safe.
 
 ## Updating
 
-Career-ops updates work the same as native:
+StudentCareer AI updates work the same as native:
 
 ```bash
-./cops update:check
-./cops update
+./scai update:check
+./scai update
 ```
 
-If `package.json` deps change, run `./cops rebuild` once to refresh the image
+If `package.json` deps change, run `./scai rebuild` once to refresh the image
 layer that holds `node_modules`.
 
 ## Troubleshooting
@@ -109,7 +109,7 @@ layer that holds `node_modules`.
 **`docker: not found`** — install Docker Engine + Compose plugin first.
 
 **Playwright still complains** — you're running the host's Node, not the
-container's. Always go through `./cops`.
+container's. Always go through `./scai`.
 
 **Permission errors on generated files** — the container runs as root by
 default. If host files end up root-owned, either:

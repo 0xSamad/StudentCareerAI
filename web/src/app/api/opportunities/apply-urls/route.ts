@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { studentCareerRoot } from "@/lib/student-career-ai";
 import { emptyProfileShape, requireUserSession, withPreferredAiMatching } from "@/lib/user-session";
-import { runCareerOpsLiveApply, continueCareerOpsLiveApply } from "@/lib/apply/live-from-profile";
+import { runStudentCareerLiveApply, continueStudentCareerLiveApply } from "@/lib/apply/live-from-profile";
 import { guessListingFromUrl, normalizeApplyUrl } from "@/lib/apply/url-listing.mjs";
 import { extractExternalJob } from "@/lib/apply/extract-external-job.mjs";
 import { tailorUrlApplyDocuments } from "@/lib/apply/url-apply-tailor.mjs";
@@ -134,8 +134,8 @@ async function buildUrlApplyDeps({
     },
     extractExternalJob,
     tailorUrlApplyDocuments,
-    runCareerOpsLiveApply,
-    continueLiveApply: continueCareerOpsLiveApply,
+    runStudentCareerLiveApply,
+    continueLiveApply: continueStudentCareerLiveApply,
     originalBuffer: original?.buffer || null,
     originalFilename: original?.filename || "",
     originalMime: original?.mimeType || "",

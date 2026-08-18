@@ -10,7 +10,7 @@ import { DEFAULT_FILTERS, cleanChips, type ExploreFilters } from "@/lib/explore"
  * ACL for portals.yml — the core's scan-filter config (a CONTRACT entry-point,
  * see reference_web_core_sync_protocol). The Explorer NEVER mutates the user's
  * real portals.yml: it writes an EPHEMERAL filter file and points the scanner at
- * it via CAREER_OPS_PORTALS, so an ad-hoc search can't clobber the curated config.
+ * it via STUDENT_CAREER_AI_PORTALS, so an ad-hoc search can't clobber the curated config.
  * We also read the real portals.yml + config/profile.yml (tolerantly) only to
  * SEED sensible defaults for the first search.
  *

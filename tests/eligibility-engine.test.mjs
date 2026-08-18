@@ -1,4 +1,4 @@
-// tests/eligibility-engine.test.mjs — CareerOS Eligibility Engine Test Suite
+// tests/eligibility-engine.test.mjs — StudentCareer AI Eligibility Engine Test Suite
 import { pass, fail, ROOT } from './helpers.mjs';
 import { join } from 'path';
 import { pathToFileURL } from 'url';

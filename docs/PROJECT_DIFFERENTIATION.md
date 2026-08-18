@@ -2,7 +2,7 @@
 
 ## Overview
 
-**StudentCareer AI** extends and transforms the open-source `career-ops` foundation into a specialized, autonomous student career acceleration platform. This document provides a transparent breakdown of **inherited**, **modified**, and **newly developed** components.
+**StudentCareer AI** extends and transforms the open-source `student-career-ai` foundation into a specialized, autonomous student career acceleration platform. This document provides a transparent breakdown of **inherited**, **modified**, and **newly developed** components.
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## 2. Detailed Component Breakdown
 
-### A. Inherited Functionality (Upstream Career-Ops)
+### A. Inherited Functionality (Upstream StudentCareer AI)
 - **Zero-Token ATS Feed Scrapers (`scan.mjs`):** Queries public JSON endpoints of Greenhouse, Ashby, and Lever APIs with zero LLM API costs.
 - **Application Tracker (`data/applications.md`):** File-based markdown table for logging applications and interview milestones.
 - **PDF Generation (`generate-pdf.mjs`):** Playwright headless browser script converting HTML templates to clean PDF resumes.

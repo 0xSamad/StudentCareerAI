@@ -1,4 +1,4 @@
-# The CareerOps Manifesto
+# The StudentCareerAI Manifesto
 
 **v1.0, signed at 60,000 stars. July 14, 2026**
 
@@ -7,7 +7,7 @@ We gave candidates AI to choose companies.
 
 Somewhere along the way, job searching became an act of volume: hundreds of applications, keyword-stuffed resumes, silence in return. We believe there is a better practice. We run our job searches the way engineers run production: with evidence, with discipline, with tools on our side of the table.
 
-We call this practice **CareerOps**.
+We call this practice **StudentCareerAI**.
 
 ## The practice
 
@@ -48,21 +48,21 @@ Whatever tools exist, whoever builds them, these hold. They bind us too.
 Agents can negotiate everything except your yes.
 Humans meet at the first interview.
 
-## What CareerOps is not
+## What StudentCareerAI is not
 
 It is not auto-applying to a thousand jobs. It is not keyword stuffing at machine speed. An AI that spams two hundred companies in your name is not on your side; it is spending your reputation.
 
-Volume was the old way. Automating the old way just makes noise faster. CareerOps is the new way to search: evidence in, judgment out, fewer applications, on purpose.
+Volume was the old way. Automating the old way just makes noise faster. StudentCareerAI is the new way to search: evidence in, judgment out, fewer applications, on purpose.
 
 ## The name
 
-CareerOps, the name of the practice, belongs to everyone who practices it. career-ops, the project where it was born, remains its first reference implementation, nothing more. Build your own. Implementations welcome.
+StudentCareerAI, the name of the practice, belongs to everyone who practices it. student-career-ai, the project where it was born, remains its first reference implementation, nothing more. Build your own. Implementations welcome.
 
 ---
 
 *To sign, add your name. Your signature becomes a commit. For many, it will be their first.*
 
 **Signed:**
-Santiago Fernández de Valderrama Aparicio (santifer), creator of career-ops. July 14, 2026
+Santiago Fernández de Valderrama Aparicio (santifer), creator of student-career-ai. July 14, 2026
 
 Signed by the community → [SIGNATURES.md](./SIGNATURES.md)

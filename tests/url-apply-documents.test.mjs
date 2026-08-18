@@ -196,7 +196,7 @@ SQL, Python`,
         coverHtml: `<p>${opportunity.company}</p>`,
       };
     },
-    runCareerOpsLiveApply: async ({ company, prebuiltDocuments, artifactStem }) => ({
+    runStudentCareerLiveApply: async ({ company, prebuiltDocuments, artifactStem }) => ({
       filledCount: 2,
       steps: [{ fieldId: 'name', label: 'Name', ok: true }],
       issues: [],
@@ -240,7 +240,7 @@ SQL, Python`,
       coverLetter: `Dear ${opportunity.company}, ${opportunity.title}. Python Git SentimentBot`,
       coverHtml: `<p>${opportunity.company}</p>`,
     }),
-    runCareerOpsLiveApply: async () => ({ filledCount: 1, steps: [{ fieldId: 'n', label: 'Name', ok: true }], issues: [], message: 'filled' }),
+    runStudentCareerLiveApply: async () => ({ filledCount: 1, steps: [{ fieldId: 'n', label: 'Name', ok: true }], issues: [], message: 'filled' }),
     listingUrl: { isCredibleListingUrl: () => true },
     withChromeLock: (fn) => fn(),
   });

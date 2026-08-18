@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * seeds/vc-portfolios.mjs — VC portfolio seed fetchers for career-ops.
+ * seeds/vc-portfolios.mjs — VC portfolio seed fetchers for student-career-ai.
  *
  * Pulls public VC portfolio company lists (Y Combinator, Andreessen Horowitz)
  * and emits company entries compatible with the existing ATS scan/discovery
@@ -33,7 +33,7 @@
 export const SLUG_RE = /^[A-Za-z0-9._-]+$/;
 
 const DEFAULT_TIMEOUT_MS = 20_000;
-const DEFAULT_USER_AGENT = 'Mozilla/5.0 (compatible; career-ops-seeds/1.0)';
+const DEFAULT_USER_AGENT = 'Mozilla/5.0 (compatible; student-career-ai-seeds/1.0)';
 
 // Runaway guard for the YC pagination walk, NOT the stop condition: the walk
 // normally ends at the API's own `totalPages` (246 as of Aug 2026, 25 per page).

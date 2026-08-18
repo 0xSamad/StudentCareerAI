@@ -1,6 +1,6 @@
-# career-ops -- Mode Bahasa Indonesia (`modes/id/`)
+# student-career-ai -- Mode Bahasa Indonesia (`modes/id/`)
 
-Folder ini berisi terjemahan Bahasa Indonesia dari mode-mode utama career-ops untuk kandidat yang membidik pasar kerja Indonesia (startup tech, perusahaan, dan portal seperti Glints, Jobstreet, Kalibrr, LinkedIn ID).
+Folder ini berisi terjemahan Bahasa Indonesia dari mode-mode utama student-career-ai untuk kandidat yang membidik pasar kerja Indonesia (startup tech, perusahaan, dan portal seperti Glints, Jobstreet, Kalibrr, LinkedIn ID).
 
 ## Kapan memakai mode ini?
 

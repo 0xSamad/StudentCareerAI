@@ -1,6 +1,6 @@
-# career-ops -- Tryby polskie (`modes/pl/`)
+# student-career-ai -- Tryby polskie (`modes/pl/`)
 
-Ten folder zawiera polskie tłumaczenia głównych trybów career-ops dla kandydatów celujących w polski rynek pracy (Polska oraz polskojęzyczne zespoły).
+Ten folder zawiera polskie tłumaczenia głównych trybów student-career-ai dla kandydatów celujących w polski rynek pracy (Polska oraz polskojęzyczne zespoły).
 
 ## Kiedy używać tych trybów?
 

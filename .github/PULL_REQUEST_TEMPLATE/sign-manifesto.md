@@ -1,17 +1,17 @@
 ---
-name: Sign the CareerOps Manifesto
+name: Sign the StudentCareerAI Manifesto
 about: Add your signature to SIGNATURES.md
 title: 'sign: @your-username'
 labels: manifesto-signature
 ---
 
-<!-- Thank you for signing The CareerOps Manifesto.
-     Canonical page: https://career-ops.org/manifesto -->
+<!-- Thank you for signing The StudentCareerAI Manifesto.
+     Canonical page: https://github.com/0xSamad/StudentCareerAI/manifesto -->
 
-> CareerOps is the practice of running a job search the way engineers run production: with evidence, with discipline, and with tools on the candidate's side of the table.
+> StudentCareerAI is the practice of running a job search the way engineers run production: with evidence, with discipline, and with tools on the candidate's side of the table.
 >
 > — Coined by Santiago Fernández de Valderrama Aparicio in
-> [The CareerOps Manifesto](https://career-ops.org/manifesto), July 14, 2026.
+> [The StudentCareerAI Manifesto](https://github.com/0xSamad/StudentCareerAI/manifesto), July 14, 2026.
 
 ## My signature
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * career-ops OpenRouter Runner
+ * student-career-ai OpenRouter Runner
  * No Claude Code CLI required — uses OpenRouter free models with automatic fallback.
  *
  * Usage:
@@ -204,7 +204,7 @@ async function callOpenRouter(systemPrompt, userMessage) {
     );
   }
 
-  const pinnedModel = process.env.CAREER_OPS_MODEL;
+  const pinnedModel = process.env.STUDENT_CAREER_AI_MODEL;
   if (pinnedModel) {
     activeModel = pinnedModel;
     process.stdout.write(`[model] ${pinnedModel} (pinned) ... `);
@@ -224,8 +224,8 @@ async function callOpenRouter(systemPrompt, userMessage) {
         headers: {
           'Authorization': `Bearer ${key}`,
           'Content-Type':  'application/json',
-          'HTTP-Referer':  'https://github.com/santifer/career-ops',
-          'X-Title':       'career-ops',
+          'HTTP-Referer':  'https://github.com/0xSamad/StudentCareerAI',
+          'X-Title':       'student-career-ai',
         },
         body,
         signal: ctrl.signal,
@@ -285,8 +285,8 @@ async function callOpenRouter(systemPrompt, userMessage) {
           headers: {
             'Authorization': `Bearer ${key}`,
             'Content-Type':  'application/json',
-            'HTTP-Referer':  'https://github.com/santifer/career-ops',
-            'X-Title':       'career-ops',
+            'HTTP-Referer':  'https://github.com/0xSamad/StudentCareerAI',
+            'X-Title':       'student-career-ai',
           },
           body,
           signal: controller.signal,
@@ -425,7 +425,7 @@ async function fetchJobPage(url) {
   // Plain HTTP fallback
   try {
     const r = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; career-ops/1.0)' }
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; student-career-ai/1.0)' }
     });
     if (!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText}`);
     const html = await r.text();
@@ -440,7 +440,7 @@ async function fetchJobPage(url) {
 // field names as scan.mjs: `title_filter.positive/negative` + `tracked_companies`),
 // so it never drifts from the main scanner. The runner's no-CLI scan path covers
 // companies that expose a direct JSON `api:`; careers_url-only / Playwright /
-// search-query companies are handled by the full /career-ops scan pipeline.
+// search-query companies are handled by the full /student-career-ai scan pipeline.
 // `rawOverride` lets tests feed YAML text directly (see test-all.mjs drift guard).
 // ---------------------------------------------------------------------------
 function normKeywords(v) {
@@ -794,7 +794,7 @@ const [,, command, ...args] = invokedDirectly ? process.argv : [];
 const ctx = invokedDirectly ? loadContext() : null;
 
 // Load free models list before running any AI command (skip when a model is pinned)
-if (invokedDirectly && ['evaluate', 'eval', 'pipeline', 'apply', 'models'].includes(command) && !process.env.CAREER_OPS_MODEL) {
+if (invokedDirectly && ['evaluate', 'eval', 'pipeline', 'apply', 'models'].includes(command) && !process.env.STUDENT_CAREER_AI_MODEL) {
   await loadFreeModels();
 }
 
@@ -823,7 +823,7 @@ if (invokedDirectly) switch (command) {
 
   default:
     console.log(`
-career-ops OpenRouter Runner
+student-career-ai OpenRouter Runner
 Auto-fetches free models from OpenRouter API and rotates through them with fallback.
 
 COMMANDS:
@@ -842,11 +842,11 @@ SETUP:
 MODEL SELECTION:
   - Free models are fetched automatically via the OpenRouter API at runtime.
   - They are tried in sequence; if one fails the next is used automatically.
-  - Pin a model:  CAREER_OPS_MODEL=deepseek/deepseek-r1:free node openrouter-runner.mjs eval <url>
+  - Pin a model:  STUDENT_CAREER_AI_MODEL=deepseek/deepseek-r1:free node openrouter-runner.mjs eval <url>
 `);
 }
 
 if (invokedDirectly && ['scan', 'evaluate', 'eval', 'pipeline', 'apply'].includes(command)) {
-  const modelName = process.env.CAREER_OPS_MODEL || activeModel || 'free-rotation';
+  const modelName = process.env.STUDENT_CAREER_AI_MODEL || activeModel || 'free-rotation';
   console.log('\n' + formatBreakdown(tracker, modelName, 'openrouter'));
 }

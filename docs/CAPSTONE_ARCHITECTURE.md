@@ -2,7 +2,7 @@
 
 **Target Product:** Autonomous AI Career Agent for Students & Job Seekers  
 **Modes:** INTERNSHIPS (primary focus) · JOBS  
-**Based on:** career-ops codebase audit — August 2026
+**Based on:** student-career-ai codebase audit — August 2026
 
 ---
 
@@ -367,7 +367,7 @@ Many internship programs have hard application deadlines (e.g., Google STEP clos
 
 | Item | Detail |
 |---|---|
-| **Base license** | MIT — original `career-ops` by Santiago Fernández de Valderrama. Permissive: fork, modify, distribute, commercialize freely. |
+| **Base license** | MIT — original `student-career-ai` by Santiago Fernández de Valderrama. Permissive: fork, modify, distribute, commercialize freely. |
 | **Obligations** | Must retain the original copyright notice (`Copyright (c) 2026 Santiago Fernández de Valderrama`) in derivative works. Single line in `LICENSE`. |
 | **Your additions** | All new code you write is yours. You can apply any license to the combined work, provided MIT attribution is preserved. |
 | **Commercial use** | MIT explicitly permits commercial use. No royalties, no copyleft. |
@@ -499,7 +499,7 @@ Many internship programs have hard application deadlines (e.g., Google STEP clos
 - Full test suite: 61 passing tests (`tests/eligibility-engine.test.mjs`)
 
 ### 10d. Source Adapters & Normalization (`lib/source-adapters.mjs`)
-- Normalizes raw opportunities into a uniform CareerOS schema
+- Normalizes raw opportunities into a uniform StudentCareer AI schema
 - Pakistan-aware country inference (Karachi, Lahore, Islamabad, etc. → Pakistan) and global city mapping
 - Remote eligibility detection
 - URL-based and fuzzy (title + company) deduplication

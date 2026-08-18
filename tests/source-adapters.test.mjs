@@ -1,4 +1,4 @@
-// tests/source-adapters.test.mjs — CareerOS Source Adapters Test Suite
+// tests/source-adapters.test.mjs — StudentCareer AI Source Adapters Test Suite
 import { pass, fail, ROOT } from './helpers.mjs';
 import { join } from 'path';
 import { pathToFileURL } from 'url';

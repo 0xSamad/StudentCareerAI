@@ -1,4 +1,4 @@
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/wordmark-dark.svg"><img src="docs/wordmark-light.svg" alt="career-ops" width="250" height="56"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/wordmark-dark.svg"><img src="docs/wordmark-light.svg" alt="student-career-ai" width="250" height="56"></picture></p>
 
 <div align="center">
 
@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <a href="https://x.com/santifer"><img src="docs/hero-banner.jpg" alt="career-ops — Multi-agent jobsøgningssystem" width="800"></a>
+  <a href="https://x.com/santifer"><img src="docs/hero-banner.jpg" alt="student-career-ai — Multi-agent jobsøgningssystem" width="800"></a>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://trendshift.io/repositories/25195" target="_blank"><img src="https://trendshift.io/api/badge/repositories/25195" alt="santifer%2Fcareer-ops | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/25195" target="_blank"><img src="https://trendshift.io/api/badge/repositories/25195" alt="santifer%2Fstudent-career-ai | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 </p>
 
 <p align="center"><sub>OMTALT I MEDIERNE</sub></p>
@@ -31,7 +31,7 @@
 ---
 
 <p align="center">
-  <img src="docs/demo.gif" alt="career-ops Demo" width="800">
+  <img src="docs/demo.gif" alt="student-career-ai Demo" width="800">
 </p>
 
 <p align="center"><strong>740+ vurderede stillinger · 100+ skræddersyede CV'er · 1 drømmerolle landet</strong></p>
@@ -61,7 +61,7 @@
 
 ## Hvad er det
 
-career-ops ([career-ops.org](https://career-ops.org), også kendt som **careerops**) forvandler et hvilket som helst AI-CLI til en komplet kommandocentral for jobsøgning. I stedet for manuelt at spore ansøgninger i et regneark får du en AI-drevet pipeline, der:
+student-career-ai ([student-career-ai.org](https://github.com/0xSamad/StudentCareerAI), også kendt som **studentcareer**) forvandler et hvilket som helst AI-CLI til en komplet kommandocentral for jobsøgning. I stedet for manuelt at spore ansøgninger i et regneark får du en AI-drevet pipeline, der:
 
 - **Vurderer stillinger** med et struktureret A–F-system (fem dimensioner, der giver en score på 1,0-5,0)
 - **Genererer skræddersyede PDF'er** — ATS-optimerede CV'er tilpasset hver stilling
@@ -69,13 +69,13 @@ career-ops ([career-ops.org](https://career-ops.org), også kendt som **careerop
 - **Batch-behandler** — vurderer 10+ stillinger parallelt via sub-agenter
 - **Sporer alt** i én kilde til sandhed med datakonsistenstjek
 
-> **Vigtigt: dette er IKKE et værktøj til masseudsendelse af ansøgninger.** career-ops er et filter — det hjælper dig med at finde de få stillinger blandt hundredvis, der er din tid værd. Systemet fraråder kraftigt at ansøge stillinger med en vurdering under 4,0/5. Din tid er værdifuld, og det samme er rekrutterens. Tjek altid efter, før du sender.
+> **Vigtigt: dette er IKKE et værktøj til masseudsendelse af ansøgninger.** student-career-ai er et filter — det hjælper dig med at finde de få stillinger blandt hundredvis, der er din tid værd. Systemet fraråder kraftigt at ansøge stillinger med en vurdering under 4,0/5. Din tid er værdifuld, og det samme er rekrutterens. Tjek altid efter, før du sender.
 
-career-ops arbejder agentisk: Claude Code navigerer karrieresider med Playwright, vurderer match ved at ræsonnere over dit CV kontra stillingsopslaget (ikke via søgeordsmatchning) og tilpasser CV'et til hvert opslag.
+student-career-ai arbejder agentisk: Claude Code navigerer karrieresider med Playwright, vurderer match ved at ræsonnere over dit CV kontra stillingsopslaget (ikke via søgeordsmatchning) og tilpasser CV'et til hvert opslag.
 
 > **Bemærk: de første vurderinger bliver ikke perfekte.** Systemet kender dig endnu ikke. Giv det kontekst — dit CV, din karrierehistorik, eksempler på resultater, præferencer, styrker, hvad du vil undgå. Jo mere du giver det, jo bedre virker det. Betragt det som onboarding af en ny rekrutter: i den første uge skal den lære, hvem du er — derefter bliver den uvurderlig.
 
-Bygget af en, der brugte det til at vurdere 740+ stillinger, generere 100+ skræddersyede CV'er og lande en rolle som Head of Applied AI. [Læs hele case-studiet](https://santifer.io/career-ops-system).
+Bygget af en, der brugte det til at vurdere 740+ stillinger, generere 100+ skræddersyede CV'er og lande en rolle som Head of Applied AI. [Læs hele case-studiet](https://santifer.io/student-career-ai-system).
 
 ## Funktioner
 
@@ -97,27 +97,27 @@ Bygget af en, der brugte det til at vurdere 740+ stillinger, generere 100+ skræ
 **Hurtigste måde — én kommando:**
 
 ```bash
-npx @santifer/career-ops init
+npx @0xSamad/StudentCareerAI init
 ```
 
 > 💡 `npx` følger med [Node.js](https://nodejs.org) — det kører installationsprogrammet én gang uden at installere noget globalt. Har du ikke Node.js endnu? Installer det først.
 > (Bruger du allerede Claude Code / Gemini / Codex CLI? Så har du det allerede.)
 
-Dette kloner den nyeste version til `./career-ops` og installerer afhængighederne. Derefter:
+Dette kloner den nyeste version til `./student-career-ai` og installerer afhængighederne. Derefter:
 
 ```bash
-cd career-ops
+cd student-career-ai
 claude   # eller gemini / codex / qwen / opencode — åbn dit AI-CLI her
 ```
 
-**Ved første kørsel guider career-ops dig gennem opsætningen — CV, profil og målstillinger — udelukkende via samtale. Intet skal redigeres manuelt.**
+**Ved første kørsel guider student-career-ai dig gennem opsætningen — CV, profil og målstillinger — udelukkende via samtale. Intet skal redigeres manuelt.**
 
 <details>
 <summary><b>Foretrækker du manuel opsætning? (git clone)</b></summary>
 
 ```bash
-git clone https://github.com/santifer/career-ops.git
-cd career-ops && npm install
+git clone https://github.com/0xSamad/StudentCareerAI.git
+cd student-career-ai && npm install
 npx playwright install chromium   # kun nødvendigt til PDF-generering
 claude   # åbn dit AI-CLI — første kørsel guider dig gennem onboarding
 ```
@@ -130,24 +130,24 @@ Fuld opsætningsguide: [docs/SETUP.md](docs/SETUP.md).
 
 ## Brug
 
-career-ops er én slash-kommando med flere tilstande:
+student-career-ai er én slash-kommando med flere tilstande:
 
 ```text
-/career-ops                    → Vis alle tilgængelige kommandoer
-/career-ops {indsæt stilling}  → Fuld auto-pipeline (vurdering + PDF + tracker)
-/career-ops scan               → Skan portaler for nye stillinger
-/career-ops pdf                → Generér ATS-optimeret CV
-/career-ops batch              → Batch-vurdering af flere stillinger
-/career-ops tracker            → Se status på ansøgninger
-/career-ops apply              → AI-assisteret udfyldning af ansøgningsformularer
-/career-ops pipeline           → Behandl kø af URL'er
-/career-ops contacto           → LinkedIn-besked
-/career-ops deep               → Dybdegående virksomhedsundersøgelse
-/career-ops training           → Vurdering af kursus/certificering
-/career-ops project            → Vurdering af porteføljeprojekt
+/student-career-ai                    → Vis alle tilgængelige kommandoer
+/student-career-ai {indsæt stilling}  → Fuld auto-pipeline (vurdering + PDF + tracker)
+/student-career-ai scan               → Skan portaler for nye stillinger
+/student-career-ai pdf                → Generér ATS-optimeret CV
+/student-career-ai batch              → Batch-vurdering af flere stillinger
+/student-career-ai tracker            → Se status på ansøgninger
+/student-career-ai apply              → AI-assisteret udfyldning af ansøgningsformularer
+/student-career-ai pipeline           → Behandl kø af URL'er
+/student-career-ai contacto           → LinkedIn-besked
+/student-career-ai deep               → Dybdegående virksomhedsundersøgelse
+/student-career-ai training           → Vurdering af kursus/certificering
+/student-career-ai project            → Vurdering af porteføljeprojekt
 ```
 
-Du kan også blot indsætte en stillings-URL eller dens tekst — career-ops registrerer det automatisk og kører hele pipelinen.
+Du kan også blot indsætte en stillings-URL eller dens tekst — student-career-ai registrerer det automatisk og kører hele pipelinen.
 
 ## Sådan virker det
 
@@ -209,7 +209,7 @@ Funktioner: 6 filterfaner, 4 sorteringstilstande, grupperet/flad visning, doven 
 ## Projektstruktur
 
 ```text
-career-ops/
+student-career-ai/
 ├── AGENTS.md                    # Kanoniske instruktioner til agenten (alle CLI'er)
 ├── CLAUDE.md                    # Claude Code-wrapper (importerer AGENTS.md)
 ├── cv.md                        # Dit CV (opret denne fil)
@@ -259,23 +259,23 @@ career-ops/
 
 ## Om forfatteren
 
-Jeg hedder Santiago — Head of Applied AI, tidligere founder (jeg byggede og solgte en virksomhed, der stadig kører med mit navn). Jeg byggede career-ops til at styre min egen jobsøgning. Det virkede: jeg brugte det til at lande min nuværende rolle.
+Jeg hedder Santiago — Head of Applied AI, tidligere founder (jeg byggede og solgte en virksomhed, der stadig kører med mit navn). Jeg byggede student-career-ai til at styre min egen jobsøgning. Det virkede: jeg brugte det til at lande min nuværende rolle.
 
 Min portefølje og andre open source-projekter → [santifer.io](https://santifer.io)
 
 ## Stjernehistorik
 
-<a href="https://www.star-history.com/?repos=santifer%2Fcareer-ops&type=timeline&legend=top-left">
+<a href="https://www.star-history.com/?repos=santifer%2Fstudent-career-ai&type=timeline&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&legend=top-left" />
  </picture>
 </a>
 
 ## Juridisk ansvarsfraskrivelse
 
-**career-ops er et lokalt open source-værktøj, IKKE en hostingtjeneste.** Ved at bruge denne software anerkender du:
+**student-career-ai er et lokalt open source-værktøj, IKKE en hostingtjeneste.** Ved at bruge denne software anerkender du:
 
 1. **Du kontrollerer dine data.** Dit CV, dine kontaktoplysninger og personlige data forbliver på din computer og sendes direkte til den AI-udbyder, du vælger (Anthropic, OpenAI osv.). Vi indsamler, opbevarer eller har ikke adgang til dine data.
 2. **Du kontrollerer AI'en.** Standardprompterne instruerer AI'en i ikke at sende ansøgninger automatisk, men AI-modeller kan opføre sig uforudsigeligt. Du ændrer prompter på eget ansvar. **Tjek altid AI-genereret indhold, før du sender.**
@@ -286,15 +286,15 @@ Detaljer: [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md). Softwaren leveres under [M
 
 ## Bidragydere
 
-<a href="https://github.com/santifer/career-ops/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=santifer/career-ops" alt="Bidragydere" />
+<a href="https://github.com/0xSamad/StudentCareerAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=0xSamad/StudentCareerAI" alt="Bidragydere" />
 </a>
 
-Fandt du job med career-ops? [Del din historie!](https://github.com/santifer/career-ops/issues/new?template=i-got-hired.yml)
+Fandt du job med student-career-ai? [Del din historie!](https://github.com/0xSamad/StudentCareerAI/issues/new?template=i-got-hired.yml)
 
 ## Licens og varemærke
 
-Koden er licenseret under [MIT](LICENSE). Navnet og brandet "career-ops" er reguleret af [Varemærkepolitikken](TRADEMARK.md) — tilladt til fællesskabsbrug, forbeholdt kommerciel produktnavngivning og endorsement.
+Koden er licenseret under [MIT](LICENSE). Navnet og brandet "student-career-ai" er reguleret af [Varemærkepolitikken](TRADEMARK.md) — tilladt til fællesskabsbrug, forbeholdt kommerciel produktnavngivning og endorsement.
 
 ## Lad os forbinde
 

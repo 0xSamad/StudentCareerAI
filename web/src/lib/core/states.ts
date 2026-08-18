@@ -5,7 +5,7 @@ import { studentCareerRoot } from "@/lib/student-career-ai";
 
 /**
  * ACL for templates/states.yml — the SINGLE SOURCE OF TRUTH for canonical
- * application states (career-ops writer + dashboard reader both read it). Per the
+ * application states (student-career-ai writer + dashboard reader both read it). Per the
  * web↔core contract we READ it live and never hardcode the list (the maintainer
  * once mis-listed it from memory — the file had one more). The FALLBACK below is
  * only a last resort if the file is unreadable, and is kept identical to the file.

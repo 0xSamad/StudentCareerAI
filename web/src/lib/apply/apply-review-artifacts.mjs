@@ -1,6 +1,6 @@
 /**
  * Pick the tailored CV that was actually attached — a copy-edit of the master
- * format — not a rebuilt career-ops template. Preview should match the PDF in
+ * format — not a rebuilt student-career-ai template. Preview should match the PDF in
  * output/apply/{jobId}/*_tailored_cv.pdf.
  */
 

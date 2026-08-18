@@ -26,7 +26,7 @@ const DATA_DIR = path.join(root, "data", "postgres-dev", "cluster");
 const user = process.env.POSTGRES_USER || "career_prod_user";
 const password = process.env.POSTGRES_PASSWORD || "career_dev_pass_change_me";
 const port = parseInt(process.env.POSTGRES_PORT || "5432", 10);
-const database = process.env.POSTGRES_DB || "career_ops_prod";
+const database = process.env.POSTGRES_DB || "student_career_ai_prod";
 
 function pgConfig() {
   return {

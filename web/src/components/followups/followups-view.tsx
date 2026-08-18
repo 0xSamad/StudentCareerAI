@@ -440,7 +440,7 @@ function FollowupRow({
 }
 
 function HistoryPanel({ entry: e, onRemove }: { entry: CadenceEntry; onRemove: (num: number) => void }) {
-  // Tolerate an older core engine (CAREER_OPS_ROOT can point at a separate
+  // Tolerate an older core engine (STUDENT_CAREER_AI_ROOT can point at a separate
   // checkout whose followup-cadence.mjs predates the per-entry followups[]).
   const history = e.followups ?? [];
   return (

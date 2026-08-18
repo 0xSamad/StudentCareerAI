@@ -287,16 +287,16 @@ try {
   {
     const seen = {
       unset: lookupsPerMinFromEnv({}),
-      empty: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: '' }),
-      set: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: '120' }),
-      off: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: '0' }),
-      junk: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: 'fast' }),
-      negative: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: '-1' }),
+      empty: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '' }),
+      set: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '120' }),
+      off: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '0' }),
+      junk: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: 'fast' }),
+      negative: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '-1' }),
     };
 
     if (seen.unset === 400 && seen.empty === 400 && seen.set === 120
         && seen.off === 0 && seen.junk === 400 && seen.negative === 400) {
-      pass('CAREER_OPS_DNS_LOOKUPS_PER_MIN parses, defaults to 400, and 0 disables');
+      pass('STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN parses, defaults to 400, and 0 disables');
     } else {
       fail(`env parsing wrong: ${JSON.stringify(seen)}`);
     }
@@ -309,9 +309,9 @@ try {
   // must never have.
   {
     const seen = {
-      space: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: ' ' }),
-      tab: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: '\t' }),
-      padded: lookupsPerMinFromEnv({ CAREER_OPS_DNS_LOOKUPS_PER_MIN: ' 120 ' }),
+      space: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: ' ' }),
+      tab: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: '\t' }),
+      padded: lookupsPerMinFromEnv({ STUDENT_CAREER_AI_DNS_LOOKUPS_PER_MIN: ' 120 ' }),
     };
 
     if (seen.space === 400 && seen.tab === 400 && seen.padded === 120) {

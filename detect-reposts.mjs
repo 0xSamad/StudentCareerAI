@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * detect-reposts.mjs — Repost Detector for career-ops
+ * detect-reposts.mjs — Repost Detector for student-career-ai
  *
  * Reads data/scan-history.tsv, groups rows by company, fuzzy-matches role
  * titles with roleFuzzyMatch from role-matcher.mjs, and flags any
@@ -19,7 +19,7 @@
  *      node detect-reposts.mjs --self-test
  *      node detect-reposts.mjs --help
  *
- * Issue #1205 — github.com/santifer/career-ops
+ * Issue #1205 — github.com/0xSamad/StudentCareerAI
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -30,8 +30,8 @@ import { roleFuzzyMatch, roleTokens, BASELINE_TOKENS } from './role-matcher.mjs'
 import { normalizeCompanyName } from './invite-match.mjs';
 import { flagValue } from './lib/cli-flags.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const SCAN_HISTORY_PATH = join(CAREER_OPS, 'data/scan-history.tsv');
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
+const SCAN_HISTORY_PATH = join(STUDENT_CAREER_AI, 'data/scan-history.tsv');
 const DEFAULT_WINDOW_DAYS = 90;
 
 // --- CLI args ---
@@ -397,7 +397,7 @@ function buildRepostCluster(clusterRows, windowDays) {
 // --- Summary mode ---
 function printSummary(clusters) {
   console.log(`\n${'='.repeat(78)}`);
-  console.log('  Repost Detector — career-ops');
+  console.log('  Repost Detector — student-career-ai');
   console.log(`  window: ${windowDays} days | clusters: ${clusters.length}`);
   console.log(`${'='.repeat(78)}\n`);
 

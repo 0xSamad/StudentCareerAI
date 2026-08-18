@@ -1,4 +1,4 @@
-// tests/student-profile.test.mjs — CareerOS student profile loader & validator.
+// tests/student-profile.test.mjs — StudentCareer AI student profile loader & validator.
 import { pass, fail, ROOT } from './helpers.mjs';
 import { join } from 'path';
 import { pathToFileURL } from 'url';

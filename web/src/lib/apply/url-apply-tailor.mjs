@@ -58,7 +58,7 @@ export function coverLetterToHtml(name, company, body) {
 
 function checkoutRoot(explicitRoot = "") {
   const here = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "..");
-  const candidates = [explicitRoot, process.env.CAREER_OPS_ROOT, here, process.cwd(), path.resolve(process.cwd(), "..")];
+  const candidates = [explicitRoot, process.env.STUDENT_CAREER_AI_ROOT, here, process.cwd(), path.resolve(process.cwd(), "..")];
   for (const dir of candidates) {
     const root = String(dir || "").trim();
     if (root && existsSync(path.join(root, "lib", "cv-tailor.mjs"))) return root;

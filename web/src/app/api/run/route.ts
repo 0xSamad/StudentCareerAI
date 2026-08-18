@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 800; // a real oferta evaluation / pdf-mode CV tailoring + render is heavy and multi-step
 
-// The web ORCHESTRATES the real career-ops engine — it does NOT reimplement it.
+// The web ORCHESTRATES the real student-career-ai engine — it does NOT reimplement it.
 // kind "evaluate" runs the REAL modes/oferta.md and persists the canonical
 // artifacts (A–F report + tracker row) via the SAME scripts the CLI uses
 // (reserve-report-num.mjs → reports/ → batch/tracker-additions/ → merge-tracker.mjs),
@@ -33,7 +33,7 @@ Target: ${input}`;
     // launches a real browser, which an agent CLI's own sandbox may block with no
     // human present to approve an escalation (headless/web-triggered run, #2172).
     // The backend (a plain Node process, no CLI sandbox) renders after this closes.
-    return `You are tailoring the user's ATS-optimized CV for application #${input}, headless, on their machine. Run the REAL career-ops "pdf" mode's CONTENT step — follow modes/pdf.md EXACTLY for tailoring (do not improvise a format).
+    return `You are tailoring the user's ATS-optimized CV for application #${input}, headless, on their machine. Run the REAL student-career-ai "pdf" mode's CONTENT step — follow modes/pdf.md EXACTLY for tailoring (do not improvise a format).
 1. Read modes/pdf.md, cv.md, config/profile.yml, and the evaluation report at reports/${input}-*.md (for the JD keywords + analysis).
 2. Tailor the CV per modes/pdf.md: inject the JD's keywords into the summary + first bullets, reorder experience by relevance, build the competency grid, pick the top 3–4 projects. NEVER invent skills — only reword REAL experience using the JD's vocabulary.
 3. Fill templates/cv-template.html's {{...}} placeholders with the tailored content; write the HTML to EXACTLY this path: ${pdfPaths?.html}
@@ -44,7 +44,7 @@ Do NOT run generate-pdf.mjs yourself and do NOT render a PDF — the platform re
 End with EXACTLY one final line: VERDICT: {5 if the HTML and format file were written, else 1}/5 — {a one-line summary, ≤12 words}`;
   }
   if (kind === "fix-portal") {
-    return `A company's job-portal ATS slug is BROKEN — career-ops can no longer scan it, so it silently disappears from every future scan. Repair it (headless, on the user's machine):
+    return `A company's job-portal ATS slug is BROKEN — student-career-ai can no longer scan it, so it silently disappears from every future scan. Repair it (headless, on the user's machine):
 1. Run \`node verify-portals.mjs --add "${input}"\` — it probes Greenhouse/Ashby/Lever for the company's correct ATS slug and prints the suggested ats + slug.
 2. Open portals.yml, find the "${input}" entry under tracked_companies, and update its careers_url (and any api/slug field) to the suggested WORKING ATS URL. Change ONLY this one company; preserve all other YAML structure, comments and formatting exactly.
 3. Re-run \`node verify-portals.mjs\` and confirm "${input}" now shows ✅ live (not ❌).
@@ -53,7 +53,7 @@ If NO slug variant resolves, say so clearly and leave portals.yml unchanged. Nev
 End with EXACTLY one final line: VERDICT: {5 if now live, else 1}/5 — {what you changed, ≤12 words}`;
   }
   // evaluate (default) — run the REAL oferta mode + persist canonically
-  return `You are running the OFFICIAL career-ops job evaluation, HEADLESS, on the user's own machine. Today is ${today}. Run the REAL career-ops evaluation — do NOT improvise your own scoring.
+  return `You are running the OFFICIAL student-career-ai job evaluation, HEADLESS, on the user's own machine. Today is ${today}. Run the REAL student-career-ai evaluation — do NOT improvise your own scoring.
 
 1. Read modes/oferta.md and follow it EXACTLY (blocks A–F, G posting-legitimacy, and the Machine Summary). Ground the fit in THIS person: read cv.md, config/profile.yml and modes/_profile.md. Use WebFetch to read the posting (you are headless — Playwright is unavailable, so use WebFetch and mark the report header "Verification: unconfirmed (batch mode)").
 
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
   if (required && !fs.existsSync(path.join(studentCareerRoot(), required))) {
     return new Response(
       JSON.stringify({
-        error: `This needs a complete career-ops checkout (${required}). CAREER_OPS_ROOT has data only — point it at a full checkout.`,
+        error: `This needs a complete student-career-ai checkout (${required}). STUDENT_CAREER_AI_ROOT has data only — point it at a full checkout.`,
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
@@ -344,7 +344,7 @@ export async function POST(req: Request) {
         // a PDF — one place for the condition/message pair instead of two.
         const noOutputError = (): string | null => {
           if (!emittedText && !sawError && !cleanExit) return "The CLI exited with an error — is it installed and authenticated?";
-          if (!emittedText && !sawError) return "The CLI produced no output — is it installed and authenticated? (career-ops is best on Claude Code.)";
+          if (!emittedText && !sawError) return "The CLI produced no output — is it installed and authenticated? (student-career-ai is best on Claude Code.)";
           return null;
         };
 

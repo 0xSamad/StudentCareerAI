@@ -205,7 +205,7 @@ export async function checkLivenessViaApi(url) {
     try {
       res = await fetch(apiUrl, {
         method: 'GET',
-        headers: { 'user-agent': 'career-ops-liveness/1.0', accept: 'application/json' },
+        headers: { 'user-agent': 'student-career-ai-liveness/1.0', accept: 'application/json' },
         redirect: 'error', // refuse server-side redirects (SSRF + ambiguity guard)
         signal: controller.signal,
       });

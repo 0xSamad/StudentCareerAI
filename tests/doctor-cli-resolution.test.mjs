@@ -34,33 +34,33 @@ function expectOk(state, msg) {
 }
 
 try {
-  // 1. --cli flag beats process.env.CAREER_OPS_CLI. Pin precedence at the
+  // 1. --cli flag beats process.env.STUDENT_CAREER_AI_CLI. Pin precedence at the
   //    flag/env boundary so a future reorder of resolveActiveCli fails loudly.
   {
     const dir = mkdtempSync(join(tmpdir(), 'co-resolve-1-'));
     try {
-      const state = runDoctor(dir, ['--cli', 'opencode'], { CAREER_OPS_CLI: 'claude' });
+      const state = runDoctor(dir, ['--cli', 'opencode'], { STUDENT_CAREER_AI_CLI: 'claude' });
       if (expectOk(state, '#1 flag beats env')
           && state.active_cli === 'opencode'
           && state.cli_source === 'flag') {
-        pass('--cli flag beats CAREER_OPS_CLI env (active_cli=opencode, cli_source=flag)');
+        pass('--cli flag beats STUDENT_CAREER_AI_CLI env (active_cli=opencode, cli_source=flag)');
       } else {
         fail(`#1 unexpected state: ${JSON.stringify(state)}`);
       }
     } finally { rmSync(dir, { recursive: true, force: true }); }
   }
 
-  // 2. process.env.CAREER_OPS_CLI beats CAREER_OPS_CLI in .env. Pin
+  // 2. process.env.STUDENT_CAREER_AI_CLI beats STUDENT_CAREER_AI_CLI in .env. Pin
   //    precedence at the env/.env boundary.
   {
     const dir = mkdtempSync(join(tmpdir(), 'co-resolve-2-'));
     try {
-      writeFileSync(join(dir, '.env'), 'CAREER_OPS_CLI=claude\n');
-      const state = runDoctor(dir, [], { CAREER_OPS_CLI: 'opencode' });
+      writeFileSync(join(dir, '.env'), 'STUDENT_CAREER_AI_CLI=claude\n');
+      const state = runDoctor(dir, [], { STUDENT_CAREER_AI_CLI: 'opencode' });
       if (expectOk(state, '#2 env beats .env')
           && state.active_cli === 'opencode'
           && state.cli_source === 'env') {
-        pass('process.env CAREER_OPS_CLI beats .env file (active_cli=opencode, cli_source=env)');
+        pass('process.env STUDENT_CAREER_AI_CLI beats .env file (active_cli=opencode, cli_source=env)');
       } else {
         fail(`#2 unexpected state: ${JSON.stringify(state)}`);
       }

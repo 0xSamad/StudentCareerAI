@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * weekly-digest.mjs — Weekly Interview Digest for career-ops
+ * weekly-digest.mjs — Weekly Interview Digest for student-career-ai
  *
  * `interview/debrief` and `interview/practice` already write structured
  * session transcripts to `interview-prep/sessions/{company-slug}-{role-slug}-
@@ -34,7 +34,7 @@
  * Default range: the current ISO week (Monday–Sunday), matching the
  * `isoWeek` convention already used by `stats.mjs`'s scan-run trends.
  *
- * Issue #2129 — github.com/santifer/career-ops
+ * Issue #2129 — github.com/0xSamad/StudentCareerAI
  */
 
 import { readFileSync, existsSync, readdirSync, mkdtempSync, writeFileSync, rmSync } from 'fs';
@@ -42,9 +42,9 @@ import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import yaml from 'js-yaml';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const DEFAULT_SESSIONS_DIR = join(CAREER_OPS, 'interview-prep', 'sessions');
-const DEFAULT_QUESTION_BANK_PATH = join(CAREER_OPS, 'interview-prep', 'question-bank.md');
+const STUDENT_CAREER_AI = dirname(fileURLToPath(import.meta.url));
+const DEFAULT_SESSIONS_DIR = join(STUDENT_CAREER_AI, 'interview-prep', 'sessions');
+const DEFAULT_QUESTION_BANK_PATH = join(STUDENT_CAREER_AI, 'interview-prep', 'question-bank.md');
 
 const ROUND_ENUM = ['screen', 'hiring-manager', 'technical', 'system-design', 'behavioral', 'onsite', 'final'];
 

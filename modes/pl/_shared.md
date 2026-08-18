@@ -1,10 +1,10 @@
-# Wspólny kontekst -- career-ops (Polski)
+# Wspólny kontekst -- student-career-ai (Polski)
 
 <!-- ============================================================
      PERSONALIZACJA TEGO PLIKU
      ============================================================
      Ten plik zawiera wspólny kontekst dla wszystkich trybów
-     career-ops w wersji polskiej. Zanim użyjesz career-ops, MUSISZ:
+     student-career-ai w wersji polskiej. Zanim użyjesz student-career-ai, MUSISZ:
      1. Wypełnić config/profile.yml swoimi danymi osobowymi
      2. Utworzyć cv.md w katalogu głównym projektu (CV w Markdown)
      3. (Opcjonalnie) Utworzyć article-digest.md ze swoimi proof points

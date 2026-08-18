@@ -1,4 +1,4 @@
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/wordmark-dark.svg"><img src="docs/wordmark-light.svg" alt="career-ops" width="250" height="56"></picture></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/wordmark-dark.svg"><img src="docs/wordmark-light.svg" alt="student-career-ai" width="250" height="56"></picture></p>
 
 <div align="center">
 
@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <a href="https://x.com/santifer"><img src="docs/hero-banner.jpg" alt="Système de recherche d'emploi multi-agent career-ops" width="800"></a>
+  <a href="https://x.com/santifer"><img src="docs/hero-banner.jpg" alt="Système de recherche d'emploi multi-agent student-career-ai" width="800"></a>
 </p>
 
 <p align="center">
@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  <a href="https://trendshift.io/repositories/25195" target="_blank"><img src="https://trendshift.io/api/badge/repositories/25195" alt="santifer%2Fcareer-ops | Trendshift" style="width: 245px; height: 54px; vertical-align: middle;" width="245" height="54"/></a>
+  <a href="https://trendshift.io/repositories/25195" target="_blank"><img src="https://trendshift.io/api/badge/repositories/25195" alt="santifer%2Fstudent-career-ai | Trendshift" style="width: 245px; height: 54px; vertical-align: middle;" width="245" height="54"/></a>
 </p>
 
 <p align="center">
-  <a href="https://www.producthunt.com/products/santifer-io?utm_source=badge-featured&utm_medium=badge" target="_blank"><img src="docs/press/producthunt.svg" alt="career-ops sur Claude | Product Hunt" style="width: 206px; height: 54px; vertical-align: middle;" width="206" height="54"/></a>
+  <a href="https://www.producthunt.com/products/santifer-io?utm_source=badge-featured&utm_medium=badge" target="_blank"><img src="docs/press/producthunt.svg" alt="student-career-ai sur Claude | Product Hunt" style="width: 206px; height: 54px; vertical-align: middle;" width="206" height="54"/></a>
 </p>
 
 <p align="center"><sub>PRÉSENTÉ DANS</sub></p>
@@ -35,7 +35,7 @@
 ---
 
 <p align="center">
-  <img src="docs/demo.gif" alt="Démo de career-ops" width="800">
+  <img src="docs/demo.gif" alt="Démo de student-career-ai" width="800">
 </p>
 
 <p align="center"><strong>Plus de 740 offres d'emploi évaluées · Plus de 100 CV personnalisés · 1 poste de rêve décroché</strong></p>
@@ -45,7 +45,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/santifer/career-ops/releases/latest"><img src="https://img.shields.io/badge/release-v1.9.0-2ea44f?style=for-the-badge&labelColor=2b3137" alt="Dernière version"></a>
+  <a href="https://github.com/0xSamad/StudentCareerAI/releases/latest"><img src="https://img.shields.io/badge/release-v1.9.0-2ea44f?style=for-the-badge&labelColor=2b3137" alt="Dernière version"></a>
 </p>
 
 <p align="center">
@@ -71,7 +71,7 @@
 
 ## Qu'est-ce que c'est
 
-career-ops ([career-ops.org](https://career-ops.org), également connu sous le nom de **careerops**) transforme n'importe quelle interface de ligne de commande (CLI) de codage IA en un véritable centre de commandement pour votre recherche d'emploi. Au lieu de suivre manuellement vos candidatures dans un tableau de bord, vous disposez d'un pipeline alimenté par l'IA qui :
+student-career-ai ([student-career-ai.org](https://github.com/0xSamad/StudentCareerAI), également connu sous le nom de **studentcareer**) transforme n'importe quelle interface de ligne de commande (CLI) de codage IA en un véritable centre de commandement pour votre recherche d'emploi. Au lieu de suivre manuellement vos candidatures dans un tableau de bord, vous disposez d'un pipeline alimenté par l'IA qui :
 
 - **Évalue les offres** avec une évaluation structurée de A à F (cinq dimensions alimentant un score de 1,0 à 5,0)
 - **Génère des PDF sur mesure** — des CV optimisés pour les systèmes ATS, personnalisés pour chaque description de poste
@@ -79,13 +79,13 @@ career-ops ([career-ops.org](https://career-ops.org), également connu sous le n
 - **Traite en lot** — évalue plus de 10 offres en parallèle avec des sous-agents
 - **Suit tout** dans une source unique de vérité avec des vérifications d'intégrité
 
-> **Important : Il ne s'agit PAS d'un outil pour postuler en masse de manière abusive (spray-and-pray).** career-ops est un filtre — il vous aide à identifier les rares offres qui méritent votre temps parmi des centaines d'autres. Le système recommande fortement de ne pas postuler aux offres ayant un score inférieur à 4,0/5. Votre temps est précieux, tout comme celui des recruteurs. Relisez toujours avant d'envoyer.
+> **Important : Il ne s'agit PAS d'un outil pour postuler en masse de manière abusive (spray-and-pray).** student-career-ai est un filtre — il vous aide à identifier les rares offres qui méritent votre temps parmi des centaines d'autres. Le système recommande fortement de ne pas postuler aux offres ayant un score inférieur à 4,0/5. Votre temps est précieux, tout comme celui des recruteurs. Relisez toujours avant d'envoyer.
 
-career-ops est agentic : Claude Code navigue sur les pages carrières avec Playwright, évalue l'adéquation en analysant votre CV par rapport à la description du poste (et non par simple correspondance de mots-clés), et adapte votre CV pour chaque offre.
+student-career-ai est agentic : Claude Code navigue sur les pages carrières avec Playwright, évalue l'adéquation en analysant votre CV par rapport à la description du poste (et non par simple correspondance de mots-clés), et adapte votre CV pour chaque offre.
 
 > **Attention : les premières évaluations ne seront pas parfaites.** Le système ne vous connaît pas encore. Fournissez-lui du contexte — votre CV, votre parcours professionnel, vos réalisations marquantes, vos préférences, vos points forts et ce que vous souhaitez éviter. Plus vous l'alimentez, plus il devient performant. Voyez cela comme l'intégration d'un nouveau recruteur : la première semaine, il doit apprendre à vous connaître, puis il devient indispensable.
 
-Conçu par quelqu'un qui l'a utilisé pour évaluer plus de 740 offres d'emploi, générer plus de 100 CV personnalisés et décrocher un poste de Head of Applied AI. [Lire l'étude de cas complète (en anglais)](https://santifer.io/career-ops-system).
+Conçu par quelqu'un qui l'a utilisé pour évaluer plus de 740 offres d'emploi, générer plus de 100 CV personnalisés et décrocher un poste de Head of Applied AI. [Lire l'étude de cas complète (en anglais)](https://santifer.io/student-career-ai-system).
 
 ## Fonctionnalités
 
@@ -107,26 +107,26 @@ Conçu par quelqu'un qui l'a utilisé pour évaluer plus de 740 offres d'emploi,
 **La méthode la plus rapide — une seule commande :**
 
 ```bash
-npx @santifer/career-ops init
+npx @0xSamad/StudentCareerAI init
 ```
 
 > 💡 `npx` est fourni avec [Node.js](https://nodejs.org) — il exécute l'installateur une seule fois, sans rien installer globalement. Si vous n'avez pas encore Node, installez-le d'abord. (Si vous utilisez déjà un CLI Claude Code / Gemini / Codex, vous l'avez déjà.)
 
-Cette commande clone la dernière version dans `./career-ops` et installe les dépendances. Ensuite :
+Cette commande clone la dernière version dans `./student-career-ai` et installe les dépendances. Ensuite :
 
 ```bash
-cd career-ops
+cd student-career-ai
 claude   # ou gemini / codex / qwen / opencode — ouvrez votre CLI d'IA ici
 ```
 
-**Lors du premier lancement, career-ops vous guide à travers la configuration — votre CV, votre profil et vos rôles cibles — simplement par chat. Rien à modifier à la main.**
+**Lors du premier lancement, student-career-ai vous guide à travers la configuration — votre CV, votre profil et vos rôles cibles — simplement par chat. Rien à modifier à la main.**
 
 <details>
 <summary><b>Vous préférez le configurer manuellement ? (git clone)</b></summary>
 
 ```bash
-git clone https://github.com/santifer/career-ops.git
-cd career-ops && npm install
+git clone https://github.com/0xSamad/StudentCareerAI.git
+cd student-career-ai && npm install
 npx playwright install chromium   # requis uniquement pour la génération de PDF
 claude   # ouvrez votre CLI d'IA — il vous guidera au premier lancement
 ```
@@ -139,7 +139,7 @@ Voir [docs/SETUP.md](docs/SETUP.md) (en anglais) pour le guide de configuration 
 
 ## Intégration de l'interface en ligne de commande Gemini
 
-career-ops prend en charge [Gemini CLI](https://github.com/google-gemini/gemini-cli) nativement, de la même manière qu'il supporte Claude Code et OpenCode. Les 15 commandes slash sont disponibles, utilisant la même logique d'évaluation `modes/*.md`.
+student-career-ai prend en charge [Gemini CLI](https://github.com/google-gemini/gemini-cli) nativement, de la même manière qu'il supporte Claude Code et OpenCode. Les 15 commandes slash sont disponibles, utilisant la même logique d'évaluation `modes/*.md`.
 
 ### Option A : Gemini CLI Natif (Recommandé)
 
@@ -149,16 +149,16 @@ npm install -g @google/gemini-cli
 # ou : npx @google/gemini-cli --version
 #    L'authentification se fait via votre compte Google (gratuit) au premier lancement
 
-# 2. Exécutez dans le dossier career-ops
-cd career-ops
+# 2. Exécutez dans le dossier student-career-ai
+cd student-career-ai
 gemini
 
-# 3. Utilisez la commande unifiée /career-ops avec ses sous-commandes :
-/career-ops "Senior AI Engineer at Anthropic..."
-/career-ops pipeline
-/career-ops scan
-/career-ops pdf
-/career-ops tracker
+# 3. Utilisez la commande unifiée /student-career-ai avec ses sous-commandes :
+/student-career-ai "Senior AI Engineer at Anthropic..."
+/student-career-ai pipeline
+/student-career-ai scan
+/student-career-ai pdf
+/student-career-ai tracker
 ```
 
 Le fichier `GEMINI.md` est chargé automatiquement comme contexte. Toutes les sous-commandes sont routées via la définition unifiée `.agents/skills/student-career-ai/SKILL.md`.
@@ -183,25 +183,25 @@ npm run gemini:eval -- "Texte de la description de poste ici"
 
 ## Utilisation
 
-career-ops est accessible via une commande slash unique avec plusieurs modes :
+student-career-ai est accessible via une commande slash unique avec plusieurs modes :
 
 ```
-/career-ops                → Afficher toutes les commandes disponibles
-/career-ops {coller JD}    → Pipeline automatique complet (évaluation + PDF + tracker)
-/career-ops scan           → Scanner les portails pour de nouvelles offres
-/career-ops pdf            → Générer un CV optimisé pour les ATS
-/career-ops batch          → Évaluer plusieurs offres en lot
-/career-ops tracker        → Consulter l'état des candidatures
-/career-ops apply          → Remplir des formulaires de candidature avec l'IA
-/career-ops outcome        → Enregistrer le résultat et archiver la candidature
-/career-ops pipeline       → Traiter les URL en attente
-/career-ops contacto       → Message d'approche LinkedIn
-/career-ops deep           → Recherche approfondie sur une entreprise
-/career-ops training       → Évaluer une formation/certification
-/career-ops project        → Évaluer un projet de portfolio
+/student-career-ai                → Afficher toutes les commandes disponibles
+/student-career-ai {coller JD}    → Pipeline automatique complet (évaluation + PDF + tracker)
+/student-career-ai scan           → Scanner les portails pour de nouvelles offres
+/student-career-ai pdf            → Générer un CV optimisé pour les ATS
+/student-career-ai batch          → Évaluer plusieurs offres en lot
+/student-career-ai tracker        → Consulter l'état des candidatures
+/student-career-ai apply          → Remplir des formulaires de candidature avec l'IA
+/student-career-ai outcome        → Enregistrer le résultat et archiver la candidature
+/student-career-ai pipeline       → Traiter les URL en attente
+/student-career-ai contacto       → Message d'approche LinkedIn
+/student-career-ai deep           → Recherche approfondie sur une entreprise
+/student-career-ai training       → Évaluer une formation/certification
+/student-career-ai project        → Évaluer un projet de portfolio
 ```
 
-Ou collez simplement l'URL ou la description d'un emploi — career-ops le détecte automatiquement et lance le pipeline complet.
+Ou collez simplement l'URL ou la description d'un emploi — student-career-ai le détecte automatiquement et lance le pipeline complet.
 
 ## Comment ça fonctionne
 
@@ -263,7 +263,7 @@ Fonctionnalités : 6 onglets de filtrage, 4 modes de tri, vue groupée ou plate,
 ## Structure du projet
 
 ```
-career-ops/
+student-career-ai/
 ├── AGENTS.md                    # Instructions de l'agent canonique (tous CLI)
 ├── CLAUDE.md                    # Wrapper Claude Code (importe AGENTS.md)
 ├── cv.md                        # Votre CV (à créer)
@@ -307,25 +307,25 @@ career-ops/
 
 ## À propos de l'auteur
 
-Je m'appelle [Santiago Fernández de Valderrama Aparicio](https://santifer.io/about) (santifer) — Head of Applied AI, ancien fondateur (j'ai créé et vendu une entreprise qui fonctionne toujours sous mon nom). J'ai conçu career-ops pour gérer ma propre recherche d'emploi. Cela a fonctionné : je l'ai utilisé pour décrocher mon poste actuel.
+Je m'appelle [Santiago Fernández de Valderrama Aparicio](https://santifer.io/about) (santifer) — Head of Applied AI, ancien fondateur (j'ai créé et vendu une entreprise qui fonctionne toujours sous mon nom). J'ai conçu student-career-ai pour gérer ma propre recherche d'emploi. Cela a fonctionné : je l'ai utilisé pour décrocher mon poste actuel.
 
 Mon portfolio et mes autres projets open source → [santifer.io](https://santifer.io)
 
-Wikidata: [Santiago Fernández de Valderrama Aparicio](https://www.wikidata.org/wiki/Q138710224) · [career-ops](https://www.wikidata.org/wiki/Q139007988).
+Wikidata: [Santiago Fernández de Valderrama Aparicio](https://www.wikidata.org/wiki/Q138710224) · [student-career-ai](https://www.wikidata.org/wiki/Q139007988).
 
 ## Historique des étoiles
 
-<a href="https://www.star-history.com/?repos=santifer%2Fcareer-ops&type=timeline&legend=top-left">
+<a href="https://www.star-history.com/?repos=santifer%2Fstudent-career-ai&type=timeline&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=santifer/career-ops&type=timeline&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=0xSamad/StudentCareerAI&type=timeline&legend=top-left" />
  </picture>
 </a>
 
 ## Clause de non-responsabilité
 
-**career-ops est un outil local et open source, pas un service hébergé.** En utilisant ce logiciel, vous reconnaissez que :
+**student-career-ai est un outil local et open source, pas un service hébergé.** En utilisant ce logiciel, vous reconnaissez que :
 
 1. **Vous contrôlez vos données.** Votre CV, vos coordonnées et vos données personnelles restent sur votre machine et sont envoyés directement au fournisseur d'IA que vous choisissez (Anthropic, OpenAI, etc.). Nous ne collectons, ne stockons ni n'avons accès à aucune de vos données.
 2. **Vous contrôlez l'IA.** Les consignes par défaut demandent à l'IA de ne pas soumettre de candidatures automatiquement, mais les modèles d'IA peuvent se comporter de manière imprévisible. Si vous modifiez les consignes ou utilisez d'autres modèles, vous le faites à vos propres risques. **Vérifiez toujours le contenu généré par l'IA avant de soumettre une candidature.**
@@ -336,15 +336,15 @@ Voir [LEGAL_DISCLAIMER.md](LEGAL_DISCLAIMER.md) (en anglais) pour tous les déta
 
 ## Contributeurs
 
-<a href="https://github.com/santifer/career-ops/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=santifer/career-ops" />
+<a href="https://github.com/0xSamad/StudentCareerAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=0xSamad/StudentCareerAI" />
 </a>
 
-Vous avez été embauché grâce à career-ops ? [Partagez votre histoire ! (en anglais)](https://github.com/santifer/career-ops/issues/new?template=i-got-hired.yml)
+Vous avez été embauché grâce à student-career-ai ? [Partagez votre histoire ! (en anglais)](https://github.com/0xSamad/StudentCareerAI/issues/new?template=i-got-hired.yml)
 
 ## Licence et marques déposées
 
-Le code est distribué sous [Licence MIT](LICENSE). Le nom et la marque "career-ops" sont régis par la [Politique de marques déposées](TRADEMARK.md), qui autorise l'usage par la communauté mais le réserve pour les produits commerciaux et les promotions.
+Le code est distribué sous [Licence MIT](LICENSE). Le nom et la marque "student-career-ai" sont régis par la [Politique de marques déposées](TRADEMARK.md), qui autorise l'usage par la communauté mais le réserve pour les produits commerciaux et les promotions.
 
 ## Connectons-nous
 

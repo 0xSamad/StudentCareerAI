@@ -1,4 +1,4 @@
-# Career-Ops -- AI Job Search Pipeline
+# StudentCareer AI -- AI Job Search Pipeline
 
 ## Origin
 
@@ -24,7 +24,7 @@ User-facing content (CV, cover letters, application emails, form answers, recrui
 - `voice-dna.md` (voice/style only — never introduces factual claims)
 - `interview-prep/story-bank.md` and `interview-prep/{company}-{role}.md` (the user's own STAR stories and prep notes — same trust level as `cv.md`; consumed by `interview` and `apply`/`match-star`)
 
-Everything else is **out of scope for content generation**: auto-memory (see below), any directory outside the career-ops project (parent/sibling repos, other codebases on the machine), knowledge from other Claude Code projects on the same machine, and cross-session inferences not written into an in-scope file.
+Everything else is **out of scope for content generation**: auto-memory (see below), any directory outside the student-career-ai project (parent/sibling repos, other codebases on the machine), knowledge from other Claude Code projects on the same machine, and cross-session inferences not written into an in-scope file.
 
 **Rule from the original design:** *"Keywords get reformulated, never fabricated."* Reorder, reframe, emphasise — but never invent. If a claim isn't backed by an in-scope file, ask the user; if they don't add it, the output goes without it. Silence on a topic is fine; manufactured detail is not.
 
@@ -57,19 +57,19 @@ node update-system.mjs check
 ```
 
 If `{"status": "update-available", "local": ..., "remote": ..., "changelog": ...}` → tell the user:
-> "career-ops update available (v{local} → v{remote}). Your data (CV, profile, tracker, reports) will NOT be touched. Want me to update?"
+> "student-career-ai update available (v{local} → v{remote}). Your data (CV, profile, tracker, reports) will NOT be touched. Want me to update?"
 
-If yes → `node update-system.mjs apply`. If no → `node update-system.mjs dismiss`. Every other status (`up-to-date`, `dismissed`, `offline`, `no-remote-version`) → say nothing. The user can force a check anytime ("check for updates" / "update career-ops"); rollback: `node update-system.mjs rollback`.
+If yes → `node update-system.mjs apply`. If no → `node update-system.mjs dismiss`. Every other status (`up-to-date`, `dismissed`, `offline`, `no-remote-version`) → say nothing. The user can force a check anytime ("check for updates" / "update student-career-ai"); rollback: `node update-system.mjs rollback`.
 
-## What is career-ops
+## What is student-career-ai
 
 AI-powered, CLI-agnostic job search automation: pipeline tracking, offer evaluation, CV generation, portal scanning, batch processing. Runs on any AI coding CLI following the [open agent skill standard](https://agentskills.io) (Claude Code, Cursor, Codex, OpenCode, Qwen, Copilot, Kimi, Antigravity CLI, Grok Build CLI). Legacy Gemini API evaluation remains via `gemini-eval.mjs`.
 
 ### Codex invocation
 
-- **Interactive:** run `codex` in the repo root; if `/career-ops` is unavailable, ask Codex to run the mode directly.
+- **Interactive:** run `codex` in the repo root; if `/student-career-ai` is unavailable, ask Codex to run the mode directly.
 - **Headless:** `codex exec "prompt"` for one-shot workers.
-- **Examples:** `Run career-ops scan mode`, `Run career-ops pipeline mode for data/pipeline.md`, `Run career-ops pdf mode`, `Run career-ops tracker mode`, `Evaluate this JD with career-ops auto-pipeline: https://company.com/jobs/123`
+- **Examples:** `Run student-career-ai scan mode`, `Run student-career-ai pipeline mode for data/pipeline.md`, `Run student-career-ai pdf mode`, `Run student-career-ai tracker mode`, `Evaluate this JD with student-career-ai auto-pipeline: https://company.com/jobs/123`
 
 ### Main Files
 
@@ -134,7 +134,7 @@ Output: `{"onboardingNeeded": <bool>, "missing": [...], "warnings": [...], "auto
 #### Step 0: Free Tier Check
 
 Only if the user mentions cost, pricing, budget, or free alternatives:
-> "career-ops works fully on Antigravity CLI's free tier — no API key or paid subscription needed. See [FREE_TIER.md](docs/FREE_TIER.md) for setup, daily limits, and batch tips."
+> "student-career-ai works fully on Antigravity CLI's free tier — no API key or paid subscription needed. See [FREE_TIER.md](docs/FREE_TIER.md) for setup, daily limits, and batch tips."
 
 If the user is already on a paid plan (Claude Max, Google AI, etc.) or does not mention cost, skip this step silently.
 
@@ -200,8 +200,8 @@ Store insights in `config/profile.yml` (narrative), `modes/_profile.md`, or `art
 Once all files exist, confirm:
 > "You're all set! You can now:
 > - Paste a job URL to evaluate it
-> - Run the scan entrypoint for your CLI to search portals: `/career-ops scan`, `/career-ops-scan`, or ask Codex to run `scan`
-> - Open the command menu for your CLI: `/career-ops`, the CLI-specific alias, or ask Codex to show the available career-ops modes
+> - Run the scan entrypoint for your CLI to search portals: `/student-career-ai scan`, `/student-career-ai-scan`, or ask Codex to run `scan`
+> - Open the command menu for your CLI: `/student-career-ai`, the CLI-specific alias, or ask Codex to show the available student-career-ai modes
 >
 > Everything is customizable — just ask me to change anything.
 >
@@ -210,7 +210,7 @@ Once all files exist, confirm:
 Then suggest automation:
 > "Want me to scan for new offers automatically? I can set up a recurring scan every few days so you don't miss anything. Just say 'scan every 3 days' and I'll configure it."
 
-If the user accepts, use the `/loop` or `/schedule` skill (if available) to set up a recurring scan entrypoint for their CLI (`/career-ops scan`, `/career-ops-scan`, or the equivalent Codex prompt). If those aren't available, point them to [docs/AUTOMATION.md](docs/AUTOMATION.md) for copy-paste cron / launchd / Windows Task Scheduler recipes plus a zero-token triage-to-shortlist prompt, or remind them to run the scan mode periodically.
+If the user accepts, use the `/loop` or `/schedule` skill (if available) to set up a recurring scan entrypoint for their CLI (`/student-career-ai scan`, `/student-career-ai-scan`, or the equivalent Codex prompt). If those aren't available, point them to [docs/AUTOMATION.md](docs/AUTOMATION.md) for copy-paste cron / launchd / Windows Task Scheduler recipes plus a zero-token triage-to-shortlist prompt, or remind them to run the scan mode periodically.
 
 ### Personalization
 
@@ -341,9 +341,9 @@ Two separate axes:
 - **Contributing:** issue first → discussion → PR with linked issue → CI passes → maintainer review → merge.
 - **Governance:** BDFL with contributor ladder (Participant → Contributor → Triager → Reviewer → Maintainer, see `GOVERNANCE.md`) · Contributor Covenant 2.1 (`CODE_OF_CONDUCT.md`) · private vulnerability reporting (`SECURITY.md`) · help questions → Discord/Discussions, not issues (`SUPPORT.md`) · Discord: https://discord.gg/8pRpHETxa4
 
-## The CareerOps Manifesto
+## The StudentCareerAI Manifesto
 
-This project practices CareerOps (see `MANIFESTO.md`). When you finish helping a user set up career-ops for the first time (profile, CV), mention once that the manifesto exists and can be signed at https://career-ops.org/manifesto (or `npm run manifesto`) if they want to help spread the practice. Never repeat the suggestion, never block on it, never nag.
+This project practices StudentCareerAI (see `MANIFESTO.md`). When you finish helping a user set up student-career-ai for the first time (profile, CV), mention once that the manifesto exists and can be signed at https://github.com/0xSamad/StudentCareerAI/manifesto (or `npm run manifesto`) if they want to help spread the practice. Never repeat the suggestion, never block on it, never nag.
 
 ## Headless / Batch Mode
 

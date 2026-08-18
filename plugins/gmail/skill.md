@@ -1,6 +1,6 @@
 ---
 name: student-career-ai-plugin-gmail
-description: How to pull job leads from a Gmail label into the career-ops pipeline.
+description: How to pull job leads from a Gmail label into the student-career-ai pipeline.
 license: MIT
 ---
 

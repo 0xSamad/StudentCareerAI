@@ -3,7 +3,7 @@
 import { useLayoutEffect } from "react";
 
 const KEY = "student-career-ai:theme";
-const LEGACY_KEY = "career-ops:theme";
+const LEGACY_KEY = "student-career-ai:theme";
 
 function applyTheme() {
   try {

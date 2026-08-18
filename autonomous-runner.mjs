@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// autonomous-runner.mjs — CLI Command Center for CareerOS Autonomous Mode
+// autonomous-runner.mjs — CLI Command Center for StudentCareer AI Autonomous Mode
 // Provides CLI controls for background execution, state management, configuration, and audit logs.
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -57,7 +57,7 @@ function formatStatus(status) {
 
   const stateStr = stateColors[status.state] || `[${status.state}]`;
   let out = `\n═══════════════════════════════════════════════════════════════\n`;
-  out += `  CareerOS Autonomous Agent Status: ${stateStr}\n`;
+  out += `  StudentCareer AI Autonomous Agent Status: ${stateStr}\n`;
   out += `═══════════════════════════════════════════════════════════════\n\n`;
 
   if (status.pauseReason) {
@@ -267,7 +267,7 @@ async function main() {
       case '-h':
       default: {
         console.log(`
-CareerOS Autonomous Background Mode CLI
+StudentCareer AI Autonomous Background Mode CLI
 
 Usage:
   node autonomous-runner.mjs <command> [options]

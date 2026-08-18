@@ -1,6 +1,6 @@
 ---
 name: student-career-ai-plugin-notion
-description: How to mirror the career-ops tracker to a Notion database and read records back as job leads.
+description: How to mirror the student-career-ai tracker to a Notion database and read records back as job leads.
 license: MIT
 ---
 
