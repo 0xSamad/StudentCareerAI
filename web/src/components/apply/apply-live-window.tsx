@@ -48,6 +48,10 @@ function coords(img: HTMLImageElement, event: PointerEvent | React.PointerEvent)
   return { x: Math.min(1, Math.max(0, x)), y: Math.min(1, Math.max(0, y)) };
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
 export function ApplyLiveWindow({ batchId }: { batchId: string }) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selected, setSelected] = useState("");
@@ -65,63 +69,123 @@ export function ApplyLiveWindow({ batchId }: { batchId: string }) {
   const imgRef = useRef<HTMLImageElement>(null);
   const queue = useRef<{ type: string; x?: number; y?: number; key?: string; deltaY?: number }[]>([]);
   const sending = useRef(false);
+  const lastMoveAt = useRef(0);
+  const previewUrl = useRef<string | null>(null);
 
   const job = useMemo(() => pickJob(jobs, selected), [jobs, selected]);
 
   useEffect(() => {
     if (!batchId || batchId === "starting") return;
-    const poll = () => {
-      void getUrlApplicationBatch(batchId)
-        .then((data) => {
-          if (data.batch?.jobs) setJobs(data.batch.jobs);
-        })
-        .catch(() => {});
+    let stop = false;
+    const poll = async () => {
+      while (!stop) {
+        try {
+          const data = await getUrlApplicationBatch(batchId);
+          if (!stop && data.batch?.jobs) setJobs(data.batch.jobs);
+        } catch {
+          /* keep polling */
+        }
+        await sleep(2000);
+      }
     };
-    poll();
-    const timer = window.setInterval(poll, 1200);
-    return () => window.clearInterval(timer);
+    void poll();
+    return () => {
+      stop = true;
+    };
   }, [batchId]);
 
   useEffect(() => {
     if (!batchId || !job?.id) return;
-    const load = () => {
-      void fetch(`/api/apply/live?batchId=${encodeURIComponent(batchId)}&jobId=${encodeURIComponent(job.id)}`)
-        .then((res) => res.json())
-        .then((data) => {
+    let stop = false;
+    const poll = async () => {
+      while (!stop) {
+        try {
+          const res = await fetch(
+            `/api/apply/live?batchId=${encodeURIComponent(batchId)}&jobId=${encodeURIComponent(job.id)}`,
+          );
+          const data = await res.json();
+          if (stop) return;
           if (data.ok === false) {
             setError(data.error || "");
-            return;
+          } else {
+            setError("");
+            setFrame((prev) => ({
+              ...prev,
+              pageUrl: data.pageUrl || job.url,
+              sessionId: data.sessionId || job.sessionId,
+              message: data.message || job.message,
+              waitingFields: data.waitingFields || job.waitingFields,
+              actionRequired: data.actionRequired || job.actionRequired,
+            }));
           }
-          setError("");
-          setFrame({
-            preview: data.preview || job.preview,
-            pageUrl: data.pageUrl || job.url,
-            sessionId: data.sessionId || job.sessionId,
-            message: data.message || job.message,
-            waitingFields: data.waitingFields || job.waitingFields,
-            actionRequired: data.actionRequired || job.actionRequired,
-          });
-        })
-        .catch(() => {});
+        } catch {
+          /* keep polling */
+        }
+        await sleep(job.phase === "RUNNING" || isWaiting(job.phase) ? 1500 : 2500);
+      }
     };
-    load();
-    const ms = job.phase === "RUNNING" || isWaiting(job.phase) ? 450 : 1400;
-    const timer = window.setInterval(load, ms);
-    return () => window.clearInterval(timer);
-  }, [batchId, job?.id, job?.phase, job?.preview, job?.sessionId, job?.url, job?.message]);
+    void poll();
+    return () => {
+      stop = true;
+    };
+  }, [batchId, job?.id, job?.phase, job?.sessionId, job?.url, job?.message]);
+
+  useEffect(() => {
+    if (!batchId || !job?.id) return;
+    let stop = false;
+    let etag = "";
+    const poll = async () => {
+      while (!stop) {
+        try {
+          const res = await fetch(
+            `/api/apply/live?batchId=${encodeURIComponent(batchId)}&jobId=${encodeURIComponent(job.id)}&image=1`,
+            {
+              cache: "no-store",
+              headers: etag ? { "If-None-Match": etag } : undefined,
+            },
+          );
+          if (stop) return;
+          if (res.status === 200) {
+            etag = res.headers.get("ETag") || "";
+            const blob = await res.blob();
+            const next = URL.createObjectURL(blob);
+            const pageUrl = res.headers.get("X-Apply-Url");
+            setFrame((prev) => ({
+              ...prev,
+              preview: next,
+              pageUrl: pageUrl ? decodeURIComponent(pageUrl) : prev.pageUrl,
+            }));
+            if (previewUrl.current) URL.revokeObjectURL(previewUrl.current);
+            previewUrl.current = next;
+          } else if (res.status !== 304 && res.status !== 204) {
+            await sleep(400);
+          }
+        } catch {
+          await sleep(250);
+        }
+        await sleep(job.phase === "RUNNING" || isWaiting(job.phase) ? 90 : 280);
+      }
+    };
+    void poll();
+    return () => {
+      stop = true;
+      if (previewUrl.current) {
+        URL.revokeObjectURL(previewUrl.current);
+        previewUrl.current = null;
+      }
+    };
+  }, [batchId, job?.id, job?.phase]);
 
   const flush = async () => {
     if (sending.current || !job || !queue.current.length) return;
     sending.current = true;
     const events = queue.current.splice(0, 40);
     try {
-      const res = await fetch("/api/apply/live", {
+      await fetch("/api/apply/live", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ batchId, jobId: job.id, sessionId: frame.sessionId || job.sessionId, events }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (data.preview) setFrame((prev) => ({ ...prev, preview: data.preview, pageUrl: data.pageUrl || prev.pageUrl }));
     } catch {
       /* keep trying */
     } finally {
@@ -133,6 +197,11 @@ export function ApplyLiveWindow({ batchId }: { batchId: string }) {
   const send = (type: string, event?: React.PointerEvent<HTMLImageElement> | React.WheelEvent<HTMLImageElement> | React.KeyboardEvent) => {
     const img = imgRef.current;
     if (!img || !job) return;
+    if (type === "move") {
+      const now = Date.now();
+      if (now - lastMoveAt.current < 40) return;
+      lastMoveAt.current = now;
+    }
     if (type === "key" && event && "key" in event) {
       event.preventDefault();
       queue.current.push({ type: "key", key: (event as React.KeyboardEvent).key });

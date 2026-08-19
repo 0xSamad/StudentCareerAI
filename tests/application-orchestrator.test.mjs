@@ -114,6 +114,24 @@ const baseDeps = {
 }
 
 {
+  const windowSrc = readFileSync(join(ROOT, 'web/src/components/apply/apply-live-window.tsx'), 'utf8');
+  const liveRoute = readFileSync(join(ROOT, 'web/src/app/api/apply/live/route.ts'), 'utf8');
+  const session = readFileSync(join(ROOT, 'web/src/lib/apply/session.ts'), 'utf8');
+  const batch = readFileSync(join(ROOT, 'web/src/lib/apply/multi-url-apply.mjs'), 'utf8');
+  if (
+    windowSrc.includes('image=1') &&
+    windowSrc.includes('createObjectURL') &&
+    liveRoute.includes('latestLiveJpeg') &&
+    liveRoute.includes('dispatchApplyPointerBatch') &&
+    !liveRoute.includes('snapshotSession') &&
+    session.includes('Page.startScreencast') &&
+    /preview:\s*null/.test(batch)
+  ) {
+    pass('Live application window streams JPEG frames instead of JSON screenshots');
+  } else fail('Live application window still polls full JSON screenshots');
+}
+
+{
   const page = readFileSync(PAGE, 'utf8');
   const bar = readFileSync(URL_BAR, 'utf8');
   if (page.includes('UrlApplyBar') && page.includes('MultiUrlApplyPanel') && bar.includes('startUrlApplications')) {

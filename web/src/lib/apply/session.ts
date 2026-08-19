@@ -1,4 +1,4 @@
-import { chromium, type Browser, type BrowserContext, type Page, type Frame, type Response } from "playwright-core";
+import { chromium, type Browser, type BrowserContext, type CDPSession, type Page, type Frame, type Response } from "playwright-core";
 import { extractForm, type ApplyField, type ExtractedForm } from "./extract";
 import { matchOption, clipToMax, logFieldDecision } from "./semantic-option.mjs";
 import { parseGreenhouse, fetchGreenhouseSchema } from "./greenhouse";
@@ -230,12 +230,21 @@ type Session = {
   createdAt: number;
   lastActiveAt?: number;
   formShot?: string;
+  liveFrame?: Buffer;
+  liveFrameAt?: number;
+  liveCdp?: CDPSession;
+  liveCastFailed?: boolean;
+  screenshotInflight?: Promise<Buffer | null>;
   filledIds?: Set<string>;
   resumeAttached?: boolean;
   coverAttached?: boolean;
   directFilled?: boolean;
   formPrepared?: boolean;
 };
+
+const LIVE_JPEG_QUALITY = 32;
+const LIVE_MAX_WIDTH = 960;
+const LIVE_MAX_HEIGHT = 540;
 
 let tabOpenChain: Promise<unknown> = Promise.resolve();
 
@@ -265,6 +274,96 @@ declare global {
   var __coIdleTimer: ReturnType<typeof setTimeout> | undefined;
 }
 const SESSIONS: Map<string, Session> = (globalThis.__coApplySessions ??= new Map());
+
+function rememberSession(session: Session) {
+  SESSIONS.set(session.id, session);
+  void ensureLiveCast(session);
+}
+
+async function stopLiveCast(session?: Session) {
+  if (!session?.liveCdp) return;
+  const cdp = session.liveCdp;
+  session.liveCdp = undefined;
+  await cdp.send("Page.stopScreencast").catch(() => {});
+  await cdp.detach().catch(() => {});
+}
+
+async function ensureLiveCast(session: Session) {
+  if (session.liveCdp || session.liveCastFailed || !session.page || session.page.isClosed()) return;
+  try {
+    const cdp = await session.page.context().newCDPSession(session.page);
+    cdp.on("Page.screencastFrame", (frame: { data?: string; sessionId?: number }) => {
+      if (frame?.data) {
+        session.liveFrame = Buffer.from(frame.data, "base64");
+        session.liveFrameAt = Date.now();
+      }
+      if (frame?.sessionId != null) {
+        void cdp.send("Page.screencastFrameAck", { sessionId: frame.sessionId }).catch(() => {});
+      }
+    });
+    await cdp.send("Page.startScreencast", {
+      format: "jpeg",
+      quality: LIVE_JPEG_QUALITY,
+      maxWidth: LIVE_MAX_WIDTH,
+      maxHeight: LIVE_MAX_HEIGHT,
+      everyNthFrame: 2,
+    });
+    session.liveCdp = cdp;
+  } catch {
+    session.liveCastFailed = true;
+  }
+}
+
+async function captureLiveJpeg(session: Session): Promise<Buffer | null> {
+  if (session.liveFrame && Date.now() - (session.liveFrameAt || 0) < 400) return session.liveFrame;
+  if (session.screenshotInflight) return session.screenshotInflight;
+  session.screenshotInflight = (async () => {
+    try {
+      if (session.liveCdp) {
+        const shot = await session.liveCdp.send("Page.captureScreenshot", {
+          format: "jpeg",
+          quality: LIVE_JPEG_QUALITY,
+        });
+        const buf = Buffer.from(String(shot?.data || ""), "base64");
+        if (buf.length) {
+          session.liveFrame = buf;
+          session.liveFrameAt = Date.now();
+          return buf;
+        }
+      }
+      const buf = await session.page.screenshot({
+        type: "jpeg",
+        quality: 28,
+        timeout: 1200,
+        animations: "disabled",
+      });
+      session.liveFrame = buf;
+      session.liveFrameAt = Date.now();
+      return buf;
+    } catch {
+      return session.liveFrame || null;
+    } finally {
+      session.screenshotInflight = undefined;
+    }
+  })();
+  return session.screenshotInflight;
+}
+
+export async function latestLiveJpeg(id: string): Promise<{ buf: Buffer; url: string; title: string; at: number } | null> {
+  const session = SESSIONS.get(id);
+  if (!session?.page || session.page.isClosed()) return null;
+  await ensureLiveCast(session);
+  const buf = session.liveFrame && Date.now() - (session.liveFrameAt || 0) < 2500
+    ? session.liveFrame
+    : await captureLiveJpeg(session);
+  if (!buf) return null;
+  return {
+    buf,
+    url: session.page.url() || session.url,
+    title: session.title,
+    at: session.liveFrameAt || Date.now(),
+  };
+}
 
 function otherSessionPages(self?: Page): Page[] {
   const out: Page[] = [];
@@ -437,9 +536,13 @@ export async function openSession(url: string, cliId?: string, forceAgent?: bool
   // that proves we genuinely opened + parsed THEIR form (not magic). The last
   // shot doubles as a subtle blurred backdrop behind the clean proxy.
   const shots: string[] = [];
-  const snap = async () => {
+  let lastSnapAt = 0;
+  const snap = async (force = false) => {
+    const now = Date.now();
+    if (!force && shots.length && now - lastSnapAt < 2000) return;
+    lastSnapAt = now;
     try {
-      const b = await page.screenshot({ type: "jpeg", quality: 42 });
+      const b = await page.screenshot({ type: "jpeg", quality: 28, timeout: 1200, animations: "disabled" });
       shots.push(`data:image/jpeg;base64,${b.toString("base64")}`);
     } catch {
       /* ignore */
@@ -557,12 +660,12 @@ export async function openSession(url: string, cliId?: string, forceAgent?: bool
     if (cliId && why.code === "no-form") {
       const id = `apply-${crypto.randomUUID()}`;
       const title = form.title || (await page.title().catch(() => "")) || "Application";
-      SESSIONS.set(id, { id, url: page.url() || url, title, fields: [], context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
+      rememberSession({ id, url: page.url() || url, title, fields: [], context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
       return { id, title, fields: [], shots, issues: [...consentIssues, ...navIssues], needsDrive: true };
     }
     const id = `apply-${crypto.randomUUID()}`;
     const title = form.title || (await page.title().catch(() => "")) || "Application";
-    SESSIONS.set(id, { id, url: page.url() || url, title, fields: [], context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
+    rememberSession({ id, url: page.url() || url, title, fields: [], context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
     return {
       id,
       title,
@@ -581,7 +684,7 @@ export async function openSession(url: string, cliId?: string, forceAgent?: bool
   if (unlabeled > 0) issues.push({ level: "warn", code: "unlabeled-fields", message: `${unlabeled} field${unlabeled > 1 ? "s" : ""} couldn't be labelled cleanly — double-check ${unlabeled > 1 ? "them" : "it"} before submitting.` });
 
   const id = `apply-${crypto.randomUUID()}`;
-  SESSIONS.set(id, { id, url: page.url() || url, title: form.title, fields: form.fields, context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
+  rememberSession({ id, url: page.url() || url, title: form.title, fields: form.fields, context, page, frame, createdAt: Date.now(), formShot: shots[shots.length - 1] });
   return { id, title: form.title, fields: form.fields, shots, issues };
 }
 
@@ -683,6 +786,7 @@ export async function finalizeDrivenSession(id: string, cliId?: string): Promise
 export async function closeSession(id: string): Promise<void> {
   const s = SESSIONS.get(id);
   SESSIONS.delete(id);
+  await stopLiveCast(s);
   await closeApplyTab(s?.page);
   if (SESSIONS.size === 0) scheduleIdleClose();
 }
@@ -1789,14 +1893,7 @@ export async function fillSession(
     }
   })();
 
-  const shoot = async () => {
-    try {
-      const buf = await s.page.screenshot({ type: "jpeg", quality: 38 });
-      return `data:image/jpeg;base64,${buf.toString("base64")}`;
-    } catch {
-      return undefined;
-    }
-  };
+  const shoot = async () => undefined;
 
   // 1) Attach the tailored CV to every résumé/CV file field (even with no text
   //    answer). The real <input type=file> was tagged data-co-field at extract
@@ -2038,16 +2135,15 @@ export async function handoffSession(id: string): Promise<void> {
 }
 
 export async function snapshotSession(id: string): Promise<{ preview: string; url: string; title: string } | null> {
-  const s = SESSIONS.get(id);
-  if (!s?.page || s.page.isClosed()) return null;
-  try {
-    const buf = await s.page.screenshot({ type: "jpeg", quality: 48, timeout: 2500 });
-    const preview = `data:image/jpeg;base64,${buf.toString("base64")}`;
-    s.formShot = preview;
-    return { preview, url: s.page.url() || s.url, title: s.title };
-  } catch {
-    return s.formShot ? { preview: s.formShot, url: s.url, title: s.title } : null;
+  const live = await latestLiveJpeg(id);
+  const session = SESSIONS.get(id);
+  if (live) {
+    const preview = `data:image/jpeg;base64,${live.buf.toString("base64")}`;
+    if (session) session.formShot = preview;
+    return { preview, url: live.url, title: live.title };
   }
+  if (session?.formShot) return { preview: session.formShot, url: session.url, title: session.title };
+  return null;
 }
 
 export async function dispatchApplyPointer(
@@ -2076,4 +2172,25 @@ export async function dispatchApplyPointer(
   } catch {
     return false;
   }
+}
+
+export async function dispatchApplyPointerBatch(
+  id: string,
+  events: Array<{ type: string; x?: number; y?: number; key?: string; deltaY?: number }>,
+): Promise<boolean> {
+  let lastMove: { type: string; x?: number; y?: number; key?: string; deltaY?: number } | null = null;
+  let ok = false;
+  for (const event of events) {
+    if (event.type === "move") {
+      lastMove = event;
+      continue;
+    }
+    if (lastMove) {
+      ok = (await dispatchApplyPointer(id, lastMove)) || ok;
+      lastMove = null;
+    }
+    ok = (await dispatchApplyPointer(id, event)) || ok;
+  }
+  if (lastMove) ok = (await dispatchApplyPointer(id, lastMove)) || ok;
+  return ok;
 }

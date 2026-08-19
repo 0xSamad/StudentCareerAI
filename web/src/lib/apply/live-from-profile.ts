@@ -21,23 +21,8 @@ import type { ApplyField } from "./extract";
 
 export { answersFromProfile, candidateFacts, latestEmployment };
 
-let lastApplyPreviewAt = 0;
-
-async function captureApplyPreview(page: unknown, force = false): Promise<string | undefined> {
-  if (!page || typeof (page as { screenshot?: unknown }).screenshot !== "function") return undefined;
-  const now = Date.now();
-  if (!force && now - lastApplyPreviewAt < 400) return undefined;
-  try {
-    const buf = await (page as { screenshot: (opts: Record<string, unknown>) => Promise<Buffer> }).screenshot({
-      type: "jpeg",
-      quality: 42,
-      timeout: 2500,
-    });
-    lastApplyPreviewAt = now;
-    return `data:image/jpeg;base64,${buf.toString("base64")}`;
-  } catch {
-    return undefined;
-  }
+async function captureApplyPreview(_page: unknown, _force = false): Promise<string | undefined> {
+  return undefined;
 }
 
 type FillProgressInfo = {
