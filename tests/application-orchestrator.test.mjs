@@ -107,9 +107,10 @@ const baseDeps = {
   if (
     client.includes('startListingApplications') &&
     card.includes('startListingApplications') &&
-    card.includes('finishApplyLaunch')
+    card.includes('finishApplyLaunch') &&
+    card.includes('adoptApplyBatch')
   ) {
-    pass('Jobs card Apply starts a listing fill through the shared apply launcher');
+    pass('Jobs card Apply shows Application Center progress');
   } else fail('Jobs card Apply did not open the live application window');
 }
 
@@ -123,6 +124,19 @@ const baseDeps = {
   ) {
     pass('Local Apply uses headed Chrome on this computer instead of a remote preview');
   } else fail('Local Apply still always opens the remote live window');
+}
+
+{
+  const panel = readFileSync(join(ROOT, 'web/src/components/apply/multi-url-apply-panel.tsx'), 'utf8');
+  const adopt = readFileSync(join(ROOT, 'web/src/lib/apply/adopt-apply-batch.ts'), 'utf8');
+  if (
+    panel.includes('APPLY_CENTER_ID') &&
+    panel.includes('APPLY_BATCH_EVENT') &&
+    adopt.includes('scrollIntoView') &&
+    adopt.includes('adoptApplyBatch')
+  ) {
+    pass('Listing Apply reuses Application Center progress from URL apply');
+  } else fail('Listing Apply does not show Application Center progress');
 }
 
 {

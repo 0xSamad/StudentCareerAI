@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link2, Loader2, Send } from "lucide-react";
 import { startUrlApplications } from "@/lib/opportunity-client";
 import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { adoptApplyBatch } from "@/lib/apply/adopt-apply-batch";
 import { buttonPrimaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -35,6 +36,7 @@ export function UrlApplyBar({
       if (!launched.ok) {
         setError(launched.error || "Could not apply from that URL.");
       } else {
+        adoptApplyBatch(data.batch);
         setMessage(launched.message);
       }
       onApplied?.();

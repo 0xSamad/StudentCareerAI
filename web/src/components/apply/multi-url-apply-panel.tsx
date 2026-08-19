@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Link2, Loader2, Plus, Send, Trash2 } from "lucide-react";
 import { getUrlApplicationBatch, resumeUrlApplication, startUrlApplications } from "@/lib/opportunity-client";
+import { APPLY_BATCH_EVENT, APPLY_CENTER_ID, adoptApplyBatch, readAdoptedApplyBatchId } from "@/lib/apply/adopt-apply-batch";
 import { applyWatchExpected, closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { buttonPrimaryClassName, buttonSecondaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
@@ -129,6 +130,23 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const active = Boolean(batch && (batch.jobs || []).some((job) => !isTerminalPhase(job.phase)));
 
   useEffect(() => {
+    const onAdopt = (event: Event) => {
+      const next = (event as CustomEvent<Batch>).detail;
+      if (next?.id) setBatch(next);
+    };
+    window.addEventListener(APPLY_BATCH_EVENT, onAdopt);
+    const existing = readAdoptedApplyBatchId();
+    if (existing) {
+      void getUrlApplicationBatch(existing)
+        .then((data) => {
+          if (data.batch) setBatch(data.batch);
+        })
+        .catch(() => {});
+    }
+    return () => window.removeEventListener(APPLY_BATCH_EVENT, onAdopt);
+  }, []);
+
+  useEffect(() => {
     if (!batch?.id) return;
     const allTerminal = (batch.jobs || []).every((job) => isTerminalPhase(job.phase));
     if (allTerminal) return;
@@ -187,6 +205,7 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
     try {
       const data = await startUrlApplications(filled);
       setBatch(data.batch);
+      adoptApplyBatch(data.batch);
       const launched = finishApplyLaunch(data, watcher);
       if (!launched.ok) setError(launched.error || "Could not start applications.");
       else if (!launched.live) setError("");
@@ -289,7 +308,7 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
       </section>
 
       {batch ? (
-        <section className="rounded-2xl border border-border bg-surface p-4 sm:p-5 space-y-4">
+        <section id={APPLY_CENTER_ID} className="rounded-2xl border border-border bg-surface p-4 sm:p-5 space-y-4 scroll-mt-20">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-brand">Application Center</p>

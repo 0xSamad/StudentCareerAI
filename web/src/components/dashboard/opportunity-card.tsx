@@ -22,6 +22,7 @@ import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { saveOpportunity, startListingApplications, unsaveOpportunity } from "@/lib/opportunity-client";
 import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { adoptApplyBatch } from "@/lib/apply/adopt-apply-batch";
 import { cn } from "@/lib/cn";
 
 interface OpportunityCardProps {
@@ -158,6 +159,7 @@ export function OpportunityCard({
         if (!launched.ok) {
           setAddError(launched.error || "Could not open the application.");
         } else {
+          adoptApplyBatch(data.batch);
           setAppliedMsg(launched.message);
         }
       }

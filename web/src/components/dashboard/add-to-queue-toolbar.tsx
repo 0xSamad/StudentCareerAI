@@ -7,6 +7,7 @@ import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { startListingApplications } from "@/lib/opportunity-client";
 import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { adoptApplyBatch } from "@/lib/apply/adopt-apply-batch";
 
 export function AddToQueueToolbar({
   opportunities,
@@ -53,6 +54,7 @@ export function AddToQueueToolbar({
       if (!launched.ok) {
         setMessage(launched.error || "Could not open the application.");
       } else {
+        adoptApplyBatch(data.batch);
         setMessage(launched.message);
       }
       onAdded?.();

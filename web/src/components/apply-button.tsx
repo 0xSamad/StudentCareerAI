@@ -5,6 +5,7 @@ import { Send, Lock, Loader2 } from "lucide-react";
 import { useJobs } from "@/components/jobs/job-store";
 import { startUrlApplications } from "@/lib/opportunity-client";
 import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { adoptApplyBatch } from "@/lib/apply/adopt-apply-batch";
 
 // The "Apply" CTA — brand orange, paper-plane. Enabled ONLY when the tailored CV
 // for THIS offer is ready (the tracker's PDF column is ✅, or a pdf worker for
@@ -44,6 +45,7 @@ export function ApplyButton({ n, url, company, pdfReady }: { n: string; url?: st
             const data = await startUrlApplications([{ url: url!, company }]);
             const launched = finishApplyLaunch(data, watcher);
             if (!launched.ok) setError(launched.error || "Could not apply.");
+            else adoptApplyBatch(data.batch);
           } catch (err: unknown) {
             closeApplyWatchWindow(watcher);
             setError(err instanceof Error ? err.message : "Could not apply.");

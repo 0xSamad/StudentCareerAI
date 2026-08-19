@@ -25,6 +25,7 @@ import { cn } from "@/lib/cn";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { startListingApplications } from "@/lib/opportunity-client";
 import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { adoptApplyBatch } from "@/lib/apply/adopt-apply-batch";
 
 interface ApplicationDetailModalProps {
   opportunity: Opportunity | null;
@@ -104,7 +105,9 @@ export function ApplicationDetailModal({ opportunity, onClose, onQueued }: Appli
       if (!launched.ok) {
         setApplyMessage(launched.error || "Could not apply.");
       } else {
+        adoptApplyBatch(data.batch);
         setApplyMessage(launched.message);
+        onClose();
       }
     } catch (err: any) {
       closeApplyWatchWindow(watcher);

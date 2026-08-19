@@ -7,7 +7,7 @@ import { ApplicationDetailModal } from "@/components/dashboard/application-detai
 import { AddToQueueToolbar } from "@/components/dashboard/add-to-queue-toolbar";
 import { PageHeader } from "@/components/ui/page-header";
 import type { Opportunity } from "@/app/api/opportunities/route";
-import { addOpportunitiesToQueue } from "@/lib/queue-client";
+import { MultiUrlApplyPanel } from "@/components/apply/multi-url-apply-panel";
 
 function mapSavedRow(row: any): Opportunity | null {
   const o = row?.opportunity || {};
@@ -109,6 +109,8 @@ export default function SavedOpportunitiesPage() {
         title="Saved opportunities"
         description="Listings you saved stay here even if they later disappear from a source. Status shows ACTIVE, CLOSED, or EXPIRED. Apply uses the persisted record — no new scan is required."
       />
+
+      <MultiUrlApplyPanel />
 
       <AddToQueueToolbar opportunities={filtered} selectedIds={selectedIds} onAdded={fetchQueued} />
 
