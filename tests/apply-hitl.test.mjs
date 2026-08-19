@@ -317,7 +317,7 @@ function fakeTailor({ opportunity }) {
       { name: 'Projects', status: 'complete' },
     ],
   });
-  if (card.title.includes('Action Required') && card.primaryCta === 'I solved it in Chrome' && card.body.includes('CAPTCHA')) {
+  if (card.title.includes('Action Required') && card.primaryCta === 'I solved it' && card.body.includes('CAPTCHA')) {
     pass('Action Required copy tells the user to complete CAPTCHA in Chrome');
   } else fail(`Card ${JSON.stringify(card)}`);
 }

@@ -120,7 +120,7 @@ async function buildUrlApplyDeps({
     ? async (_resolved: unknown, sys: string, usr: string) =>
         container.aiWorkerService.complete({ prompt: usr, system: sys, schema: true }, authContext)
     : (resolved: unknown, sys: string, usr: string) => engines.callAI(resolved, sys, usr);
-  const { sessionIsUsableForFill, handoffSession } = await import("@/lib/apply/session");
+  const { sessionHasInteractiveCaptcha, sessionIsUsableForFill, handoffSession } = await import("@/lib/apply/session");
 
   return {
     profile,
@@ -141,8 +141,9 @@ async function buildUrlApplyDeps({
     originalMime: original?.mimeType || "",
     fetchGitHubEvidence,
     githubToken,
-    useLocalChrome: true,
-    watchCaptcha: false,
+    useLocalChrome: false,
+    watchCaptcha: true,
+    captchaStillPresent: sessionHasInteractiveCaptcha,
     sessionUsable: sessionIsUsableForFill,
     focusSession: handoffSession,
     notifyHub: applyNotificationHub(),

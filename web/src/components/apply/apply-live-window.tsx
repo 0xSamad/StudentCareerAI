@@ -1,0 +1,211 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { getUrlApplicationBatch } from "@/lib/opportunity-client";
+import { cn } from "@/lib/cn";
+
+type Job = {
+  id: string;
+  url: string;
+  company?: string;
+  role?: string;
+  phase: string;
+  message?: string;
+  sessionId?: string | null;
+  preview?: string | null;
+  progress?: number;
+};
+
+function isWaiting(phase: string) {
+  return (
+    phase === "WAITING_FOR_USER" ||
+    phase === "CAPTCHA_REQUIRED" ||
+    phase === "INFORMATION_REQUIRED" ||
+    phase === "LOGIN_REQUIRED" ||
+    phase === "EMAIL_VERIFICATION_REQUIRED"
+  );
+}
+
+function pickJob(jobs: Job[], selected: string) {
+  if (selected && jobs.some((job) => job.id === selected)) return jobs.find((job) => job.id === selected) as Job;
+  return (
+    jobs.find((job) => job.phase === "RUNNING" || job.phase === "APPLYING") ||
+    jobs.find((job) => isWaiting(job.phase)) ||
+    jobs[0]
+  );
+}
+
+function coords(img: HTMLImageElement, event: PointerEvent | React.PointerEvent) {
+  const rect = img.getBoundingClientRect();
+  const x = (event.clientX - rect.left) / Math.max(1, rect.width);
+  const y = (event.clientY - rect.top) / Math.max(1, rect.height);
+  return { x: Math.min(1, Math.max(0, x)), y: Math.min(1, Math.max(0, y)) };
+}
+
+export function ApplyLiveWindow({ batchId }: { batchId: string }) {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [selected, setSelected] = useState("");
+  const [frame, setFrame] = useState<{ preview?: string | null; pageUrl?: string; sessionId?: string | null; message?: string }>({});
+  const [error, setError] = useState("");
+  const imgRef = useRef<HTMLImageElement>(null);
+  const queue = useRef<{ type: string; x?: number; y?: number; key?: string; deltaY?: number }[]>([]);
+  const sending = useRef(false);
+
+  const job = useMemo(() => pickJob(jobs, selected), [jobs, selected]);
+
+  useEffect(() => {
+    if (!batchId || batchId === "starting") return;
+    const poll = () => {
+      void getUrlApplicationBatch(batchId)
+        .then((data) => {
+          if (data.batch?.jobs) setJobs(data.batch.jobs);
+        })
+        .catch(() => {});
+    };
+    poll();
+    const timer = window.setInterval(poll, 1200);
+    return () => window.clearInterval(timer);
+  }, [batchId]);
+
+  useEffect(() => {
+    if (!batchId || !job?.id) return;
+    const load = () => {
+      void fetch(`/api/apply/live?batchId=${encodeURIComponent(batchId)}&jobId=${encodeURIComponent(job.id)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ok === false) {
+            setError(data.error || "");
+            return;
+          }
+          setError("");
+          setFrame({
+            preview: data.preview || job.preview,
+            pageUrl: data.pageUrl || job.url,
+            sessionId: data.sessionId || job.sessionId,
+            message: data.message || job.message,
+          });
+        })
+        .catch(() => {});
+    };
+    load();
+    const ms = job.phase === "RUNNING" || isWaiting(job.phase) ? 450 : 1400;
+    const timer = window.setInterval(load, ms);
+    return () => window.clearInterval(timer);
+  }, [batchId, job?.id, job?.phase, job?.preview, job?.sessionId, job?.url, job?.message]);
+
+  const flush = async () => {
+    if (sending.current || !job || !queue.current.length) return;
+    sending.current = true;
+    const events = queue.current.splice(0, 40);
+    try {
+      const res = await fetch("/api/apply/live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batchId, jobId: job.id, sessionId: frame.sessionId || job.sessionId, events }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.preview) setFrame((prev) => ({ ...prev, preview: data.preview, pageUrl: data.pageUrl || prev.pageUrl }));
+    } catch {
+      /* keep trying */
+    } finally {
+      sending.current = false;
+      if (queue.current.length) void flush();
+    }
+  };
+
+  const send = (type: string, event?: React.PointerEvent<HTMLImageElement> | React.WheelEvent<HTMLImageElement> | React.KeyboardEvent) => {
+    const img = imgRef.current;
+    if (!img || !job) return;
+    if (type === "key" && event && "key" in event) {
+      event.preventDefault();
+      queue.current.push({ type: "key", key: (event as React.KeyboardEvent).key });
+    } else if (type === "scroll" && event && "deltaY" in event) {
+      event.preventDefault();
+      queue.current.push({ type: "scroll", deltaY: (event as React.WheelEvent).deltaY });
+    } else if (event && "clientX" in event) {
+      event.preventDefault();
+      queue.current.push({ type, ...coords(img, event as React.PointerEvent) });
+    }
+    void flush();
+  };
+
+  const waiting = job ? isWaiting(job.phase) : false;
+  const title = job ? [job.company, job.role].filter(Boolean).join(" — ") || "Application" : "Starting application";
+
+  return (
+    <div className="flex h-dvh flex-col bg-zinc-950 text-zinc-100">
+      <header className="flex items-center gap-3 border-b border-white/10 bg-zinc-900 px-3 py-2">
+        <span className="size-2.5 rounded-full bg-red-400/90" aria-hidden />
+        <span className="size-2.5 rounded-full bg-amber-400/90" aria-hidden />
+        <span className="size-2.5 rounded-full bg-emerald-400/90" aria-hidden />
+        <p className="min-w-0 flex-1 truncate rounded-md bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+          {frame.pageUrl || job?.url || "Opening the employer form…"}
+        </p>
+        {job?.phase === "RUNNING" ? (
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Filling</span>
+        ) : null}
+      </header>
+
+      {jobs.length > 1 ? (
+        <div className="flex gap-1 overflow-x-auto border-b border-white/10 bg-zinc-900 px-2 py-1">
+          {jobs.map((row) => (
+            <button
+              key={row.id}
+              type="button"
+              onClick={() => setSelected(row.id)}
+              className={cn(
+                "shrink-0 rounded-md px-2 py-1 text-[11px]",
+                (job?.id === row.id ? "bg-zinc-700 text-white" : "text-zinc-400 hover:text-white"),
+              )}
+            >
+              {row.company || `Job ${row.id.slice(-4)}`}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium">{title}</p>
+          <p className="truncate text-[11px] text-zinc-400">{frame.message || job?.message || "Preparing your application. The form will appear here."}</p>
+        </div>
+        {waiting ? (
+          <p className="shrink-0 text-[11px] font-medium text-amber-300">Your click is needed in this window</p>
+        ) : null}
+      </div>
+
+      <div
+        className="relative min-h-0 flex-1 bg-zinc-900"
+        tabIndex={0}
+        onKeyDown={(event) => send("key", event)}
+      >
+        {frame.preview ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            ref={imgRef}
+            src={frame.preview}
+            alt={title}
+            className="h-full w-full cursor-crosshair object-contain object-top"
+            draggable={false}
+            onPointerDown={(event) => {
+              (event.currentTarget as HTMLImageElement).setPointerCapture(event.pointerId);
+              send("down", event);
+            }}
+            onPointerMove={(event) => {
+              if (event.buttons) send("move", event);
+            }}
+            onPointerUp={(event) => send("up", event)}
+            onWheel={(event) => send("scroll", event)}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center px-6 text-center text-sm text-zinc-400">
+            {error || "Opening the employer form in this window…"}
+          </div>
+        )}
+      </div>
+      <p className="border-t border-white/10 px-3 py-2 text-[11px] text-zinc-500">
+        This is the live application. Watch it fill, and solve CAPTCHAs here. Nothing is submitted for you.
+      </p>
+    </div>
+  );
+}

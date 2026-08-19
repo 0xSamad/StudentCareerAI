@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Copy, Link2, Loader2, Monitor, Plus, Send, Trash2 } from "lucide-react";
-import { getLocalChromeHelper, getUrlApplicationBatch, resumeUrlApplication, startUrlApplications } from "@/lib/opportunity-client";
+import { ExternalLink, Link2, Loader2, Plus, Send, Trash2 } from "lucide-react";
+import { getUrlApplicationBatch, resumeUrlApplication, startUrlApplications } from "@/lib/opportunity-client";
 import { buttonPrimaryClassName, buttonSecondaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -104,7 +104,6 @@ function statusLine(job: BatchJob) {
   if (job.phase === "INFORMATION_REQUIRED") return "🟡 Information required";
   if (job.phase === "LOGIN_REQUIRED") return "🟡 Sign-in required";
   if (job.phase === "EMAIL_VERIFICATION_REQUIRED") return "🟡 Email verification required";
-  if (job.pauseReason === "LOCAL_CHROME") return "Waiting for Chrome on this computer";
   if (job.phase === "WAITING_FOR_USER") return "🟡 Action required";
   return job.label || job.message;
 }
@@ -116,6 +115,12 @@ function statusTone(job: BatchJob) {
   return "text-muted";
 }
 
+function openApplyWatchWindow(batchId: string) {
+  const url = `/apply/live/${encodeURIComponent(batchId)}`;
+  const features = "popup=yes,width=1320,height=900,menubar=no,toolbar=no,location=no,status=no";
+  return window.open(url, "scai-apply-window", features);
+}
+
 export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const [rows, setRows] = useState<UrlRow[]>([newRow()]);
   const [busy, setBusy] = useState(false);
@@ -123,27 +128,10 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const [batch, setBatch] = useState<Batch | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [acting, setActing] = useState("");
-  const [chromeConnected, setChromeConnected] = useState(false);
-  const [chromeCommand, setChromeCommand] = useState("");
-  const [copied, setCopied] = useState(false);
   const notified = useRef(new Set<string>());
 
   const filled = useMemo(() => rows.map((row) => row.url.trim()).filter(Boolean), [rows]);
   const active = Boolean(batch && (batch.jobs || []).some((job) => !isTerminalPhase(job.phase)));
-
-  useEffect(() => {
-    const load = () => {
-      void getLocalChromeHelper()
-        .then((data) => {
-          setChromeConnected(Boolean(data.connected));
-          if (data.command) setChromeCommand(data.command);
-        })
-        .catch(() => {});
-    };
-    load();
-    const timer = window.setInterval(load, 2500);
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     if (!batch?.id) return;
@@ -153,10 +141,6 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
       void getUrlApplicationBatch(batch.id)
         .then((data) => {
           if (data.batch) setBatch(data.batch);
-          if (data.localChrome) {
-            setChromeConnected(Boolean(data.localChrome.connected));
-            if (data.localChrome.command) setChromeCommand(data.localChrome.command);
-          }
         })
         .catch(() => {});
     }, 1400);
@@ -204,9 +188,22 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const start = async () => {
     setBusy(true);
     setError("");
+    const watcher = window.open("about:blank", "scai-apply-window", "popup=yes,width=1320,height=900,menubar=no,toolbar=no,location=no,status=no");
     try {
+      if (watcher) {
+        watcher.document.write(
+          "<title>StudentCareer AI</title><p style='font-family:sans-serif;padding:24px'>Opening the application window…</p>",
+        );
+      }
       const data = await startUrlApplications(filled);
       setBatch(data.batch);
+      const liveUrl = `/apply/live/${encodeURIComponent(data.batch.id)}`;
+      if (watcher && !watcher.closed) {
+        watcher.location.replace(liveUrl);
+        watcher.focus();
+      } else if (!openApplyWatchWindow(data.batch.id)) {
+        setError("Allow pop-ups for StudentCareer AI so the application window can open. You can also use Open application window below.");
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Could not start applications.");
     } finally {
@@ -256,48 +253,9 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
           <p className="text-xs font-semibold uppercase tracking-wider text-brand">Apply to jobs</p>
           <h2 className="mt-1 text-base font-semibold text-foreground">Paste one or more job URLs</h2>
           <p className="mt-1 text-xs text-muted">
-            Each URL becomes its own application — its own CV, cover letter, form, and status. Chrome opens on this
-            computer so you can solve CAPTCHAs. A CAPTCHA on one does not stop the others. Nothing is submitted for you.
+            Each URL becomes its own application — its own CV, cover letter, form, and status. Start Applying opens a
+            window where you watch the form fill and solve CAPTCHAs. Nothing is submitted for you.
           </p>
-        </div>
-
-        <div
-          className={cn(
-            "rounded-xl border px-3 py-3 space-y-2",
-            chromeConnected
-              ? "border-emerald-300/70 bg-emerald-50 dark:border-emerald-700/60 dark:bg-emerald-950/30"
-              : "border-amber-300/70 bg-amber-50 dark:border-amber-700/60 dark:bg-amber-950/40",
-          )}
-        >
-          <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <Monitor className="size-4" />
-            {chromeConnected ? "Chrome on this computer is connected" : "Chrome must open on this computer"}
-          </p>
-          <p className="text-xs text-muted">
-            {chromeConnected
-              ? "When you start applying, a real Chrome window opens here. Solve CAPTCHAs in that window."
-              : "A website cannot open Chrome on your PC. In your StudentCareer AI folder, run this once and leave it open:"}
-          </p>
-          {chromeCommand ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <code className="min-w-0 flex-1 overflow-x-auto rounded-lg bg-background px-2 py-1.5 text-[11px] text-foreground">
-                {chromeCommand}
-              </code>
-              <button
-                type="button"
-                className={buttonSecondaryClassName}
-                onClick={() => {
-                  void navigator.clipboard.writeText(chromeCommand).then(() => {
-                    setCopied(true);
-                    window.setTimeout(() => setCopied(false), 1500);
-                  });
-                }}
-              >
-                <Copy className="size-4" />
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
-          ) : null}
         </div>
 
         <div className="space-y-2">
@@ -384,11 +342,18 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
 
                   <p className={cn("text-sm font-medium", statusTone(job))}>{statusLine(job)}</p>
 
-                  {job.phase === "RUNNING" || job.claimedBy === "local-chrome" ? (
-                    <p className="text-xs text-muted">
-                      Look at the Chrome window on this computer — that is the real form. This page cannot click a
-                      CAPTCHA for you.
-                    </p>
+                  {batch?.id ? (
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
+                      onClick={() => {
+                        const opened = openApplyWatchWindow(batch.id);
+                        if (!opened) setError("Allow pop-ups so the application window can open.");
+                      }}
+                    >
+                      <ExternalLink className="size-3.5" />
+                      Open application window
+                    </button>
                   ) : null}
 
                   <dl className="grid gap-1 text-[11px] text-muted sm:grid-cols-2">
@@ -444,8 +409,6 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
                             {card.question ? "Answer Question" : card.primaryCta}
                           </button>
                         </div>
-                      ) : job.pauseReason === "LOCAL_CHROME" ? (
-                        <p className="text-xs text-muted">Use the command above, then leave that terminal open.</p>
                       ) : (
                         <button
                           type="button"
@@ -477,8 +440,8 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
           </div>
           {active ? (
             <p className="text-xs text-muted">
-              Chrome fills one form at a time on this computer. Keep the helper terminal open. Other jobs keep preparing
-              in parallel.
+              The application window shows the live form. Watch it fill, and solve CAPTCHAs there. Other jobs keep
+              preparing in parallel.
             </p>
           ) : null}
         </section>

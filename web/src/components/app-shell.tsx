@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  if (pathname.startsWith("/apply/review")) {
+  if (pathname.startsWith("/apply/review") || pathname.startsWith("/apply/live")) {
     return <AuthGate>{children}</AuthGate>;
   }
 

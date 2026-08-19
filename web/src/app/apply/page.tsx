@@ -17,8 +17,8 @@ export default function ApplyPage() {
             <h1 className="font-display text-2xl tracking-tight text-landing">Apply by URL</h1>
           </div>
           <p className="mt-1.5 max-w-xl text-sm text-muted">
-            Paste one or more job links. Each URL is its own application with its own tailored documents and form. Chrome
-            fills attested fields. You submit. Nothing is submitted for you.
+            Paste one or more job links. Each URL is its own application. Start Applying opens a window where you watch
+            the form fill. You submit. Nothing is submitted for you.
           </p>
         </div>
         <MultiUrlApplyPanel />

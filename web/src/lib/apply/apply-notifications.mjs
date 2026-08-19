@@ -109,21 +109,6 @@ export function buildActionRequiredCard(job = {}) {
   const question = waiting[0] || null;
   const phase = job.phase;
 
-  if (job.pauseReason === "LOCAL_CHROME" && (phase === "WAITING_FOR_USER" || phase === "READY_TO_APPLY")) {
-    return {
-      kind: APPLY_NOTIFY.WAITING,
-      title: "Chrome on this computer",
-      heading,
-      intro: "StudentCareer AI completed:",
-      completed,
-      body: "A real Chrome window will open on this computer. Run the helper command from Application Center if it is not already running.",
-      question: null,
-      primaryCta: "Copy helper command",
-      primaryAction: "open",
-      hint: "CAPTCHAs can only be solved in that window. Nothing is submitted for you.",
-    };
-  }
-
   if (phase === "CAPTCHA_REQUIRED") {
     return {
       kind: APPLY_NOTIFY.CAPTCHA,
@@ -131,11 +116,11 @@ export function buildActionRequiredCard(job = {}) {
       heading,
       intro: "StudentCareer AI completed:",
       completed,
-      body: "CAPTCHA is in the Chrome window on your computer. Drag or click it there — this page cannot receive those clicks.",
+      body: "A CAPTCHA is on the application window. Click or drag it there — then we continue. Nothing is submitted for you.",
       question: null,
-      primaryCta: "I solved it in Chrome",
+      primaryCta: "I solved it",
       primaryAction: "resume",
-      hint: "If the helper is running, it continues automatically when the CAPTCHA is gone. Nothing is submitted for you.",
+      hint: "Use the application window that opened when you clicked Apply.",
     };
   }
   if (phase === "LOGIN_REQUIRED") {

@@ -334,7 +334,7 @@ const baseDeps = {
     jobs[0].phase === URL_APPLY_PHASE.COMPLETED &&
     jobs[1].phase === URL_APPLY_PHASE.CAPTCHA_REQUIRED &&
     jobs[2].phase === URL_APPLY_PHASE.COMPLETED &&
-    jobs[1].actionRequired?.primaryCta === 'I solved it in Chrome'
+    jobs[1].actionRequired?.primaryCta === 'I solved it'
   ) {
     pass('9+11. CAPTCHA pauses only that job; siblings keep running to completion');
   } else fail(`CAPTCHA isolation ${jobs.map((job) => job.phase).join(',')}`);

@@ -2036,3 +2036,44 @@ export async function handoffSession(id: string): Promise<void> {
   if (!s) throw new Error("apply session not found");
   await s.page.bringToFront().catch(() => {});
 }
+
+export async function snapshotSession(id: string): Promise<{ preview: string; url: string; title: string } | null> {
+  const s = SESSIONS.get(id);
+  if (!s?.page || s.page.isClosed()) return null;
+  try {
+    const buf = await s.page.screenshot({ type: "jpeg", quality: 48, timeout: 2500 });
+    const preview = `data:image/jpeg;base64,${buf.toString("base64")}`;
+    s.formShot = preview;
+    return { preview, url: s.page.url() || s.url, title: s.title };
+  } catch {
+    return s.formShot ? { preview: s.formShot, url: s.url, title: s.title } : null;
+  }
+}
+
+export async function dispatchApplyPointer(
+  id: string,
+  event: { type: string; x?: number; y?: number; key?: string; deltaY?: number },
+): Promise<boolean> {
+  const s = SESSIONS.get(id);
+  if (!s?.page || s.page.isClosed()) return false;
+  const vp = s.page.viewportSize() || { width: 1280, height: 720 };
+  const x = Math.max(0, Math.min(vp.width - 1, Number(event.x || 0) * vp.width));
+  const y = Math.max(0, Math.min(vp.height - 1, Number(event.y || 0) * vp.height));
+  s.lastActiveAt = Date.now();
+  try {
+    if (event.type === "move") await s.page.mouse.move(x, y);
+    else if (event.type === "down") {
+      await s.page.mouse.move(x, y);
+      await s.page.mouse.down();
+    } else if (event.type === "up") {
+      await s.page.mouse.move(x, y);
+      await s.page.mouse.up();
+    } else if (event.type === "click") await s.page.mouse.click(x, y);
+    else if (event.type === "scroll") await s.page.mouse.wheel(0, Number(event.deltaY || 0));
+    else if (event.type === "key" && event.key) await s.page.keyboard.press(event.key);
+    else return false;
+    return true;
+  } catch {
+    return false;
+  }
+}

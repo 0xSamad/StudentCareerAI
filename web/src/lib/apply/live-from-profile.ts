@@ -26,7 +26,7 @@ let lastApplyPreviewAt = 0;
 async function captureApplyPreview(page: unknown, force = false): Promise<string | undefined> {
   if (!page || typeof (page as { screenshot?: unknown }).screenshot !== "function") return undefined;
   const now = Date.now();
-  if (!force && now - lastApplyPreviewAt < 1200) return undefined;
+  if (!force && now - lastApplyPreviewAt < 400) return undefined;
   try {
     const buf = await (page as { screenshot: (opts: Record<string, unknown>) => Promise<Buffer> }).screenshot({
       type: "jpeg",
