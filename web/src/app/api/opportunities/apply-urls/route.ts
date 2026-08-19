@@ -21,7 +21,6 @@ import {
 } from "@/lib/apply/multi-url-apply.mjs";
 import { applyNotificationHub } from "@/lib/apply/apply-notifications.mjs";
 import { setHitlPersistPath, loadHitlPersist } from "@/lib/apply/hitl-state.mjs";
-import { applyUsesHeadlessBrowser } from "@/lib/apply/chrome-attach";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
