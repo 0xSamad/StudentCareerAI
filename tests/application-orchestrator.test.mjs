@@ -105,21 +105,20 @@ const baseDeps = {
   const client = readFileSync(CLIENT, 'utf8');
   const card = readFileSync(CARD, 'utf8');
   if (
-    client.includes('opportunityId: first.id') &&
-    client.includes('/api/opportunities/apply') &&
-    card.includes('enqueueAndApply') &&
-    !card.includes('/api/opportunities/apply-urls')
+    client.includes('startListingApplications') &&
+    card.includes('startListingApplications') &&
+    card.includes('showApplyWatchWindow')
   ) {
-    pass('Jobs card Apply still posts opportunityId to the original apply route');
-  } else fail('In-app Apply client path changed');
+    pass('Jobs card Apply opens the live application window');
+  } else fail('Jobs card Apply did not open the live application window');
 }
 
 {
   const page = readFileSync(PAGE, 'utf8');
   const bar = readFileSync(URL_BAR, 'utf8');
-  if (page.includes('UrlApplyBar') && page.includes('MultiUrlApplyPanel') && bar.includes('applyByUrl')) {
+  if (page.includes('UrlApplyBar') && page.includes('MultiUrlApplyPanel') && bar.includes('startUrlApplications')) {
     pass('Existing single-URL Apply bar remains on the apply page beside the orchestrator');
-  } else fail('URL Apply bar was removed or no longer uses applyByUrl');
+  } else fail('URL Apply bar was removed or no longer opens the live application window');
 }
 
 {

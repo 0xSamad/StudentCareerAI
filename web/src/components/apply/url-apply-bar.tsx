@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Link2, Loader2, Send } from "lucide-react";
-import { applyByUrl } from "@/lib/opportunity-client";
+import { startUrlApplications } from "@/lib/opportunity-client";
+import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { buttonPrimaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -27,20 +28,18 @@ export function UrlApplyBar({
     setBusy(true);
     setError("");
     setMessage("");
+    const watcher = openBlankApplyWatchWindow();
     try {
-      const data = await applyByUrl({ url, company, role, jdText });
-      const msg =
-        data.message ||
-        "Chrome is open on that application. Attested fields are filled. Nothing was submitted.";
-      setMessage(msg);
-      const jobKey = data.jobId || data.job || data.files?.job_id || "";
-      const review =
-        data.reviewPath ||
-        `/apply/review?company=${encodeURIComponent(company || data.company || "")}&role=${encodeURIComponent(role || data.role || data.title || "")}${jobKey ? `&job=${encodeURIComponent(jobKey)}` : ""}`;
-      window.open(review, "_blank", "noopener");
-      window.alert(msg);
+      const data = await startUrlApplications([{ url, company, role, jdText }]);
+      const batchId = data.batch?.id || data.batchId;
+      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
+        setError("Allow pop-ups so the application window can open.");
+      } else {
+        setMessage("Application window opened. Watch it fill there. Nothing is submitted for you.");
+      }
       onApplied?.();
     } catch (err: unknown) {
+      closeApplyWatchWindow(watcher);
       setError(err instanceof Error ? err.message : "Could not apply from that URL.");
     } finally {
       setBusy(false);
@@ -54,13 +53,12 @@ export function UrlApplyBar({
         <p className="text-xs font-semibold uppercase tracking-wider text-brand">URL apply</p>
         <h2 className="mt-1 text-base font-semibold text-foreground">Paste any job or application link</h2>
         <p className="mt-1 text-xs text-muted">
-          Does not need to be in Jobs. Chrome opens the page, follows Apply / Google sign-in, and fills attested CV fields.
-          You still submit.
+          Does not need to be in Jobs. An application window opens so you can watch the form fill. You still submit.
         </p>
       </div>
       ) : (
         <p className="text-xs text-muted">
-          Chrome opens the page and fills attested CV fields. You still submit.
+          An application window opens and fills attested CV fields. You still submit.
         </p>
       )}
       <div className="flex flex-col gap-2 sm:flex-row">

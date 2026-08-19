@@ -101,8 +101,8 @@ export async function POST(req: Request) {
     );
     const message =
       paused.length > 0
-        ? "Chrome is open on the application form. Complete any remaining fields yourself — nothing was submitted."
-        : summary.headline || "Chrome should be open on the application form. Nothing was submitted.";
+        ? "The application window is open on the form. Complete any remaining fields yourself — nothing was submitted."
+        : summary.headline || "The application window should be open on the form. Nothing was submitted.";
     return NextResponse.json({
       ok: true,
       submitted: summary.submitted > 0,

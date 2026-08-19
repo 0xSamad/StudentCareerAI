@@ -45,6 +45,8 @@ export async function GET(req: Request) {
       sessionId: sessionId || null,
       phase: owned.job.phase,
       message: owned.job.message,
+      waitingFields: owned.job.waitingFields || [],
+      actionRequired: owned.job.actionRequired || null,
     });
   } catch (err: unknown) {
     const status = err && typeof err === "object" && "status" in err ? Number((err as { status?: number }).status) || 500 : 500;

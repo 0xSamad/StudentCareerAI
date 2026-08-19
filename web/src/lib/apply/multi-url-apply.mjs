@@ -161,7 +161,7 @@ export function classifyLiveOutcome(live = {}) {
     return {
       phase: URL_APPLY_PHASE.CAPTCHA_REQUIRED,
       pauseReason: "CAPTCHA",
-      message: live.message || "CAPTCHA is on this form — complete it in Chrome. Nothing was submitted.",
+      message: live.message || "CAPTCHA is on this form — complete it in the application window. Nothing was submitted.",
     };
   }
   if (codes.some((code) => ["login-wall", "nav-google"].includes(code)) || /\b(sign in to apply|create (an )?account to apply|sign-in required)\b/.test(blob)) {
@@ -178,7 +178,7 @@ export function classifyLiveOutcome(live = {}) {
     return {
       phase: URL_APPLY_PHASE.EMAIL_VERIFICATION_REQUIRED,
       pauseReason: "EMAIL_VERIFICATION",
-      message: live.message || "This employer needs email or MFA verification. Enter the code yourself in Chrome.",
+      message: live.message || "This employer needs email or MFA verification. Enter the code yourself in the application window.",
     };
   }
   if (codes.includes("expired") || /posting is closed|no longer accepting/.test(blob)) {
@@ -199,20 +199,20 @@ export function classifyLiveOutcome(live = {}) {
     return {
       phase: URL_APPLY_PHASE.COMPLETED,
       pauseReason: "REVIEW",
-      message: live.message || "Fields were filled. You still submit in Chrome.",
+      message: live.message || "Fields were filled. You still submit in the application window.",
     };
   }
   if (codes.some((code) => ["no-form", "listing-page"].includes(code))) {
     return {
       phase: URL_APPLY_PHASE.WAITING_FOR_USER,
       pauseReason: codes.includes("listing-page") ? "LISTING_PAGE" : "NO_FORM",
-      message: live.message || "Chrome is open. Continue the Apply form yourself — nothing was submitted.",
+      message: live.message || "The application window is open. Continue the Apply form yourself — nothing was submitted.",
     };
   }
   return {
     phase: URL_APPLY_PHASE.WAITING_FOR_USER,
     pauseReason: "REVIEW",
-    message: live.message || "Chrome is open on this application. You still submit.",
+    message: live.message || "The application window is open on this application. You still submit.",
   };
 }
 
@@ -975,9 +975,9 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
         answers: resolution.answers || [],
       },
       message: resolution.captchaCleared
-        ? "Continuing in Chrome on your computer"
-        : "Sent to Chrome on your computer",
-      log: "Resume queued for Chrome on your computer",
+        ? "Continuing in the application window"
+        : "Sent to the application window",
+      log: "Resume queued for the application window",
     });
     return getUrlApplyBatch(batchId);
   }
@@ -986,7 +986,7 @@ export async function resumeUrlApplyJob(batchId, jobId, resolution = {}, deps = 
     const still = await merged.captchaStillPresent(job.sessionId);
     if (still && resolution.captchaCleared !== true) {
       patch({
-        message: "CAPTCHA is still on the page. Complete it in Chrome — we will not bypass it.",
+        message: "CAPTCHA is still on the page. Complete it in the application window — we will not bypass it.",
         log: "CAPTCHA still present",
       });
       return getUrlApplyBatch(batchId);

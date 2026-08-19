@@ -134,7 +134,7 @@ export function buildActionRequiredCard(job = {}) {
       question: null,
       primaryCta: "Open Application",
       primaryAction: "open",
-      hint: "Sign in or complete MFA in Chrome. The agent will continue afterward.",
+      hint: "Sign in or complete MFA in the application window. The agent will continue afterward.",
     };
   }
   if (phase === "EMAIL_VERIFICATION_REQUIRED") {
@@ -148,7 +148,7 @@ export function buildActionRequiredCard(job = {}) {
       question: null,
       primaryCta: "Open Application",
       primaryAction: "open",
-      hint: "Complete verification in Chrome or your inbox. We never enter OTP codes.",
+      hint: "Complete verification in the application window or your inbox. We never enter OTP codes.",
     };
   }
   if (phase === "INFORMATION_REQUIRED") {
@@ -161,7 +161,7 @@ export function buildActionRequiredCard(job = {}) {
       intro: "StudentCareer AI completed:",
       completed,
       body: legal
-        ? "This is a legal declaration. Open Chrome and confirm it yourself — we will not tick it for you."
+        ? "This is a legal declaration. Confirm it yourself in the application window — we will not tick it for you."
         : question
           ? "AI cannot safely determine this from your profile."
           : needsJd
@@ -182,7 +182,7 @@ export function buildActionRequiredCard(job = {}) {
     heading,
     intro: "StudentCareer AI completed:",
     completed,
-    body: job.message || "This application is waiting for you in Chrome.",
+    body: job.message || "This application is waiting for you in the application window.",
     question: null,
     primaryCta: "Open Application",
     primaryAction: "open",

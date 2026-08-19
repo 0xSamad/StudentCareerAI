@@ -111,6 +111,37 @@ export async function startUrlApplications(
   return data;
 }
 
+export function listingToApplyInput(item: {
+  url?: string | null;
+  source_url?: string | null;
+  company?: string;
+  role?: string;
+  description?: string | null;
+  requirements?: string[] | null;
+}) {
+  return {
+    url: String(item.url || item.source_url || "").trim(),
+    company: item.company || "",
+    role: item.role || "",
+    jdText: [item.description, ...(Array.isArray(item.requirements) ? item.requirements : [])].filter(Boolean).join("\n"),
+  };
+}
+
+export async function startListingApplications(
+  items: Array<{
+    url?: string | null;
+    source_url?: string | null;
+    company?: string;
+    role?: string;
+    description?: string | null;
+    requirements?: string[] | null;
+  }>,
+) {
+  const urls = items.map(listingToApplyInput).filter((row) => row.url);
+  if (!urls.length) throw new Error("This listing has no application URL.");
+  return startUrlApplications(urls);
+}
+
 export async function getLocalChromeHelper() {
   const res = await fetch("/api/apply/local-chrome");
   const data = await res.json().catch(() => ({}));

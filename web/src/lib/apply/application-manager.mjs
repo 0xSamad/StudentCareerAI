@@ -153,7 +153,7 @@ export function formatCompletionEmail(job = {}) {
       "",
       "has been completed.",
       "",
-      "Fields were filled from your verified profile. You still submit in Chrome if you want to send it.",
+      "Fields were filled from your verified profile. You still submit in the application window if you want to send it.",
     ].join("\n"),
     kind: "application_completed",
   };

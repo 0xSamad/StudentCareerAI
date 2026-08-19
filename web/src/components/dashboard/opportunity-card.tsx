@@ -20,7 +20,8 @@ import {
 } from "lucide-react";
 import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
-import { enqueueAndApply, saveOpportunity, unsaveOpportunity } from "@/lib/opportunity-client";
+import { saveOpportunity, startListingApplications, unsaveOpportunity } from "@/lib/opportunity-client";
+import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { cn } from "@/lib/cn";
 
 interface OpportunityCardProps {
@@ -147,24 +148,23 @@ export function OpportunityCard({
     setApplying(true);
     setAddError(null);
     setAppliedMsg(null);
+    const watcher = onApply ? null : openBlankApplyWatchWindow();
     try {
       if (onApply) {
         await onApply(opportunity);
       } else {
-        const data = await enqueueAndApply([opportunity]);
-        const msg =
-          data.message ||
-          "Chrome should be open on the application form. Nothing was submitted.";
-        setAppliedMsg(msg);
-        const jobKey = data.jobId || data.job || data.files?.job_id || "";
-        const review =
-          data.reviewPath ||
-          `/apply/review?company=${encodeURIComponent(opportunity.company || "")}&role=${encodeURIComponent(opportunity.role || "")}${jobKey ? `&job=${encodeURIComponent(jobKey)}` : ""}`;
-        window.open(review, "_blank", "noopener");
-        window.alert(msg);
+        const data = await startListingApplications([opportunity]);
+        const batchId = data.batch?.id || data.batchId;
+        if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
+          closeApplyWatchWindow(watcher);
+          setAddError("Allow pop-ups for StudentCareer AI so the application window can open.");
+        } else {
+          setAppliedMsg("Application window opened. Watch it fill, and complete Location or CAPTCHA there if asked. Nothing is submitted for you.");
+        }
       }
       setAdded(true);
     } catch (err: any) {
+      closeApplyWatchWindow(watcher);
       setAddError(err?.message || "Could not apply.");
     } finally {
       setApplying(false);

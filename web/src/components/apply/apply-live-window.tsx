@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getUrlApplicationBatch } from "@/lib/opportunity-client";
+import { getUrlApplicationBatch, resumeUrlApplication } from "@/lib/opportunity-client";
 import { cn } from "@/lib/cn";
 
 type Job = {
@@ -14,6 +14,12 @@ type Job = {
   sessionId?: string | null;
   preview?: string | null;
   progress?: number;
+  waitingFields?: { fieldId: string; label: string; reason?: string }[];
+  actionRequired?: {
+    question?: { fieldId: string; label: string; reason?: string } | null;
+    body?: string;
+    needsJd?: boolean;
+  } | null;
 };
 
 function isWaiting(phase: string) {
@@ -45,8 +51,17 @@ function coords(img: HTMLImageElement, event: PointerEvent | React.PointerEvent)
 export function ApplyLiveWindow({ batchId }: { batchId: string }) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selected, setSelected] = useState("");
-  const [frame, setFrame] = useState<{ preview?: string | null; pageUrl?: string; sessionId?: string | null; message?: string }>({});
+  const [frame, setFrame] = useState<{
+    preview?: string | null;
+    pageUrl?: string;
+    sessionId?: string | null;
+    message?: string;
+    waitingFields?: Job["waitingFields"];
+    actionRequired?: Job["actionRequired"];
+  }>({});
   const [error, setError] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [acting, setActing] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const queue = useRef<{ type: string; x?: number; y?: number; key?: string; deltaY?: number }[]>([]);
   const sending = useRef(false);
@@ -83,6 +98,8 @@ export function ApplyLiveWindow({ batchId }: { batchId: string }) {
             pageUrl: data.pageUrl || job.url,
             sessionId: data.sessionId || job.sessionId,
             message: data.message || job.message,
+            waitingFields: data.waitingFields || job.waitingFields,
+            actionRequired: data.actionRequired || job.actionRequired,
           });
         })
         .catch(() => {});
@@ -131,6 +148,7 @@ export function ApplyLiveWindow({ batchId }: { batchId: string }) {
 
   const waiting = job ? isWaiting(job.phase) : false;
   const title = job ? [job.company, job.role].filter(Boolean).join(" — ") || "Application" : "Starting application";
+  const question = job?.actionRequired?.question || frame.actionRequired?.question || job?.waitingFields?.[0] || frame.waitingFields?.[0];
 
   return (
     <div className="flex h-dvh flex-col bg-zinc-950 text-zinc-100">
@@ -203,6 +221,41 @@ export function ApplyLiveWindow({ batchId }: { batchId: string }) {
           </div>
         )}
       </div>
+      {question ? (
+        <form
+          className="flex flex-wrap items-end gap-2 border-t border-amber-500/30 bg-amber-950/40 px-3 py-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const value = answer.trim();
+            if (!question || !value || !batchId || !job) return;
+            setActing(true);
+            void resumeUrlApplication(batchId, job.id, {
+              action: "answer",
+              answers: [{ fieldId: question.fieldId, label: question.label, value }],
+            })
+              .then(() => setAnswer(""))
+              .catch((err) => setError(err instanceof Error ? err.message : "Could not save that answer."))
+              .finally(() => setActing(false));
+          }}
+        >
+          <label className="min-w-0 flex-1 text-[11px] text-amber-100">
+            {question.label || "Your answer"}
+            <input
+              value={answer}
+              onChange={(event) => setAnswer(event.target.value)}
+              className="mt-1 w-full rounded-md border border-white/10 bg-zinc-900 px-2 py-1.5 text-sm text-white"
+              placeholder="Type the answer, or click the field in the form above"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={acting || !answer.trim()}
+            className="rounded-md bg-amber-400 px-3 py-1.5 text-xs font-semibold text-zinc-950 disabled:opacity-50"
+          >
+            {acting ? "Saving…" : "Continue"}
+          </button>
+        </form>
+      ) : null}
       <p className="border-t border-white/10 px-3 py-2 text-[11px] text-zinc-500">
         This is the live application. Watch it fill, and solve CAPTCHAs here. Nothing is submitted for you.
       </p>

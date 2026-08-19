@@ -23,6 +23,8 @@ import {
 import type { Opportunity } from "@/app/api/opportunities/route";
 import { cn } from "@/lib/cn";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
+import { startListingApplications } from "@/lib/opportunity-client";
+import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 interface ApplicationDetailModalProps {
   opportunity: Opportunity | null;
@@ -87,6 +89,26 @@ export function ApplicationDetailModal({ opportunity, onClose, onQueued }: Appli
     } catch (err: any) {
       console.error("Queue error:", err);
       setApplyMessage(err?.message || "Network error while adding to queue");
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const handleApplyLive = async () => {
+    setApplying(true);
+    setApplyMessage(null);
+    const watcher = openBlankApplyWatchWindow();
+    try {
+      const data = await startListingApplications([opportunity]);
+      const batchId = data.batch?.id || data.batchId;
+      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
+        setApplyMessage("Allow pop-ups so the application window can open.");
+      } else {
+        setApplyMessage("Application window opened. Watch it fill there. Nothing is submitted for you.");
+      }
+    } catch (err: any) {
+      closeApplyWatchWindow(watcher);
+      setApplyMessage(err?.message || "Could not apply.");
     } finally {
       setApplying(false);
     }
@@ -430,18 +452,29 @@ export function ApplicationDetailModal({ opportunity, onClose, onQueued }: Appli
               Close
             </button>
             <button
+              onClick={handleApplyLive}
+              disabled={applying}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-bold text-brand-foreground shadow-sm transition-all hover:bg-brand-200 active:scale-95 disabled:opacity-60"
+            >
+              {applying ? "Opening…" : (
+                <>
+                  <Send className="size-4" /> Apply
+                </>
+              )}
+            </button>
+            <button
               onClick={handleApplyNow}
               disabled={applying || applied}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-bold shadow-sm transition-all",
                 applied
                   ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 cursor-default"
-                  : "bg-brand text-brand-foreground hover:bg-brand-200 active:scale-95"
+                  : "border border-border bg-surface text-foreground hover:bg-surface-hover"
               )}
             >
               {applied ? (
                 <>
-                  <CheckCircle2 className="size-4" /> Submitted
+                  <CheckCircle2 className="size-4" /> Queued
                 </>
               ) : applying ? (
                 "Adding…"

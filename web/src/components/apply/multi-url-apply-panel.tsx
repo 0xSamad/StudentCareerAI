@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Link2, Loader2, Plus, Send, Trash2 } from "lucide-react";
 import { getUrlApplicationBatch, resumeUrlApplication, startUrlApplications } from "@/lib/opportunity-client";
+import { openBlankApplyWatchWindow, closeApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { buttonPrimaryClassName, buttonSecondaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -115,12 +116,6 @@ function statusTone(job: BatchJob) {
   return "text-muted";
 }
 
-function openApplyWatchWindow(batchId: string) {
-  const url = `/apply/live/${encodeURIComponent(batchId)}`;
-  const features = "popup=yes,width=1320,height=900,menubar=no,toolbar=no,location=no,status=no";
-  return window.open(url, "scai-apply-window", features);
-}
-
 export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const [rows, setRows] = useState<UrlRow[]>([newRow()]);
   const [busy, setBusy] = useState(false);
@@ -188,23 +183,15 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
   const start = async () => {
     setBusy(true);
     setError("");
-    const watcher = window.open("about:blank", "scai-apply-window", "popup=yes,width=1320,height=900,menubar=no,toolbar=no,location=no,status=no");
+    const watcher = openBlankApplyWatchWindow();
     try {
-      if (watcher) {
-        watcher.document.write(
-          "<title>StudentCareer AI</title><p style='font-family:sans-serif;padding:24px'>Opening the application window…</p>",
-        );
-      }
       const data = await startUrlApplications(filled);
       setBatch(data.batch);
-      const liveUrl = `/apply/live/${encodeURIComponent(data.batch.id)}`;
-      if (watcher && !watcher.closed) {
-        watcher.location.replace(liveUrl);
-        watcher.focus();
-      } else if (!openApplyWatchWindow(data.batch.id)) {
+      if (!showApplyWatchWindow(data.batch.id, watcher)) {
         setError("Allow pop-ups for StudentCareer AI so the application window can open. You can also use Open application window below.");
       }
     } catch (err: unknown) {
+      closeApplyWatchWindow(watcher);
       setError(err instanceof Error ? err.message : "Could not start applications.");
     } finally {
       setBusy(false);
@@ -347,7 +334,7 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
                       type="button"
                       className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
                       onClick={() => {
-                        const opened = openApplyWatchWindow(batch.id);
+                        const opened = showApplyWatchWindow(batch.id);
                         if (!opened) setError("Allow pop-ups so the application window can open.");
                       }}
                     >

@@ -1,18 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Send, Lock } from "lucide-react";
+import { useState } from "react";
+import { Send, Lock, Loader2 } from "lucide-react";
 import { useJobs } from "@/components/jobs/job-store";
-import { useApply } from "@/components/apply/apply-provider";
+import { startUrlApplications } from "@/lib/opportunity-client";
+import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 // The "Apply" CTA — brand orange, paper-plane. Enabled ONLY when the tailored CV
 // for THIS offer is ready (the tracker's PDF column is ✅, or a pdf worker for
-// this #n just finished). On click it opens the apply form-proxy for the offer
-// (where the user reviews and submits it themselves — never auto-submit).
+// this #n just finished). On click it opens a live application window (where the
+// user reviews and submits it themselves — never auto-submit).
 export function ApplyButton({ n, url, company, pdfReady }: { n: string; url?: string; company: string; pdfReady: boolean }) {
-  const router = useRouter();
   const { jobs } = useJobs();
-  const apply = useApply();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
   const pdfJobDone = jobs.some((j) => j.kind === "pdf" && j.input === n && j.status === "done");
   const hasUrl = !!url && /^https?:\/\//i.test(url);
@@ -31,16 +32,34 @@ export function ApplyButton({ n, url, company, pdfReady }: { n: string; url?: st
     );
   }
   return (
-    <button
-      type="button"
-      onClick={() => {
-        apply.open(url!, { prefill: true, company });
-        router.push("/apply");
-      }}
-      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-brand px-3.5 py-1 text-xs font-medium text-brand-foreground shadow-sm transition-colors hover:bg-brand-200 max-sm:min-h-[44px]"
-      title="Apply — opens the form pre-filled, you review and submit yourself"
-    >
-      <Send className="size-3.5" /> Apply
-    </button>
+    <span className="inline-flex flex-col items-end gap-1">
+      <button
+        type="button"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          setError("");
+          const watcher = openBlankApplyWatchWindow();
+          try {
+            const data = await startUrlApplications([{ url: url!, company }]);
+            const batchId = data.batch?.id || data.batchId;
+            if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
+              setError("Allow pop-ups so the application window can open.");
+            }
+          } catch (err: unknown) {
+            closeApplyWatchWindow(watcher);
+            setError(err instanceof Error ? err.message : "Could not apply.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+        className="inline-flex items-center justify-center gap-1.5 rounded-full bg-brand px-3.5 py-1 text-xs font-medium text-brand-foreground shadow-sm transition-colors hover:bg-brand-200 disabled:opacity-60 max-sm:min-h-[44px]"
+        title="Apply — opens a window that fills the form. You review and submit yourself."
+      >
+        {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
+        Apply
+      </button>
+      {error ? <span className="max-w-[220px] text-right text-[10px] font-medium text-red-600 dark:text-red-400">{error}</span> : null}
+    </span>
   );
 }

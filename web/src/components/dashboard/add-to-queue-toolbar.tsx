@@ -5,7 +5,8 @@ import { ListPlus, Send } from "lucide-react";
 import { buttonPrimaryClassName, buttonSecondaryClassName } from "@/components/ui/page-header";
 import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
-import { enqueueAndApply } from "@/lib/opportunity-client";
+import { startListingApplications } from "@/lib/opportunity-client";
+import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 export function AddToQueueToolbar({
   opportunities,
@@ -45,11 +46,18 @@ export function AddToQueueToolbar({
     }
     setBusy(true);
     setMessage(null);
+    const watcher = openBlankApplyWatchWindow();
     try {
-      const data = await enqueueAndApply(selected);
-      setMessage(data.message || "Chrome opened the forms. You still submit.");
+      const data = await startListingApplications(selected);
+      const batchId = data.batch?.id || data.batchId;
+      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
+        setMessage("Allow pop-ups so the application window can open.");
+      } else {
+        setMessage("Application window opened. Watch the form fill there. Nothing is submitted for you.");
+      }
       onAdded?.();
     } catch (err: any) {
+      closeApplyWatchWindow(watcher);
       setMessage(err.message || "Failed to apply");
     } finally {
       setBusy(false);

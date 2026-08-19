@@ -689,7 +689,7 @@ export async function runStudentCareerLiveApply({
     agentStatus = "HUMAN_ACTION_REQUIRED";
     humanIntervention = humanIntervention || {
       kind: "captcha",
-      question: "Please complete the verification challenge in Chrome.",
+      question: "Please complete the verification challenge in the application window.",
       reason: "CAPTCHA",
     };
   }
@@ -697,22 +697,22 @@ export async function runStudentCareerLiveApply({
     ? ` ${uniqueWaiting.length} field(s) need you — we did not guess.`
     : "";
   const captchaNote = sawCaptcha
-    ? " Human verification is still required in Chrome — we did not solve it."
+    ? " Human verification is still required in the application window — we did not solve it."
     : "";
   const message =
     uniqueWaiting.length
-      ? `Application paused — human input required. ${where}: ${uniqueWaiting[0].label}.${attached}${captchaNote} Chrome stayed open on that field. Nothing was submitted.`
+      ? `Application paused — human input required. ${where}: ${uniqueWaiting[0].label}.${attached}${captchaNote} The application window stayed on that field. Nothing was submitted.`
       : sawCaptcha && filledCount > 0
         ? `Filled empty fields.${captchaNote}${attached} Nothing was submitted.`
         : sawCaptcha
-          ? "Human verification is required. Please complete it in the browser. Nothing was submitted."
+          ? "Human verification is required. Please complete it in the application window. Nothing was submitted."
           : filledCount > 0
-        ? `Chrome is open on the ${where} flow. ${filledCount} field(s) filled across the steps we could reach.${attached}${waitingNote} Continue in Chrome if a password or extra page appears. Nothing was submitted.`
+        ? `The application window is open on the ${where} flow. ${filledCount} field(s) filled across the steps we could reach.${attached}${waitingNote} Continue there if a password or extra page appears. Nothing was submitted.`
         : pause
-          ? `${pause.message} Chrome stayed open so you can continue. Nothing was submitted.`
+          ? `${pause.message} The application window stayed open so you can continue. Nothing was submitted.`
           : session.fields.length === 0
-            ? "Chrome is open on this posting. Click Apply now / create profile in that window if needed — we fill attested fields and never submit."
-            : `Chrome is open on the ${where} form.${attached}${waitingNote} Complete any remaining fields yourself — nothing was submitted.`;
+            ? "The application window is open on this posting. Click Apply now / create profile there if needed — we fill attested fields and never submit."
+            : `The application window is open on the ${where} form.${attached}${waitingNote} Complete any remaining fields yourself — nothing was submitted.`;
 
   await emitFillProgress(
     getSession(session.id)?.page,
@@ -986,7 +986,7 @@ export async function continueStudentCareerLiveApply({
   await handoffSession(live.id).catch(() => {});
   const filledCount = allSteps.filter((step) => step.ok).length;
   const status = sawCaptcha ? "HUMAN_ACTION_REQUIRED" : waitingFields.length ? "waiting_for_user" : "in_progress";
-  const captchaNote = sawCaptcha ? " Human verification is still required in Chrome — we did not solve it." : "";
+  const captchaNote = sawCaptcha ? " Human verification is still required in the application window — we did not solve it." : "";
   await emitFillProgress(
     live.page,
     onFillProgress,
@@ -1017,7 +1017,7 @@ export async function continueStudentCareerLiveApply({
     status,
     audit: lastTurn?.audit || { filled: allSteps.filter((s) => s.ok).map((s) => s.label), pending: waitingFields.map((w) => w.label), failed: [] },
     humanIntervention: sawCaptcha
-      ? { kind: "captcha", question: "Please complete the verification challenge in Chrome.", reason: "CAPTCHA" }
+      ? { kind: "captcha", question: "Please complete the verification challenge in the application window.", reason: "CAPTCHA" }
       : waitingFields[0]
         ? { kind: "information", question: waitingFields[0].label, reason: waitingFields[0].reason }
         : null,
