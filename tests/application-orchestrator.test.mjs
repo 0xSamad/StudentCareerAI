@@ -107,10 +107,22 @@ const baseDeps = {
   if (
     client.includes('startListingApplications') &&
     card.includes('startListingApplications') &&
-    card.includes('showApplyWatchWindow')
+    card.includes('finishApplyLaunch')
   ) {
-    pass('Jobs card Apply opens the live application window');
+    pass('Jobs card Apply starts a listing fill through the shared apply launcher');
   } else fail('Jobs card Apply did not open the live application window');
+}
+
+{
+  const watch = readFileSync(join(ROOT, 'web/src/lib/apply/open-watch-window.ts'), 'utf8');
+  const applyUrls = readFileSync(join(ROOT, 'web/src/app/api/opportunities/apply-urls/route.ts'), 'utf8');
+  if (
+    watch.includes('finishApplyLaunch') &&
+    watch.includes('Chrome opened on this computer') &&
+    applyUrls.includes('liveWindow: applyUsesHeadlessBrowser()')
+  ) {
+    pass('Local Apply uses headed Chrome on this computer instead of a remote preview');
+  } else fail('Local Apply still always opens the remote live window');
 }
 
 {

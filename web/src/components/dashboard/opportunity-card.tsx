@@ -21,7 +21,7 @@ import {
 import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { saveOpportunity, startListingApplications, unsaveOpportunity } from "@/lib/opportunity-client";
-import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { cn } from "@/lib/cn";
 
 interface OpportunityCardProps {
@@ -154,12 +154,11 @@ export function OpportunityCard({
         await onApply(opportunity);
       } else {
         const data = await startListingApplications([opportunity]);
-        const batchId = data.batch?.id || data.batchId;
-        if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
-          closeApplyWatchWindow(watcher);
-          setAddError("Allow pop-ups for StudentCareer AI so the application window can open.");
+        const launched = finishApplyLaunch(data, watcher);
+        if (!launched.ok) {
+          setAddError(launched.error || "Could not open the application.");
         } else {
-          setAppliedMsg("Application window opened. Watch it fill, and complete Location or CAPTCHA there if asked. Nothing is submitted for you.");
+          setAppliedMsg(launched.message);
         }
       }
       setAdded(true);

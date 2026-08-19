@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Link2, Loader2, Send } from "lucide-react";
 import { startUrlApplications } from "@/lib/opportunity-client";
-import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { buttonPrimaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -31,11 +31,11 @@ export function UrlApplyBar({
     const watcher = openBlankApplyWatchWindow();
     try {
       const data = await startUrlApplications([{ url, company, role, jdText }]);
-      const batchId = data.batch?.id || data.batchId;
-      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
-        setError("Allow pop-ups so the application window can open.");
+      const launched = finishApplyLaunch(data, watcher);
+      if (!launched.ok) {
+        setError(launched.error || "Could not apply from that URL.");
       } else {
-        setMessage("Application window opened. Watch it fill there. Nothing is submitted for you.");
+        setMessage(launched.message);
       }
       onApplied?.();
     } catch (err: unknown) {
@@ -53,12 +53,12 @@ export function UrlApplyBar({
         <p className="text-xs font-semibold uppercase tracking-wider text-brand">URL apply</p>
         <h2 className="mt-1 text-base font-semibold text-foreground">Paste any job or application link</h2>
         <p className="mt-1 text-xs text-muted">
-          Does not need to be in Jobs. An application window opens so you can watch the form fill. You still submit.
+          Does not need to be in Jobs. Chrome opens on this computer and fills attested fields. You still submit.
         </p>
       </div>
       ) : (
         <p className="text-xs text-muted">
-          An application window opens and fills attested CV fields. You still submit.
+          Chrome opens on this computer and fills attested CV fields. You still submit.
         </p>
       )}
       <div className="flex flex-col gap-2 sm:flex-row">

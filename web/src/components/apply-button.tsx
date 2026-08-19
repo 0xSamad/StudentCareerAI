@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Send, Lock, Loader2 } from "lucide-react";
 import { useJobs } from "@/components/jobs/job-store";
 import { startUrlApplications } from "@/lib/opportunity-client";
-import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 // The "Apply" CTA — brand orange, paper-plane. Enabled ONLY when the tailored CV
 // for THIS offer is ready (the tracker's PDF column is ✅, or a pdf worker for
@@ -42,10 +42,8 @@ export function ApplyButton({ n, url, company, pdfReady }: { n: string; url?: st
           const watcher = openBlankApplyWatchWindow();
           try {
             const data = await startUrlApplications([{ url: url!, company }]);
-            const batchId = data.batch?.id || data.batchId;
-            if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
-              setError("Allow pop-ups so the application window can open.");
-            }
+            const launched = finishApplyLaunch(data, watcher);
+            if (!launched.ok) setError(launched.error || "Could not apply.");
           } catch (err: unknown) {
             closeApplyWatchWindow(watcher);
             setError(err instanceof Error ? err.message : "Could not apply.");
@@ -54,7 +52,7 @@ export function ApplyButton({ n, url, company, pdfReady }: { n: string; url?: st
           }
         }}
         className="inline-flex items-center justify-center gap-1.5 rounded-full bg-brand px-3.5 py-1 text-xs font-medium text-brand-foreground shadow-sm transition-colors hover:bg-brand-200 disabled:opacity-60 max-sm:min-h-[44px]"
-        title="Apply — opens a window that fills the form. You review and submit yourself."
+        title="Apply — fills the form in Chrome on this computer. You review and submit yourself."
       >
         {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Send className="size-3.5" />}
         Apply

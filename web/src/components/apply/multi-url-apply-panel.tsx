@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Link2, Loader2, Plus, Send, Trash2 } from "lucide-react";
 import { getUrlApplicationBatch, resumeUrlApplication, startUrlApplications } from "@/lib/opportunity-client";
-import { openBlankApplyWatchWindow, closeApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { applyWatchExpected, closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 import { buttonPrimaryClassName, buttonSecondaryClassName, inputClassName } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 
@@ -187,9 +187,9 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
     try {
       const data = await startUrlApplications(filled);
       setBatch(data.batch);
-      if (!showApplyWatchWindow(data.batch.id, watcher)) {
-        setError("Allow pop-ups for StudentCareer AI so the application window can open. You can also use Open application window below.");
-      }
+      const launched = finishApplyLaunch(data, watcher);
+      if (!launched.ok) setError(launched.error || "Could not start applications.");
+      else if (!launched.live) setError("");
     } catch (err: unknown) {
       closeApplyWatchWindow(watcher);
       setError(err instanceof Error ? err.message : "Could not start applications.");
@@ -329,13 +329,13 @@ export function MultiUrlApplyPanel({ className }: { className?: string }) {
 
                   <p className={cn("text-sm font-medium", statusTone(job))}>{statusLine(job)}</p>
 
-                  {batch?.id ? (
+                  {batch?.id && applyWatchExpected() ? (
                     <button
                       type="button"
                       className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
                       onClick={() => {
-                        const opened = showApplyWatchWindow(batch.id);
-                        if (!opened) setError("Allow pop-ups so the application window can open.");
+                        const launched = finishApplyLaunch({ batch, liveWindow: true });
+                        if (!launched.ok) setError(launched.error || "Allow pop-ups so the application window can open.");
                       }}
                     >
                       <ExternalLink className="size-3.5" />

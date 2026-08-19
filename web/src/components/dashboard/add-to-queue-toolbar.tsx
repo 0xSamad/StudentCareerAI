@@ -6,7 +6,7 @@ import { buttonPrimaryClassName, buttonSecondaryClassName } from "@/components/u
 import type { Opportunity } from "@/app/api/opportunities/route";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { startListingApplications } from "@/lib/opportunity-client";
-import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 export function AddToQueueToolbar({
   opportunities,
@@ -49,11 +49,11 @@ export function AddToQueueToolbar({
     const watcher = openBlankApplyWatchWindow();
     try {
       const data = await startListingApplications(selected);
-      const batchId = data.batch?.id || data.batchId;
-      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
-        setMessage("Allow pop-ups so the application window can open.");
+      const launched = finishApplyLaunch(data, watcher);
+      if (!launched.ok) {
+        setMessage(launched.error || "Could not open the application.");
       } else {
-        setMessage("Application window opened. Watch the form fill there. Nothing is submitted for you.");
+        setMessage(launched.message);
       }
       onAdded?.();
     } catch (err: any) {

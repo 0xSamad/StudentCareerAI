@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { studentCareerRoot } from "@/lib/student-career-ai";
 import { emptyProfileShape, requireUserSession, withPreferredAiMatching } from "@/lib/user-session";
 import { runStudentCareerLiveApply, continueStudentCareerLiveApply } from "@/lib/apply/live-from-profile";
+import { applyUsesHeadlessBrowser } from "@/lib/apply/chrome-attach";
 import { guessListingFromUrl, normalizeApplyUrl } from "@/lib/apply/url-listing.mjs";
 import { extractExternalJob } from "@/lib/apply/extract-external-job.mjs";
 import { tailorUrlApplyDocuments } from "@/lib/apply/url-apply-tailor.mjs";
@@ -20,6 +21,7 @@ import {
 } from "@/lib/apply/multi-url-apply.mjs";
 import { applyNotificationHub } from "@/lib/apply/apply-notifications.mjs";
 import { setHitlPersistPath, loadHitlPersist } from "@/lib/apply/hitl-state.mjs";
+import { applyUsesHeadlessBrowser } from "@/lib/apply/chrome-attach";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -240,6 +242,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       batch,
+      liveWindow: applyUsesHeadlessBrowser(),
       notifications,
       localChrome: {
         connected: localChromeConnected(userId),
@@ -287,13 +290,17 @@ export async function POST(req: Request) {
     void running.finally(() => keep.delete(batch.id));
     after(() => running);
 
+    const liveWindow = applyUsesHeadlessBrowser();
     return NextResponse.json({
       ok: true,
       submitted: false,
       dry_run: true,
+      liveWindow,
       batchId: batch.id,
       batch,
-      message: `Started ${batch.jobs.length} independent application${batch.jobs.length === 1 ? "" : "s"}. Nothing will be submitted.`,
+      message: liveWindow
+        ? `Started ${batch.jobs.length} independent application${batch.jobs.length === 1 ? "" : "s"}. Nothing will be submitted.`
+        : `Started ${batch.jobs.length} independent application${batch.jobs.length === 1 ? "" : "s"}. Chrome will open on this computer — attach files and complete CAPTCHA there. Nothing will be submitted.`,
     });
   } catch (err: unknown) {
     const status = err && typeof err === "object" && "status" in err ? Number((err as { status?: number }).status) || 500 : 500;

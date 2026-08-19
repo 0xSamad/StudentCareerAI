@@ -24,7 +24,7 @@ import type { Opportunity } from "@/app/api/opportunities/route";
 import { cn } from "@/lib/cn";
 import { addOpportunitiesToQueue } from "@/lib/queue-client";
 import { startListingApplications } from "@/lib/opportunity-client";
-import { closeApplyWatchWindow, openBlankApplyWatchWindow, showApplyWatchWindow } from "@/lib/apply/open-watch-window";
+import { closeApplyWatchWindow, finishApplyLaunch, openBlankApplyWatchWindow } from "@/lib/apply/open-watch-window";
 
 interface ApplicationDetailModalProps {
   opportunity: Opportunity | null;
@@ -100,11 +100,11 @@ export function ApplicationDetailModal({ opportunity, onClose, onQueued }: Appli
     const watcher = openBlankApplyWatchWindow();
     try {
       const data = await startListingApplications([opportunity]);
-      const batchId = data.batch?.id || data.batchId;
-      if (!batchId || !showApplyWatchWindow(batchId, watcher)) {
-        setApplyMessage("Allow pop-ups so the application window can open.");
+      const launched = finishApplyLaunch(data, watcher);
+      if (!launched.ok) {
+        setApplyMessage(launched.error || "Could not apply.");
       } else {
-        setApplyMessage("Application window opened. Watch it fill there. Nothing is submitted for you.");
+        setApplyMessage(launched.message);
       }
     } catch (err: any) {
       closeApplyWatchWindow(watcher);

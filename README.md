@@ -35,6 +35,8 @@ cd web && npm install && npm run dev
 
 Open **http://127.0.0.1:3000**
 
+**Apply:** Google Chrome must be installed. On local `npm run dev`, Chrome opens on this computer so you can attach files and complete CAPTCHA. The student still clicks Submit.
+
 Sign up, complete a profile, then scan internships / jobs.
 
 ### Database (recommended)
